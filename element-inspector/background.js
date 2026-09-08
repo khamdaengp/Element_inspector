@@ -3,7 +3,6 @@
 // badge state, tab captures, and CORS-free image data fetching.
 
 const CONTENT_SCRIPT = 'content.js';
-const CONTENT_CSS    = 'content.css';
 
 /**
  * Checks if content script is already alive in the tab.
@@ -40,11 +39,7 @@ async function injectAndToggle(tab) {
     const isAlive = await pingTab(tab.id);
 
     if (!isAlive) {
-      // Inject CSS first, then JS
-      await chrome.scripting.insertCSS({
-        target: { tabId: tab.id },
-        files: [CONTENT_CSS],
-      });
+      // Execute content script (styles are self-contained inside closed Shadow DOM)
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         files: [CONTENT_SCRIPT],
