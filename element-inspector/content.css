@@ -570,3 +570,179 @@
   opacity: 1 !important;
   transform: translateX(-50%) translateY(0) !important;
 }
+
+/* ── Annotation Editor Modal ────────────────────────────── */
+.ei-annotator-modal {
+  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  pointer-events: auto !important;
+}
+
+.ei-annotator-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.72) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.ei-annotator-dialog {
+  position: relative !important;
+  z-index: 10 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-width: 94vw !important;
+  max-height: 92vh !important;
+  background: #14151f !important;
+  border: 1px solid #2d3148 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85) !important;
+  overflow: hidden !important;
+  animation: mv-card-in 0.18s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+.ei-annotator-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 8px 14px !important;
+  background: #0d0e17 !important;
+  border-bottom: 1px solid #25283c !important;
+  user-select: none !important;
+  flex-wrap: wrap !important;
+}
+
+.ei-annotator-tools {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.ei-annotator-title {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #60a5fa !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+.ei-color-picker {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  background: #1e2133 !important;
+  padding: 2px 6px !important;
+  border-radius: 6px !important;
+  border: 1px solid #2d3148 !important;
+}
+
+.ei-color-btn {
+  width: 17px !important;
+  height: 17px !important;
+  border-radius: 50% !important;
+  border: 2px solid transparent !important;
+  cursor: pointer !important;
+  transition: transform 0.12s, border-color 0.12s !important;
+  padding: 0 !important;
+}
+
+.ei-color-btn:hover {
+  transform: scale(1.15) !important;
+}
+
+.ei-color-btn.active {
+  border-color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35) !important;
+  transform: scale(1.1) !important;
+}
+
+.ei-tool-btn {
+  background: #1e2133 !important;
+  border: 1px solid #2d3148 !important;
+  color: #cbd5e1 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 4px 8px !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  transition: all 0.14s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.ei-tool-btn:hover {
+  background: #2b304c !important;
+  color: #ffffff !important;
+  border-color: #43496d !important;
+}
+
+.ei-annotator-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.ei-btn-copy {
+  background: #1e293b !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+  color: #60a5fa !important;
+}
+
+.ei-btn-copy:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+.ei-btn-save {
+  background: #2563eb !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.ei-btn-save:hover {
+  background: #1d4ed8 !important;
+  border-color: #60a5fa !important;
+}
+
+.ei-btn-close {
+  padding: 3px 8px !important;
+  font-size: 13px !important;
+}
+
+.ei-btn-close:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.ei-annotator-canvas-wrap {
+  position: relative !important;
+  overflow: auto !important;
+  padding: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #090a10 !important;
+  max-width: 100% !important;
+  max-height: calc(92vh - 65px) !important;
+}
+
+#ei-draw-canvas {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid #2d3148 !important;
+  border-radius: 4px !important;
+  cursor: crosshair !important;
+  max-width: 100% !important;
+  max-height: calc(92vh - 95px) !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+

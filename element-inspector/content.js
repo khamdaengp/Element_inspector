@@ -582,6 +582,181 @@
   opacity: 1 !important;
   transform: translateX(-50%) translateY(0) !important;
 }
+
+/* ── Annotation Editor Modal ────────────────────────────── */
+.ei-annotator-modal {
+  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  pointer-events: auto !important;
+}
+
+.ei-annotator-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.72) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.ei-annotator-dialog {
+  position: relative !important;
+  z-index: 10 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-width: 94vw !important;
+  max-height: 92vh !important;
+  background: #14151f !important;
+  border: 1px solid #2d3148 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85) !important;
+  overflow: hidden !important;
+  animation: mv-card-in 0.18s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+.ei-annotator-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 8px 14px !important;
+  background: #0d0e17 !important;
+  border-bottom: 1px solid #25283c !important;
+  user-select: none !important;
+  flex-wrap: wrap !important;
+}
+
+.ei-annotator-tools {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.ei-annotator-title {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #60a5fa !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+.ei-color-picker {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  background: #1e2133 !important;
+  padding: 2px 6px !important;
+  border-radius: 6px !important;
+  border: 1px solid #2d3148 !important;
+}
+
+.ei-color-btn {
+  width: 17px !important;
+  height: 17px !important;
+  border-radius: 50% !important;
+  border: 2px solid transparent !important;
+  cursor: pointer !important;
+  transition: transform 0.12s, border-color 0.12s !important;
+  padding: 0 !important;
+}
+
+.ei-color-btn:hover {
+  transform: scale(1.15) !important;
+}
+
+.ei-color-btn.active {
+  border-color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35) !important;
+  transform: scale(1.1) !important;
+}
+
+.ei-tool-btn {
+  background: #1e2133 !important;
+  border: 1px solid #2d3148 !important;
+  color: #cbd5e1 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 4px 8px !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  transition: all 0.14s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.ei-tool-btn:hover {
+  background: #2b304c !important;
+  color: #ffffff !important;
+  border-color: #43496d !important;
+}
+
+.ei-annotator-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.ei-btn-copy {
+  background: #1e293b !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+  color: #60a5fa !important;
+}
+
+.ei-btn-copy:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+.ei-btn-save {
+  background: #2563eb !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.ei-btn-save:hover {
+  background: #1d4ed8 !important;
+  border-color: #60a5fa !important;
+}
+
+.ei-btn-close {
+  padding: 3px 8px !important;
+  font-size: 13px !important;
+}
+
+.ei-btn-close:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.ei-annotator-canvas-wrap {
+  position: relative !important;
+  overflow: auto !important;
+  padding: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #090a10 !important;
+  max-width: 100% !important;
+  max-height: calc(92vh - 65px) !important;
+}
+
+#ei-draw-canvas {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid #2d3148 !important;
+  border-radius: 4px !important;
+  cursor: crosshair !important;
+  max-width: 100% !important;
+  max-height: calc(92vh - 95px) !important;
+  object-fit: contain !important;
+  display: block !important;
+}
 `;
 
   // ─── State ────────────────────────────────────────────────────────────────
@@ -594,6 +769,18 @@
   let highlightBox  = null;
   let inspectCard   = null;
 
+  // Annotator state
+  let annotatorModal    = null;
+  let annotatorCanvas   = null;
+  let annotatorCtx      = null;
+  let baseCanvas        = null;
+  let currentCapturedEl = null;
+  let drawnRectangles   = [];
+  let isDrawingRect     = false;
+  let rectStartX        = 0;
+  let rectStartY        = 0;
+  let currentRectColor  = '#ef4444';
+
   // Dragging state
   let isDragging    = false;
   let dragStartX    = 0;
@@ -605,10 +792,10 @@
 
   function isInspectorElement(el) {
     if (!el) return false;
-    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox) return true;
+    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox || el === annotatorModal) return true;
     if (el.id === SHADOW_HOST_ID) return true;
     if (el.getAttribute && el.getAttribute('id') === SHADOW_HOST_ID) return true;
-    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight'))) return true;
+    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight') || el.classList.contains('ei-annotator-modal'))) return true;
     if (shadowRoot && el.getRootNode && el.getRootNode() === shadowRoot) return true;
     if (el.closest && el.closest(`#${SHADOW_HOST_ID}`)) return true;
     return false;
@@ -1046,7 +1233,298 @@
     return { canvas, rect, width: Math.round(rect.width), height: Math.round(rect.height) };
   }
 
-  // ─── QA Tool: Capture Element Screenshot as JPG ───────────────────────────
+  // ─── Annotation Editor Helpers ────────────────────────────────────────────
+
+  function hexToRgba(hex, alpha) {
+    const clean = (hex || '#ef4444').replace('#', '');
+    const num = parseInt(clean, 16);
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  function computeLineWidth() {
+    if (!annotatorCanvas) return 3;
+    return Math.max(3, Math.round(annotatorCanvas.width / 320));
+  }
+
+  function getCanvasCoords(e) {
+    if (!annotatorCanvas) return { x: 0, y: 0 };
+    const r = annotatorCanvas.getBoundingClientRect();
+    const scaleX = annotatorCanvas.width / (r.width || 1);
+    const scaleY = annotatorCanvas.height / (r.height || 1);
+    return {
+      x: Math.max(0, Math.min(annotatorCanvas.width, (e.clientX - r.left) * scaleX)),
+      y: Math.max(0, Math.min(annotatorCanvas.height, (e.clientY - r.top) * scaleY))
+    };
+  }
+
+  function redrawAnnotationCanvas(previewRect = null) {
+    if (!annotatorCtx || !baseCanvas) return;
+
+    annotatorCtx.clearRect(0, 0, annotatorCanvas.width, annotatorCanvas.height);
+    annotatorCtx.drawImage(baseCanvas, 0, 0);
+
+    const defaultLw = computeLineWidth();
+
+    // 1. Committed rectangles (outline only, completely transparent inside)
+    for (const r of drawnRectangles) {
+      annotatorCtx.strokeStyle = r.color;
+      annotatorCtx.lineWidth = r.lineWidth || defaultLw;
+      annotatorCtx.strokeRect(r.x, r.y, r.w, r.h);
+    }
+
+    // 2. Active preview rectangle during drag
+    if (previewRect) {
+      annotatorCtx.strokeStyle = previewRect.color;
+      annotatorCtx.lineWidth = defaultLw;
+      annotatorCtx.strokeRect(previewRect.x, previewRect.y, previewRect.w, previewRect.h);
+    }
+  }
+
+  function undoLastRectangle() {
+    if (drawnRectangles.length > 0) {
+      drawnRectangles.pop();
+      redrawAnnotationCanvas();
+    }
+  }
+
+  function clearAllRectangles() {
+    if (drawnRectangles.length > 0) {
+      drawnRectangles = [];
+      redrawAnnotationCanvas();
+    }
+  }
+
+  async function copyAnnotatorCanvasToClipboard() {
+    if (!annotatorCanvas) return false;
+    try {
+      const pngBlob = await new Promise((res) => annotatorCanvas.toBlob(res, 'image/png'));
+      if (pngBlob && navigator.clipboard && window.ClipboardItem) {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
+        return true;
+      }
+    } catch (err) {
+      console.warn('[Inspector] Clipboard write image error:', err);
+    }
+    return false;
+  }
+
+  async function downloadAnnotatorCanvas(format = 'jpeg') {
+    if (!annotatorCanvas) return false;
+    const mime = format === 'png' ? 'image/png' : 'image/jpeg';
+    const ext = format === 'png' ? 'png' : 'jpg';
+    const blob = await new Promise((res) => annotatorCanvas.toBlob(res, mime, 0.95));
+    if (!blob) return false;
+
+    const tag = (currentCapturedEl?.tagName || 'element').toLowerCase();
+    const cleanId = currentCapturedEl?.id ? `_${currentCapturedEl.id.slice(0, 15)}` : '';
+    const hasBoxes = drawnRectangles.length > 0 ? '_annotated' : '';
+    const fileName = `${tag}${cleanId}${hasBoxes}_${Math.round(annotatorCanvas.width)}x${Math.round(annotatorCanvas.height)}.${ext}`;
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      a.remove();
+      URL.revokeObjectURL(url);
+    }, 1200);
+
+    // Also copy to clipboard for immediate pasting into chat/tickets
+    await copyAnnotatorCanvasToClipboard();
+    return true;
+  }
+
+  function isAnnotatorOpen() {
+    return annotatorModal && annotatorModal.style.display === 'flex';
+  }
+
+  function closeAnnotationModal() {
+    if (annotatorModal) {
+      annotatorModal.style.display = 'none';
+      isDrawingRect = false;
+    }
+  }
+
+  function ensureAnnotatorModal() {
+    if (annotatorModal) return;
+
+    annotatorModal = document.createElement('div');
+    annotatorModal.className = 'ei-annotator-modal';
+    annotatorModal.id = 'ei-annotator-modal';
+    annotatorModal.setAttribute('aria-label', 'Screenshot Annotation Editor');
+
+    annotatorModal.innerHTML = `
+      <div class="ei-annotator-backdrop" id="ei-annotator-backdrop"></div>
+      <div class="ei-annotator-dialog">
+        <div class="ei-annotator-toolbar">
+          <div class="ei-annotator-tools">
+            <span class="ei-annotator-title">✏️ Draw Rectangle</span>
+            <div class="ei-color-picker" title="Rectangle Color">
+              <button class="ei-color-btn active" data-color="#ef4444" style="background:#ef4444;" title="Red (Error/Bug)"></button>
+              <button class="ei-color-btn" data-color="#f59e0b" style="background:#f59e0b;" title="Amber / Yellow (Warning)"></button>
+              <button class="ei-color-btn" data-color="#3b82f6" style="background:#3b82f6;" title="Blue (Info)"></button>
+              <button class="ei-color-btn" data-color="#10b981" style="background:#10b981;" title="Green (Success)"></button>
+            </div>
+            <button class="ei-tool-btn" id="ei-undo-btn" title="Undo last rectangle (Ctrl+Z)">↩️ Undo</button>
+            <button class="ei-tool-btn" id="ei-clear-btn" title="Clear all drawn boxes">🧹 Clear</button>
+          </div>
+          <div class="ei-annotator-actions">
+            <button class="ei-tool-btn ei-btn-copy" id="ei-annotator-copy" title="Copy annotated image to clipboard">📋 Copy</button>
+            <button class="ei-tool-btn ei-btn-save" id="ei-annotator-download" title="Save & download image as .JPG (and copy to clipboard)">💾 Save & Download</button>
+            <button class="ei-tool-btn ei-btn-close" id="ei-annotator-close" title="Close editor (Esc)">✕</button>
+          </div>
+        </div>
+        <div class="ei-annotator-canvas-wrap">
+          <canvas id="ei-draw-canvas"></canvas>
+        </div>
+      </div>
+    `;
+
+    shadowRoot.appendChild(annotatorModal);
+
+    annotatorModal.addEventListener('mousedown', (e) => e.stopPropagation());
+    annotatorModal.addEventListener('click', (e) => e.stopPropagation());
+
+    // Backdrop click
+    annotatorModal.querySelector('#ei-annotator-backdrop').addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeAnnotationModal();
+    });
+
+    // Close button
+    annotatorModal.querySelector('#ei-annotator-close').addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeAnnotationModal();
+    });
+
+    // Color picker
+    const colorBtns = annotatorModal.querySelectorAll('.ei-color-btn');
+    colorBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        colorBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentRectColor = btn.getAttribute('data-color') || '#ef4444';
+      });
+    });
+
+    // Undo button
+    annotatorModal.querySelector('#ei-undo-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      undoLastRectangle();
+    });
+
+    // Clear button
+    annotatorModal.querySelector('#ei-clear-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      clearAllRectangles();
+    });
+
+    // Copy Image button
+    const copyBtn = annotatorModal.querySelector('#ei-annotator-copy');
+    copyBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const ok = await copyAnnotatorCanvasToClipboard();
+      if (ok) {
+        showToast('✓ Annotated image copied to clipboard!');
+        closeAnnotationModal();
+      } else {
+        flashElement(copyBtn, '✕ Failed', 'mv-copy--error');
+      }
+    });
+
+    // Save & Download button
+    const downloadBtn = annotatorModal.querySelector('#ei-annotator-download');
+    downloadBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      flashElement(downloadBtn, '⏳ Saving...', 'mv-copy--success');
+      const ok = await downloadAnnotatorCanvas('jpeg');
+      if (ok) {
+        showToast('✓ Saved .JPG & copied to clipboard!');
+        closeAnnotationModal();
+      } else {
+        flashElement(downloadBtn, '✕ Error', 'mv-copy--error');
+      }
+    });
+
+    annotatorCanvas = annotatorModal.querySelector('#ei-draw-canvas');
+    annotatorCtx = annotatorCanvas.getContext('2d');
+
+    // Canvas drawing setup
+    annotatorCanvas.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const start = getCanvasCoords(e);
+      rectStartX = start.x;
+      rectStartY = start.y;
+      isDrawingRect = true;
+
+      const onMouseMove = (me) => {
+        if (!isDrawingRect) return;
+        me.preventDefault();
+        const cur = getCanvasCoords(me);
+        const x = Math.min(rectStartX, cur.x);
+        const y = Math.min(rectStartY, cur.y);
+        const w = Math.abs(cur.x - rectStartX);
+        const h = Math.abs(cur.y - rectStartY);
+        redrawAnnotationCanvas({ x, y, w, h, color: currentRectColor });
+      };
+
+      const onMouseUp = (ue) => {
+        if (!isDrawingRect) return;
+        isDrawingRect = false;
+        window.removeEventListener('mousemove', onMouseMove, true);
+        window.removeEventListener('mouseup', onMouseUp, true);
+
+        const end = getCanvasCoords(ue);
+        const x = Math.min(rectStartX, end.x);
+        const y = Math.min(rectStartY, end.y);
+        const w = Math.abs(end.x - rectStartX);
+        const h = Math.abs(end.y - rectStartY);
+
+        const minDim = Math.max(4, Math.round(annotatorCanvas.width / 200));
+        if (w >= minDim && h >= minDim) {
+          drawnRectangles.push({
+            x,
+            y,
+            w,
+            h,
+            color: currentRectColor,
+            lineWidth: computeLineWidth()
+          });
+        }
+        redrawAnnotationCanvas();
+      };
+
+      window.addEventListener('mousemove', onMouseMove, true);
+      window.addEventListener('mouseup', onMouseUp, true);
+    });
+  }
+
+  function openAnnotationEditor(sourceCanvas, targetEl) {
+    ensureShadowDOM();
+    ensureAnnotatorModal();
+
+    baseCanvas = sourceCanvas;
+    currentCapturedEl = targetEl;
+    drawnRectangles = [];
+
+    annotatorCanvas.width = sourceCanvas.width;
+    annotatorCanvas.height = sourceCanvas.height;
+
+    redrawAnnotationCanvas();
+    annotatorModal.style.display = 'flex';
+  }
+
+  // ─── QA Tool: Capture Element Screenshot as JPG & Annotate ─────────────────
 
   async function captureElementScreenshotJpg(el, btnElement) {
     if (!el || isInspectorElement(el)) return false;
@@ -1057,42 +1535,16 @@
 
     const captured = await captureElementCanvas(el, 'jpeg', 0.95);
     if (!captured) {
-      flashElement(btnElement, '✕ Capture Failed', 'mv-copy--error');
+      if (btnElement) flashElement(btnElement, '✕ Capture Failed', 'mv-copy--error');
       return false;
     }
 
-    const { canvas, rect } = captured;
-    const jpgBlob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', 0.95));
-    if (!jpgBlob) {
-      flashElement(btnElement, '✕ Export Error', 'mv-copy--error');
-      return false;
+    if (btnElement) {
+      flashElement(btnElement, '✓ Ready!', 'mv-copy--success');
     }
 
-    // 1. Download as .jpg file
-    const tag = (el.tagName || 'element').toLowerCase();
-    const cleanId = el.id ? `_${el.id.slice(0, 15)}` : '';
-    const fileName = `${tag}${cleanId}_${Math.round(rect.width)}x${Math.round(rect.height)}.jpg`;
-    const downloadUrl = URL.createObjectURL(jpgBlob);
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = fileName;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      a.remove();
-      URL.revokeObjectURL(downloadUrl);
-    }, 1200);
-
-    // 2. Also copy to clipboard
-    try {
-      const pngBlob = await new Promise((res) => canvas.toBlob(res, 'image/png'));
-      if (pngBlob) {
-        await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
-      }
-    } catch (_) {}
-
-    flashElement(btnElement, '✓ Saved .JPG!', 'mv-copy--success');
+    // Open interactive rectangle drawing annotation editor
+    openAnnotationEditor(captured.canvas, el);
     return true;
   }
 
@@ -1374,6 +1826,7 @@
     if (!inspectMode) return;
     inspectMode = false;
 
+    closeAnnotationModal();
     document.removeEventListener('mouseover', onMouseOver, true);
     document.removeEventListener('mousemove', onMouseMove, true);
     document.removeEventListener('click',     onClick,     true);
@@ -1494,6 +1947,19 @@
   }
 
   function onKeyDown(e) {
+    if (isAnnotatorOpen()) {
+      if (e.key === 'Escape') {
+        closeAnnotationModal();
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        undoLastRectangle();
+        return;
+      }
+      return;
+    }
+
     if (e.key === 'Escape') {
       if (inspectCard && inspectCard.classList.contains('mv-active')) {
         hideCard();
