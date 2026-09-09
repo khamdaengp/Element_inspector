@@ -8,6 +8,9 @@ A powerful Google Chrome Extension (Manifest V3) designed for Developers, QA Eng
 - **🎯 Interactive DOM Inspection:** Hover and inspect any element on any webpage with isolated Shadow DOM UI (100% CSP-safe).
 - **📸 Clean JPG Element Screenshots:** One-click pixel-perfect element capture without inspector overlay interference.
 - **🎨 Developer & UI/UX Design Tools:**
+  - ❖ **Figma Design Exporter:**
+    - **❖ Copy SVG (Vector):** Converts any inspected HTML element or SVG component into standards-compliant SVG with exact vector shapes (`<rect>`, `<path>`, `<circle>`), typography (`<text>` with font family, size, weight, fill), and images (`<image>`). Press `Ctrl + V` directly in Figma to paste fully editable native Figma frames, shapes, and text layers!
+    - **🖼️ Copy PNG (Bitmap):** Captures high-resolution, pixel-perfect 1:1 raster layer to the system clipboard (`image/png`). Press `Ctrl + V` in Figma to paste an instant image layer.
   - 📏 **Figma-Style Ruler Guide:** Real-time pixel distance measurement between the selected element and any hovered element across 4 directions (Top, Right, Bottom, Left, and Inner padding) with live coral guide lines and `px` badges (toggle via button or hold `Alt` key).
   - 🎨 **Color Palette Inspector:** Auto-extracts all colors (`Text`, `Bg`, `Border`, `Shadow`, `Fill`, `Stroke`) into interactive color swatches with 1-click Hex code copy.
   - 🔤 **Typography Inspector:** Real-time inspection of Font Family, Size, Weight, Line-height, Letter-spacing, and Alignment with 1-click `📋 Copy Font CSS`.

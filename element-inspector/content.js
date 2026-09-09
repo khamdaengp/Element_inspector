@@ -1283,6 +1283,94 @@
   overflow-y: auto;
   user-select: all;
 }
+
+/* Figma Design Exporter Box */
+.mv-figma-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.mv-figma-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mv-figma-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #c084fc;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mv-figma-badge {
+  font-size: 9px;
+  font-weight: 600;
+  background: rgba(168, 85, 247, 0.2);
+  color: #e9d5ff;
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  border-radius: 10px;
+  padding: 1px 6px;
+}
+
+.mv-figma-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.mv-figma-btn {
+  background: #1e1b4b;
+  border: 1px solid #7c3aed;
+  color: #f3e8ff;
+  border-radius: 5px;
+  padding: 5px 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.mv-figma-btn:hover {
+  background: #4c1d95;
+  border-color: #a855f7;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+}
+
+.mv-figma-btn-svg {
+  background: linear-gradient(135deg, #2e1065 0%, #3b0764 100%);
+  border-color: #9333ea;
+}
+
+.mv-figma-btn-svg:hover {
+  background: linear-gradient(135deg, #4c1d95 0%, #581c87 100%);
+  border-color: #c084fc;
+}
+
+.mv-figma-btn-png {
+  background: linear-gradient(135deg, #1e1b4b 0%, #1e293b 100%);
+  border-color: #6366f1;
+}
+
+.mv-figma-btn-png:hover {
+  background: linear-gradient(135deg, #312e81 0%, #334155 100%);
+  border-color: #818cf8;
+}
 `;
 
   // ─── State ────────────────────────────────────────────────────────────────
@@ -1509,6 +1597,10 @@
             <span class="mv-chip-icon">🌊</span>
             <span class="mv-chip-text">Tailwind</span>
           </button>
+          <button class="mv-action-chip" data-copy="figmasvg" title="Copy element as editable SVG vector for direct paste into Figma (Ctrl+V)">
+            <span class="mv-chip-icon">❖</span>
+            <span class="mv-chip-text">Figma SVG</span>
+          </button>
         </div>
       </div>
 
@@ -1568,6 +1660,24 @@
           </div>
           <div class="mv-tailwind-code" id="mv-tailwind-code" title="Click to copy Tailwind classes" tabindex="0">
             flex items-center justify-between
+          </div>
+        </div>
+
+        <!-- Figma Design Exporter -->
+        <div class="mv-figma-wrap" id="mv-figma-wrap">
+          <div class="mv-figma-header">
+            <div class="mv-figma-title">
+              <span>❖</span> <span>Figma Design Exporter</span>
+            </div>
+            <span class="mv-figma-badge">Ctrl+V Ready</span>
+          </div>
+          <div class="mv-figma-actions">
+            <button class="mv-figma-btn mv-figma-btn-svg" id="mv-btn-copy-figma-svg" title="Copy editable Vector SVG (Ctrl+V in Figma to paste native shapes & text layers)">
+              <span>❖</span> <span>Copy SVG (Vector)</span>
+            </button>
+            <button class="mv-figma-btn mv-figma-btn-png" id="mv-btn-copy-figma-png" title="Copy 1:1 Pixel-Perfect PNG (Ctrl+V in Figma to paste image layer)">
+              <span>🖼️</span> <span>Copy PNG (Layer)</span>
+            </button>
           </div>
         </div>
       </div>
@@ -1836,6 +1946,8 @@
         const type = chip.getAttribute('data-copy');
         if (type === 'styledtext') {
           await copyRichText(selectedEl, chip, '✓ Copied Styled Text!');
+        } else if (type === 'figmasvg') {
+          await copySvgForFigma(selectedEl, chip);
         } else if (type === 'innertext' || type === 'text') {
           const text = (selectedEl.innerText || selectedEl.textContent || '').trim();
           await copyToClipboard(text, chip, '✓ Copied Inner Text!');
@@ -1903,6 +2015,26 @@
         if (tw) {
           await copyToClipboard(tw, tailwindCodeEl, '✓ Copied Tailwind!');
         }
+      });
+    }
+
+    // Designer Tool: Copy SVG for Figma (Vector Shapes & Text)
+    const copyFigmaSvgBtn = inspectCard.querySelector('#mv-btn-copy-figma-svg');
+    if (copyFigmaSvgBtn) {
+      copyFigmaSvgBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        await copySvgForFigma(selectedEl, copyFigmaSvgBtn);
+      });
+    }
+
+    // Designer Tool: Copy PNG for Figma (Pixel-Perfect Layer)
+    const copyFigmaPngBtn = inspectCard.querySelector('#mv-btn-copy-figma-png');
+    if (copyFigmaPngBtn) {
+      copyFigmaPngBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        await copyPngForFigma(selectedEl, copyFigmaPngBtn);
       });
     }
 
@@ -3841,10 +3973,274 @@ text-align: ${cs.textAlign};`;
     }
   }
 
+  // ─── Figma Design Exporter Helpers ────────────────────────────────────────
+
+  function escapeXml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
+  }
+
+  function elementToSvgString(el) {
+    if (!el || !el.getBoundingClientRect) return '';
+
+    const rootRect = el.getBoundingClientRect();
+    const W = Math.max(1, Math.round(rootRect.width));
+    const H = Math.max(1, Math.round(rootRect.height));
+
+    const tag = (el.tagName || '').toLowerCase();
+
+    // 1. If element itself is an SVG
+    if (tag === 'svg') {
+      const clone = el.cloneNode(true);
+      if (!clone.getAttribute('xmlns')) {
+        clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      }
+      if (!clone.getAttribute('viewBox')) {
+        clone.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      }
+      if (!clone.getAttribute('width')) {
+        clone.setAttribute('width', String(W));
+      }
+      if (!clone.getAttribute('height')) {
+        clone.setAttribute('height', String(H));
+      }
+      return clone.outerHTML;
+    }
+
+    // 2. If element is inside an SVG (e.g. <path>, <g>, <circle>)
+    if (el.closest && el.closest('svg')) {
+      const parentSvg = el.closest('svg');
+      const clone = parentSvg.cloneNode(true);
+      if (!clone.getAttribute('xmlns')) {
+        clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      }
+      return clone.outerHTML;
+    }
+
+    // 3. If element is a single <img>
+    if (tag === 'img') {
+      const src = el.currentSrc || el.src;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">\n  <image x="0" y="0" width="${W}" height="${H}" href="${escapeXml(src)}" preserveAspectRatio="xMidYMid slice" />\n</svg>`;
+    }
+
+    // 4. Hierarchical DOM to SVG serialization for HTML elements
+    const svgLayers = [];
+    const MAX_NODES = 300;
+    let nodeCount = 0;
+
+    function addTextNodes(node, cs, x, y, w) {
+      for (const child of node.childNodes) {
+        if (child.nodeType === Node.TEXT_NODE) {
+          const raw = child.textContent || '';
+          const trimmed = raw.replace(/\s+/g, ' ').trim();
+          if (trimmed.length > 0) {
+            const fontFamily = (cs.fontFamily || 'sans-serif').split(',')[0].replace(/['"]/g, '').trim() || 'sans-serif';
+            const fontSize = parseFloat(cs.fontSize) || 14;
+            const fontWeight = cs.fontWeight || '400';
+            const fill = parseColorToHex(cs.color) || '#000000';
+            const textAlign = cs.textAlign || 'left';
+
+            let textAnchor = 'start';
+            let textX = x + (parseFloat(cs.paddingLeft) || 0);
+            if (textAlign === 'center') {
+              textAnchor = 'middle';
+              textX = x + (w / 2);
+            } else if (textAlign === 'right' || textAlign === 'end') {
+              textAnchor = 'end';
+              textX = x + w - (parseFloat(cs.paddingRight) || 0);
+            }
+
+            let textY;
+            const lineHeight = parseFloat(cs.lineHeight);
+            const padTop = parseFloat(cs.paddingTop) || 0;
+            if (!isNaN(lineHeight) && lineHeight > fontSize) {
+              textY = y + padTop + (fontSize * 0.8) + ((lineHeight - fontSize) / 2);
+            } else {
+              textY = y + padTop + (fontSize * 0.82);
+            }
+
+            let extra = '';
+            const letterSpacing = parseFloat(cs.letterSpacing);
+            if (!isNaN(letterSpacing) && letterSpacing !== 0) {
+              extra += ` letter-spacing="${letterSpacing}px"`;
+            }
+
+            svgLayers.push(`  <text x="${Math.round(textX)}" y="${Math.round(textY)}" font-family="${escapeXml(fontFamily)}" font-size="${fontSize}px" font-weight="${fontWeight}" fill="${fill}" text-anchor="${textAnchor}"${extra}>${escapeXml(trimmed)}</text>`);
+          }
+        }
+      }
+    }
+
+    function traverse(node, isRoot = false) {
+      if (!node || node.nodeType !== Node.ELEMENT_NODE) return;
+      if (isInspectorElement(node)) return;
+      if (nodeCount++ > MAX_NODES) return;
+
+      const r = node.getBoundingClientRect();
+      if (!isRoot && (r.width <= 0 || r.height <= 0)) return;
+
+      // Skip elements completely outside root bounding box
+      if (!isRoot && (r.right < rootRect.left || r.left > rootRect.right || r.bottom < rootRect.top || r.top > rootRect.bottom)) {
+        return;
+      }
+
+      const cs = window.getComputedStyle(node);
+      if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) {
+        return;
+      }
+
+      const x = isRoot ? 0 : Math.round(r.left - rootRect.left);
+      const y = isRoot ? 0 : Math.round(r.top - rootRect.top);
+      const w = isRoot ? W : Math.round(r.width);
+      const h = isRoot ? H : Math.round(r.height);
+
+      const nTag = (node.tagName || '').toLowerCase();
+
+      // Nested SVG icon or graphic
+      if (!isRoot && nTag === 'svg') {
+        const svgClone = node.cloneNode(true);
+        const inner = svgClone.innerHTML.trim();
+        if (inner) {
+          const vb = node.getAttribute('viewBox');
+          if (vb) {
+            svgLayers.push(`  <g transform="translate(${x}, ${y})"><svg width="${w}" height="${h}" viewBox="${vb}">${inner}</svg></g>`);
+          } else {
+            svgLayers.push(`  <g transform="translate(${x}, ${y})">${inner}</g>`);
+          }
+        }
+        return; // Do not descend into svg children
+      }
+
+      // Nested <img>
+      if (!isRoot && nTag === 'img') {
+        const src = node.currentSrc || node.src;
+        if (src && !src.startsWith('chrome-extension://')) {
+          svgLayers.push(`  <image x="${x}" y="${y}" width="${w}" height="${h}" href="${escapeXml(src)}" preserveAspectRatio="xMidYMid slice" />`);
+        }
+        return;
+      }
+
+      // Background, Border and Radius (Figma converts <rect> to native Rectangle layer)
+      const bgHex = parseColorToHex(cs.backgroundColor);
+      const borderTopW = parseFloat(cs.borderTopWidth) || 0;
+      const borderTopStyle = cs.borderTopStyle;
+      const borderTopColor = parseColorToHex(cs.borderTopColor);
+      const rx = parseFloat(cs.borderTopLeftRadius) || 0;
+
+      const hasBg = !!bgHex;
+      const hasBorder = borderTopW > 0 && borderTopStyle !== 'none' && !!borderTopColor;
+
+      if (hasBg || hasBorder) {
+        let rectStr = `  <rect x="${x}" y="${y}" width="${w}" height="${h}"`;
+        if (rx > 0) rectStr += ` rx="${Math.round(rx)}" ry="${Math.round(rx)}"`;
+        if (hasBg) rectStr += ` fill="${bgHex}"`;
+        else rectStr += ` fill="none"`;
+        if (hasBorder) rectStr += ` stroke="${borderTopColor}" stroke-width="${borderTopW}"`;
+        const op = parseFloat(cs.opacity);
+        if (!isNaN(op) && op < 1) rectStr += ` opacity="${op}"`;
+        rectStr += ` />`;
+        svgLayers.push(rectStr);
+      }
+
+      // Direct text nodes inside this element (Figma converts <text> to native editable Text layer)
+      addTextNodes(node, cs, x, y, w);
+
+      // Descend into children
+      for (const child of node.children) {
+        traverse(child, false);
+      }
+    }
+
+    traverse(el, true);
+
+    if (svgLayers.length === 0) {
+      svgLayers.push(`  <rect x="0" y="0" width="${W}" height="${H}" fill="none" stroke="#94a3b8" stroke-dasharray="4 4" />`);
+    }
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">\n${svgLayers.join('\n')}\n</svg>`;
+  }
+
+  async function copySvgForFigma(el, btnElement) {
+    if (!el) return;
+    const svgText = elementToSvgString(el);
+    if (!svgText) {
+      flashElement(btnElement, '✕ SVG Error', 'mv-copy--error');
+      showToast('✕ Could not generate SVG for this element');
+      return;
+    }
+
+    let success = false;
+    // Modern Clipboard API: provide both text/plain and text/html so Figma interprets vector XML
+    if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
+      try {
+        const blobPlain = new Blob([svgText], { type: 'text/plain' });
+        const blobHtml = new Blob([svgText], { type: 'text/html' });
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/plain': blobPlain,
+            'text/html': blobHtml
+          })
+        ]);
+        success = true;
+      } catch (err) {
+        console.warn('[Inspector] Async clipboard SVG write failed, trying writeText fallback:', err);
+      }
+    }
+
+    // Fallback to plain text writeText or execCommand
+    if (!success) {
+      success = await copyToClipboard(svgText, btnElement, '✓ Copied SVG for Figma!');
+      if (success) {
+        showToast('❖ Copied SVG Vector! Press Ctrl+V in Figma to paste layers');
+      }
+      return;
+    }
+
+    flashElement(btnElement, '✓ Copied SVG for Figma!', 'mv-copy--success');
+    showToast('❖ Copied SVG Vector! Press Ctrl+V in Figma to paste editable layers');
+  }
+
+  async function copyPngForFigma(el, btnElement) {
+    if (!el) return;
+    flashElement(btnElement, '⏳ Capturing...', 'mv-copy--success');
+
+    const captured = await captureElementCanvas(el, 'png');
+    if (!captured || !captured.canvas) {
+      flashElement(btnElement, '✕ Capture Failed', 'mv-copy--error');
+      showToast('✕ Failed to capture element screen');
+      return;
+    }
+
+    try {
+      const blob = await new Promise((resolve) => captured.canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Blob creation failed');
+
+      if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
+        const item = new ClipboardItem({ 'image/png': blob });
+        await navigator.clipboard.write([item]);
+        flashElement(btnElement, '✓ Copied PNG for Figma!', 'mv-copy--success');
+        showToast('🖼️ Copied PNG! Press Ctrl+V in Figma to paste 1:1 image layer');
+      } else {
+        throw new Error('ClipboardItem image/png not supported');
+      }
+    } catch (err) {
+      console.error('[Inspector] Copy PNG for Figma error:', err);
+      flashElement(btnElement, '✕ Copy Failed', 'mv-copy--error');
+      showToast('✕ Direct image copy to clipboard not supported on this browser');
+    }
+  }
+
   // ─── Get Copy Value by Type ───────────────────────────────────────────────
 
   function getCopyValue(el, type) {
     switch (type) {
+      case 'figmasvg':
+        return elementToSvgString(el);
       case 'tailwind':
         return generateTailwindClasses(el);
       case 'curl':

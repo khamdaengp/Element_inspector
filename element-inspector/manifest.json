@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Element Inspector & Copier",
-  "version": "2.3.0",
-  "description": "DOM inspector with Right Side Panel (Ask Gemini style), Figma Ruler Guide, Color Palette & Font Inspector, Tailwind CSS Converter, Form to cURL, Security QA Payloads, 1-Click Fake File Generator, and screenshots.",
+  "version": "2.4.0",
+  "description": "DOM inspector with Figma Design Exporter (Vector SVG & PNG), Right Side Panel (Ask Gemini style), Ruler Guide, Color & Font Inspector, Tailwind Converter, cURL Exporter, and PenTest QA Tools.",
   "icons": {
     "16":  "icons/icon16.png",
     "32":  "icons/icon32.png",
