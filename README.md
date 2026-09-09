@@ -6,6 +6,11 @@ A powerful Google Chrome Extension (Manifest V3) designed for Developers, QA Eng
 
 - **🎯 Interactive DOM Inspection:** Hover and inspect any element on any webpage with isolated Shadow DOM UI (100% CSP-safe).
 - **📸 Clean JPG Element Screenshots:** One-click pixel-perfect element capture without inspector overlay interference.
+- **🎨 Developer & UI/UX Design Tools:**
+  - 📏 **Figma-Style Ruler Guide:** Real-time pixel distance measurement between the selected element and any hovered element across 4 directions (Top, Right, Bottom, Left, and Inner padding) with live coral guide lines and `px` badges (toggle via button or hold `Alt` key).
+  - 🎨 **Color Palette Inspector:** Auto-extracts all colors (`Text`, `Bg`, `Border`, `Shadow`, `Fill`, `Stroke`) into interactive color swatches with 1-click Hex code copy.
+  - 🔤 **Typography Inspector:** Real-time inspection of Font Family, Size, Weight, Line-height, Letter-spacing, and Alignment with 1-click `📋 Copy Font CSS`.
+  - ⚡ **Tailwind CSS Converter:** Translates computed styles into modern, ready-to-use Tailwind CSS utility classes with 1-click copy.
 - **⚡ QA & PenTest Tools:**
   - 🌐 **Form to cURL Exporter:** 1-Click to generate a complete, ready-to-run `curl` command with method (`GET`/`POST`), action URL, headers (`Referer`, `Origin`, `User-Agent`), and serialized form data (or multipart `-F` for file uploads) to execute in Terminal, Postman, or Burp Suite.
   - 🛡️ **PenTest & Security Payload Presets:** Dedicated chips for instant security testing against input validation:

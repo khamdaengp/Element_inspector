@@ -894,3 +894,312 @@
   display: block !important;
 }
 
+/* ─── Selected Element Box & Ruler Guides ────────────────────────────────── */
+
+.ei-selected-box {
+  position: fixed !important;
+  pointer-events: none !important;
+  z-index: 2147483644 !important;
+  border: 2px solid #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.08) !important;
+  box-sizing: border-box !important;
+  border-radius: 2px !important;
+  transition: all 0.05s ease !important;
+  display: none;
+}
+
+.ei-selected-box::after {
+  content: attr(data-label);
+  position: absolute !important;
+  top: -24px !important;
+  left: 0 !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 2px 6px !important;
+  border-radius: 3px !important;
+  white-space: nowrap !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) !important;
+  pointer-events: none !important;
+}
+
+.ei-ruler-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 2147483645 !important;
+  overflow: visible !important;
+  display: none;
+}
+
+.ei-ruler-line {
+  position: absolute !important;
+  background: #f43f5e !important;
+  pointer-events: none !important;
+}
+
+.ei-ruler-line--h {
+  height: 1.5px !important;
+}
+
+.ei-ruler-line--v {
+  width: 1.5px !important;
+}
+
+.ei-ruler-badge {
+  position: absolute !important;
+  background: #f43f5e !important;
+  color: #ffffff !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  padding: 1.5px 5px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35) !important;
+  transform: translate(-50%, -50%) !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  z-index: 2147483646 !important;
+}
+
+/* ─── Designer & UI/UX Tools Card Section ────────────────────────────────── */
+
+.mv-design-section {
+  background: #141724;
+  border: 1px solid #282c40;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.mv-design-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mv-design-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #f472b6;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mv-btn-ruler {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2.5px 7px;
+  background: #1e2235;
+  border: 1px solid #374151;
+  border-radius: 5px;
+  color: #cbd5e1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.mv-btn-ruler:hover {
+  background: #282e47;
+  color: #ffffff;
+  border-color: #f43f5e;
+}
+
+.mv-btn-ruler.mv-ruler--active {
+  background: rgba(244, 63, 94, 0.2);
+  color: #f43f5e;
+  border-color: #f43f5e;
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.3);
+}
+
+/* Color Palette Swatches */
+.mv-palette-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mv-palette-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mv-palette-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.mv-palette-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #1a1d2e;
+  border: 1px solid #2e334d;
+  border-radius: 5px;
+  padding: 3px 6px;
+  cursor: pointer;
+  font-size: 10.5px;
+  font-family: ui-monospace, monospace;
+  color: #e2e8f0;
+  transition: all 0.15s ease;
+}
+
+.mv-palette-chip:hover {
+  background: #252a42;
+  border-color: #f472b6;
+  transform: translateY(-1px);
+}
+
+.mv-palette-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.mv-palette-tag {
+  font-size: 9px;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Typography Panel */
+.mv-typo-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mv-typo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.mv-typo-item {
+  background: #1a1d2e;
+  border: 1px solid #2a2f46;
+  border-radius: 5px;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mv-typo-key {
+  font-size: 9px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.mv-typo-val {
+  font-size: 11px;
+  color: #f1f5f9;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mv-btn-copy-typo {
+  background: #1e2235;
+  border: 1px solid #374151;
+  border-radius: 5px;
+  color: #38bdf8;
+  padding: 3px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.mv-btn-copy-typo:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+/* Tailwind CSS Converter Box */
+.mv-tailwind-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mv-tailwind-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mv-tailwind-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mv-btn-copy-tailwind {
+  background: #0369a1;
+  border: 1px solid #38bdf8;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 2.5px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mv-btn-copy-tailwind:hover {
+  background: #0284c7;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.mv-tailwind-code {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 5px;
+  padding: 6px 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10.5px;
+  color: #a5f3fc;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 65px;
+  overflow-y: auto;
+  user-select: all;
+}
+

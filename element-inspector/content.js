@@ -905,6 +905,315 @@
   object-fit: contain !important;
   display: block !important;
 }
+
+/* ─── Selected Element Box & Ruler Guides ────────────────────────────────── */
+
+.ei-selected-box {
+  position: fixed !important;
+  pointer-events: none !important;
+  z-index: 2147483644 !important;
+  border: 2px solid #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.08) !important;
+  box-sizing: border-box !important;
+  border-radius: 2px !important;
+  transition: all 0.05s ease !important;
+  display: none;
+}
+
+.ei-selected-box::after {
+  content: attr(data-label);
+  position: absolute !important;
+  top: -24px !important;
+  left: 0 !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 2px 6px !important;
+  border-radius: 3px !important;
+  white-space: nowrap !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) !important;
+  pointer-events: none !important;
+}
+
+.ei-ruler-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 2147483645 !important;
+  overflow: visible !important;
+  display: none;
+}
+
+.ei-ruler-line {
+  position: absolute !important;
+  background: #f43f5e !important;
+  pointer-events: none !important;
+}
+
+.ei-ruler-line--h {
+  height: 1.5px !important;
+}
+
+.ei-ruler-line--v {
+  width: 1.5px !important;
+}
+
+.ei-ruler-badge {
+  position: absolute !important;
+  background: #f43f5e !important;
+  color: #ffffff !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  padding: 1.5px 5px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35) !important;
+  transform: translate(-50%, -50%) !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  z-index: 2147483646 !important;
+}
+
+/* ─── Designer & UI/UX Tools Card Section ────────────────────────────────── */
+
+.mv-design-section {
+  background: #141724;
+  border: 1px solid #282c40;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.mv-design-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mv-design-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #f472b6;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mv-btn-ruler {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2.5px 7px;
+  background: #1e2235;
+  border: 1px solid #374151;
+  border-radius: 5px;
+  color: #cbd5e1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.mv-btn-ruler:hover {
+  background: #282e47;
+  color: #ffffff;
+  border-color: #f43f5e;
+}
+
+.mv-btn-ruler.mv-ruler--active {
+  background: rgba(244, 63, 94, 0.2);
+  color: #f43f5e;
+  border-color: #f43f5e;
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.3);
+}
+
+/* Color Palette Swatches */
+.mv-palette-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mv-palette-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mv-palette-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.mv-palette-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #1a1d2e;
+  border: 1px solid #2e334d;
+  border-radius: 5px;
+  padding: 3px 6px;
+  cursor: pointer;
+  font-size: 10.5px;
+  font-family: ui-monospace, monospace;
+  color: #e2e8f0;
+  transition: all 0.15s ease;
+}
+
+.mv-palette-chip:hover {
+  background: #252a42;
+  border-color: #f472b6;
+  transform: translateY(-1px);
+}
+
+.mv-palette-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.mv-palette-tag {
+  font-size: 9px;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Typography Panel */
+.mv-typo-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mv-typo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.mv-typo-item {
+  background: #1a1d2e;
+  border: 1px solid #2a2f46;
+  border-radius: 5px;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mv-typo-key {
+  font-size: 9px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.mv-typo-val {
+  font-size: 11px;
+  color: #f1f5f9;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mv-btn-copy-typo {
+  background: #1e2235;
+  border: 1px solid #374151;
+  border-radius: 5px;
+  color: #38bdf8;
+  padding: 3px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.mv-btn-copy-typo:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+/* Tailwind CSS Converter Box */
+.mv-tailwind-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mv-tailwind-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mv-tailwind-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mv-btn-copy-tailwind {
+  background: #0369a1;
+  border: 1px solid #38bdf8;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 2.5px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mv-btn-copy-tailwind:hover {
+  background: #0284c7;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.mv-tailwind-code {
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 5px;
+  padding: 6px 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10.5px;
+  color: #a5f3fc;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 65px;
+  overflow-y: auto;
+  user-select: all;
+}
 `;
 
   // ─── State ────────────────────────────────────────────────────────────────
@@ -915,7 +1224,11 @@
   let shadowHost    = null;
   let shadowRoot    = null;
   let highlightBox  = null;
+  let selectedBox   = null;
+  let rulerContainer = null;
   let inspectCard   = null;
+  let isRulerMode   = false;
+  let isAltKeyDown  = false;
 
   // Annotator state
   let annotatorModal    = null;
@@ -940,10 +1253,10 @@
 
   function isInspectorElement(el) {
     if (!el) return false;
-    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox || el === annotatorModal) return true;
+    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox || el === selectedBox || el === rulerContainer || el === annotatorModal) return true;
     if (el.id === SHADOW_HOST_ID) return true;
     if (el.getAttribute && el.getAttribute('id') === SHADOW_HOST_ID) return true;
-    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight') || el.classList.contains('ei-annotator-modal'))) return true;
+    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight') || el.classList.contains('ei-selected-box') || el.classList.contains('ei-ruler-container') || el.classList.contains('ei-annotator-modal'))) return true;
     if (shadowRoot && el.getRootNode && el.getRootNode() === shadowRoot) return true;
     if (el.closest && el.closest(`#${SHADOW_HOST_ID}`)) return true;
     return false;
@@ -996,6 +1309,16 @@
     highlightBox = document.createElement('div');
     highlightBox.className = 'ei-highlight';
     shadowRoot.appendChild(highlightBox);
+
+    // Selected element highlight box
+    selectedBox = document.createElement('div');
+    selectedBox.className = 'ei-selected-box';
+    shadowRoot.appendChild(selectedBox);
+
+    // Ruler measurement guides container
+    rulerContainer = document.createElement('div');
+    rulerContainer.className = 'ei-ruler-container';
+    shadowRoot.appendChild(rulerContainer);
 
     // Construct the inspect card
     buildCardDOM();
@@ -1093,6 +1416,70 @@
             <span class="mv-chip-icon">✨</span>
             <span class="mv-chip-text">Styled Text</span>
           </button>
+          <button class="mv-action-chip" data-copy="tailwind" title="Computed styles translated to Tailwind CSS utility classes">
+            <span class="mv-chip-icon">🌊</span>
+            <span class="mv-chip-text">Tailwind</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- UI/UX & Design Tools Section -->
+      <div class="mv-design-section" id="mv-design-section">
+        <div class="mv-design-header">
+          <div class="mv-design-title">
+            <span>🎨</span> <span>Designer &amp; UI/UX Tools</span>
+          </div>
+          <button class="mv-btn-ruler" id="mv-btn-toggle-ruler" title="Toggle real-time distance ruler guide to any hovered element (or hold Alt in inspect mode)">
+            <span>📏</span> <span>Ruler (Alt)</span>
+          </button>
+        </div>
+
+        <!-- Color Palette Swatches -->
+        <div class="mv-palette-wrap" id="mv-palette-wrap">
+          <div class="mv-palette-label">🎨 Color Palette:</div>
+          <div class="mv-palette-grid" id="mv-palette-grid">
+            <span style="font-size:10px; color:#64748b;">No colors extracted</span>
+          </div>
+        </div>
+
+        <!-- Typography & Font Inspector -->
+        <div class="mv-typo-wrap" id="mv-typo-wrap">
+          <div class="mv-typo-grid" id="mv-typo-grid">
+            <div class="mv-typo-item">
+              <span class="mv-typo-key">Font</span>
+              <span class="mv-typo-val" id="mv-typo-family">-</span>
+            </div>
+            <div class="mv-typo-item">
+              <span class="mv-typo-key">Size / Weight</span>
+              <span class="mv-typo-val" id="mv-typo-size-weight">-</span>
+            </div>
+            <div class="mv-typo-item">
+              <span class="mv-typo-key">Line Height</span>
+              <span class="mv-typo-val" id="mv-typo-line-height">-</span>
+            </div>
+            <div class="mv-typo-item">
+              <span class="mv-typo-key">Spacing / Align</span>
+              <span class="mv-typo-val" id="mv-typo-align">-</span>
+            </div>
+          </div>
+          <button class="mv-btn-copy-typo" id="mv-btn-copy-font" title="Copy complete font CSS styling">
+            <span>📋</span> <span>Copy Font CSS</span>
+          </button>
+        </div>
+
+        <!-- Tailwind CSS Converter -->
+        <div class="mv-tailwind-wrap" id="mv-tailwind-wrap">
+          <div class="mv-tailwind-header">
+            <div class="mv-tailwind-title">
+              <span>⚡</span> <span>Tailwind CSS</span>
+            </div>
+            <button class="mv-btn-copy-tailwind" id="mv-btn-copy-tailwind" title="Copy translated Tailwind CSS utility classes">
+              <span>📋</span> <span>Copy Tailwind</span>
+            </button>
+          </div>
+          <div class="mv-tailwind-code" id="mv-tailwind-code" title="Click to copy Tailwind classes" tabindex="0">
+            flex items-center justify-between
+          </div>
         </div>
       </div>
 
@@ -1282,6 +1669,66 @@
         }
       });
     });
+
+    // Designer Tool: Toggle Ruler Guide
+    const rulerToggleBtn = inspectCard.querySelector('#mv-btn-toggle-ruler');
+    if (rulerToggleBtn) {
+      rulerToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        isRulerMode = !isRulerMode;
+        if (isRulerMode) {
+          rulerToggleBtn.classList.add('mv-ruler--active');
+          if (selectedEl) updateSelectedBox(selectedEl);
+          if (selectedEl && hoveredEl && hoveredEl !== selectedEl) {
+            renderRulerGuide(selectedEl, hoveredEl);
+          }
+          showToast('📏 Ruler Guide Enabled (move mouse or hold Alt)');
+        } else {
+          rulerToggleBtn.classList.remove('mv-ruler--active');
+          clearRulerGuide();
+          showToast('Ruler Guide Disabled');
+        }
+      });
+    }
+
+    // Designer Tool: Copy Font CSS
+    const copyFontBtn = inspectCard.querySelector('#mv-btn-copy-font');
+    if (copyFontBtn) {
+      copyFontBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const typo = extractTypography(selectedEl);
+        if (typo) {
+          await copyToClipboard(typo.cssText, copyFontBtn, '✓ Copied Font CSS!');
+          showToast('✓ Font CSS rules copied to clipboard!');
+        }
+      });
+    }
+
+    // Designer Tool: Copy Tailwind CSS
+    const copyTailwindBtn = inspectCard.querySelector('#mv-btn-copy-tailwind');
+    const tailwindCodeEl = inspectCard.querySelector('#mv-tailwind-code');
+    if (copyTailwindBtn) {
+      copyTailwindBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const tw = generateTailwindClasses(selectedEl);
+        if (tw) {
+          await copyToClipboard(tw, copyTailwindBtn, '✓ Copied Tailwind!');
+          showToast('✓ Tailwind CSS classes copied!');
+        }
+      });
+    }
+    if (tailwindCodeEl) {
+      tailwindCodeEl.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const tw = generateTailwindClasses(selectedEl);
+        if (tw) {
+          await copyToClipboard(tw, tailwindCodeEl, '✓ Copied Tailwind!');
+        }
+      });
+    }
 
     // QA Tool: Unlock constraints
     const unlockBtn = inspectCard.querySelector('#mv-btn-unlock');
@@ -2774,10 +3221,456 @@
     return parts.join(' \\\n');
   }
 
+  // ─── Designer & UI/UX Tools: Color Palette, Typography & Tailwind ────────
+
+  function parseColorToHex(colorStr) {
+    if (!colorStr || colorStr === 'transparent' || colorStr === 'none') return null;
+
+    if (colorStr.startsWith('#')) {
+      return colorStr.toUpperCase();
+    }
+
+    const rgbMatch = colorStr.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d\.]+))?\s*\)/i);
+    if (rgbMatch) {
+      const r = parseInt(rgbMatch[1], 10);
+      const g = parseInt(rgbMatch[2], 10);
+      const b = parseInt(rgbMatch[3], 10);
+      const a = rgbMatch[4] !== undefined ? parseFloat(rgbMatch[4]) : 1;
+
+      if (a === 0) return null;
+
+      const toHex = (n) => n.toString(16).padStart(2, '0').toUpperCase();
+      if (a < 1) {
+        const alphaHex = Math.round(a * 255).toString(16).padStart(2, '0').toUpperCase();
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}${alphaHex}`;
+      }
+      return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+    return colorStr;
+  }
+
+  function extractElementColors(el) {
+    if (!el) return [];
+    const cs = window.getComputedStyle(el);
+    const candidates = [
+      { label: 'Text', raw: cs.color },
+      { label: 'Bg', raw: cs.backgroundColor },
+      { label: 'Border', raw: cs.borderTopColor },
+    ];
+
+    if ((el.tagName || '').toLowerCase() === 'svg' || el.closest('svg')) {
+      candidates.push({ label: 'Fill', raw: cs.fill });
+      candidates.push({ label: 'Stroke', raw: cs.stroke });
+    }
+
+    if (cs.boxShadow && cs.boxShadow !== 'none') {
+      const shadowMatch = cs.boxShadow.match(/(rgba?\([^\)]+\)|#[0-9a-fA-F]{3,8})/);
+      if (shadowMatch) {
+        candidates.push({ label: 'Shadow', raw: shadowMatch[1] });
+      }
+    }
+
+    const seen = new Set();
+    const results = [];
+
+    candidates.forEach((c) => {
+      const hex = parseColorToHex(c.raw);
+      if (hex && !seen.has(hex)) {
+        seen.add(hex);
+        results.push({
+          hex,
+          raw: c.raw,
+          label: c.label
+        });
+      }
+    });
+
+    return results;
+  }
+
+  function extractTypography(el) {
+    if (!el) return null;
+    const cs = window.getComputedStyle(el);
+
+    const family = (cs.fontFamily || 'inherit').split(',')[0].replace(/['"]/g, '').trim();
+    const size = cs.fontSize || '16px';
+    const weightRaw = cs.fontWeight || '400';
+    const weightMap = {
+      '100': 'Thin',
+      '200': 'ExtraLight',
+      '300': 'Light',
+      '400': 'Regular',
+      '500': 'Medium',
+      '600': 'SemiBold',
+      '700': 'Bold',
+      '800': 'ExtraBold',
+      '900': 'Black'
+    };
+    const weightName = weightMap[weightRaw] ? `${weightRaw} (${weightMap[weightRaw]})` : weightRaw;
+
+    let lineHeight = cs.lineHeight || 'normal';
+    if (lineHeight.endsWith('px')) {
+      const lhVal = parseFloat(lineHeight);
+      const fsVal = parseFloat(size);
+      if (fsVal > 0) {
+        lineHeight = `${Math.round(lhVal)}px (${(lhVal / fsVal).toFixed(1)})`;
+      }
+    }
+
+    const letterSpacing = cs.letterSpacing || 'normal';
+    const textAlign = cs.textAlign || 'left';
+
+    const cssText = `font-family: ${cs.fontFamily};
+font-size: ${cs.fontSize};
+font-weight: ${cs.fontWeight};
+line-height: ${cs.lineHeight};
+letter-spacing: ${cs.letterSpacing};
+text-align: ${cs.textAlign};`;
+
+    return {
+      family,
+      size,
+      weight: weightName,
+      lineHeight,
+      letterSpacing,
+      textAlign,
+      cssText
+    };
+  }
+
+  function generateTailwindClasses(el) {
+    if (!el) return '';
+    const cs = window.getComputedStyle(el);
+    const classes = [];
+
+    // 1. Display
+    const display = cs.display;
+    if (display === 'flex') classes.push('flex');
+    else if (display === 'inline-flex') classes.push('inline-flex');
+    else if (display === 'grid') classes.push('grid');
+    else if (display === 'inline-grid') classes.push('inline-grid');
+    else if (display === 'block') classes.push('block');
+    else if (display === 'inline-block') classes.push('inline-block');
+    else if (display === 'none') classes.push('hidden');
+
+    // 2. Position
+    const position = cs.position;
+    if (['relative', 'absolute', 'fixed', 'sticky'].includes(position)) {
+      classes.push(position);
+    }
+
+    // 3. Flexbox properties
+    if (display === 'flex' || display === 'inline-flex') {
+      if (cs.flexDirection === 'column') classes.push('flex-col');
+      else if (cs.flexDirection === 'column-reverse') classes.push('flex-col-reverse');
+      else if (cs.flexDirection === 'row-reverse') classes.push('flex-row-reverse');
+
+      if (cs.alignItems === 'center') classes.push('items-center');
+      else if (cs.alignItems === 'flex-start' || cs.alignItems === 'start') classes.push('items-start');
+      else if (cs.alignItems === 'flex-end' || cs.alignItems === 'end') classes.push('items-end');
+      else if (cs.alignItems === 'baseline') classes.push('items-baseline');
+
+      if (cs.justifyContent === 'center') classes.push('justify-center');
+      else if (cs.justifyContent === 'space-between') classes.push('justify-between');
+      else if (cs.justifyContent === 'space-around') classes.push('justify-around');
+      else if (cs.justifyContent === 'space-evenly') classes.push('justify-evenly');
+      else if (cs.justifyContent === 'flex-end' || cs.justifyContent === 'end') classes.push('justify-end');
+
+      if (cs.flexWrap === 'wrap') classes.push('flex-wrap');
+    }
+
+    // Helper: map pixel value to Tailwind spacing scale
+    const pxToTw = (val) => {
+      const num = parseFloat(val);
+      if (isNaN(num) || num === 0) return '0';
+      const map = {
+        1: '0.5', 2: '0.5', 4: '1', 6: '1.5', 8: '2', 10: '2.5',
+        12: '3', 14: '3.5', 16: '4', 20: '5', 24: '6', 28: '7',
+        32: '8', 36: '9', 40: '10', 44: '11', 48: '12', 56: '14',
+        64: '16', 80: '20', 96: '24'
+      };
+      if (map[Math.round(num)]) return map[Math.round(num)];
+      return `[${Math.round(num)}px]`;
+    };
+
+    // 4. Gap
+    const gap = parseFloat(cs.gap || cs.rowGap || '0');
+    if (gap > 0) {
+      classes.push(`gap-${pxToTw(gap)}`);
+    }
+
+    // 5. Padding
+    const pt = parseFloat(cs.paddingTop) || 0;
+    const pr = parseFloat(cs.paddingRight) || 0;
+    const pb = parseFloat(cs.paddingBottom) || 0;
+    const pl = parseFloat(cs.paddingLeft) || 0;
+
+    if (pt === pr && pr === pb && pb === pl) {
+      if (pt > 0) classes.push(`p-${pxToTw(pt)}`);
+    } else {
+      if (pt === pb && pl === pr) {
+        if (pl > 0) classes.push(`px-${pxToTw(pl)}`);
+        if (pt > 0) classes.push(`py-${pxToTw(pt)}`);
+      } else {
+        if (pt > 0) classes.push(`pt-${pxToTw(pt)}`);
+        if (pr > 0) classes.push(`pr-${pxToTw(pr)}`);
+        if (pb > 0) classes.push(`pb-${pxToTw(pb)}`);
+        if (pl > 0) classes.push(`pl-${pxToTw(pl)}`);
+      }
+    }
+
+    // 6. Margin
+    const mt = parseFloat(cs.marginTop) || 0;
+    const mr = parseFloat(cs.marginRight) || 0;
+    const mb = parseFloat(cs.marginBottom) || 0;
+    const ml = parseFloat(cs.marginLeft) || 0;
+
+    if (mt === mr && mr === mb && mb === ml) {
+      if (mt > 0) classes.push(`m-${pxToTw(mt)}`);
+    } else {
+      if (mt === mb && ml === mr) {
+        if (ml > 0) classes.push(`mx-${pxToTw(ml)}`);
+        if (mt > 0) classes.push(`my-${pxToTw(mt)}`);
+      } else {
+        if (mt > 0) classes.push(`mt-${pxToTw(mt)}`);
+        if (mr > 0) classes.push(`mr-${pxToTw(mr)}`);
+        if (mb > 0) classes.push(`mb-${pxToTw(mb)}`);
+        if (ml > 0) classes.push(`ml-${pxToTw(ml)}`);
+      }
+    }
+
+    // 7. Width
+    if (cs.width && el.parentElement) {
+      const parentW = el.parentElement.getBoundingClientRect().width;
+      const elW = el.getBoundingClientRect().width;
+      if (parentW > 0 && Math.abs(elW - parentW) < 2) {
+        classes.push('w-full');
+      }
+    }
+
+    // 8. Typography: font-size & font-weight
+    const fs = parseFloat(cs.fontSize) || 16;
+    const fsMap = {
+      12: 'text-xs',
+      14: 'text-sm',
+      16: 'text-base',
+      18: 'text-lg',
+      20: 'text-xl',
+      24: 'text-2xl',
+      30: 'text-3xl',
+      36: 'text-4xl',
+      48: 'text-5xl'
+    };
+    if (fsMap[Math.round(fs)]) {
+      classes.push(fsMap[Math.round(fs)]);
+    } else {
+      classes.push(`text-[${Math.round(fs)}px]`);
+    }
+
+    const fw = parseInt(cs.fontWeight, 10) || 400;
+    if (fw >= 700) classes.push('font-bold');
+    else if (fw >= 600) classes.push('font-semibold');
+    else if (fw >= 500) classes.push('font-medium');
+    else if (fw <= 300) classes.push('font-light');
+
+    if (cs.textAlign === 'center') classes.push('text-center');
+    else if (cs.textAlign === 'right') classes.push('text-right');
+
+    // Text color
+    const textHex = parseColorToHex(cs.color);
+    if (textHex) {
+      if (textHex === '#FFFFFF') classes.push('text-white');
+      else if (textHex === '#000000') classes.push('text-black');
+      else classes.push(`text-[${textHex.toLowerCase()}]`);
+    }
+
+    // Background color
+    const bgHex = parseColorToHex(cs.backgroundColor);
+    if (bgHex) {
+      if (bgHex === '#FFFFFF') classes.push('bg-white');
+      else if (bgHex === '#000000') classes.push('bg-black');
+      else classes.push(`bg-[${bgHex.toLowerCase()}]`);
+    }
+
+    // 9. Border & Radius
+    const bw = parseFloat(cs.borderTopWidth) || 0;
+    if (bw > 0) {
+      if (bw === 1) classes.push('border');
+      else classes.push(`border-[${Math.round(bw)}px]`);
+
+      const bColorHex = parseColorToHex(cs.borderTopColor);
+      if (bColorHex) {
+        classes.push(`border-[${bColorHex.toLowerCase()}]`);
+      }
+    }
+
+    const br = parseFloat(cs.borderTopLeftRadius) || 0;
+    if (br > 0) {
+      const brMap = {
+        2: 'rounded-sm',
+        4: 'rounded',
+        6: 'rounded-md',
+        8: 'rounded-lg',
+        12: 'rounded-xl',
+        16: 'rounded-2xl',
+        24: 'rounded-3xl'
+      };
+      if (br >= 999 || br >= (el.getBoundingClientRect().height / 2)) {
+        classes.push('rounded-full');
+      } else if (brMap[Math.round(br)]) {
+        classes.push(brMap[Math.round(br)]);
+      } else {
+        classes.push(`rounded-[${Math.round(br)}px]`);
+      }
+    }
+
+    // 10. Shadow
+    if (cs.boxShadow && cs.boxShadow !== 'none') {
+      classes.push('shadow-md');
+    }
+
+    return classes.join(' ');
+  }
+
+  // ─── Ruler Guide & Selected Element Measurement ──────────────────────────
+
+  function clearRulerGuide() {
+    if (rulerContainer) {
+      rulerContainer.innerHTML = '';
+      rulerContainer.style.display = 'none';
+    }
+  }
+
+  function updateSelectedBox(el) {
+    if (!el || !selectedBox || isInspectorElement(el)) return;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) {
+      selectedBox.style.display = 'none';
+      return;
+    }
+    Object.assign(selectedBox.style, {
+      display: 'block',
+      top: `${Math.max(0, r.top)}px`,
+      left: `${Math.max(0, r.left)}px`,
+      width: `${r.width}px`,
+      height: `${r.height}px`
+    });
+    selectedBox.setAttribute('data-label', `Selected: ${buildLabel(el)}`);
+  }
+
+  function hideSelectedBox() {
+    if (selectedBox) selectedBox.style.display = 'none';
+  }
+
+  function renderRulerGuide(sEl, tEl) {
+    if (!sEl || !tEl || sEl === tEl || !rulerContainer) {
+      clearRulerGuide();
+      return;
+    }
+    if (isInspectorElement(sEl) || isInspectorElement(tEl)) return;
+
+    const s = sEl.getBoundingClientRect();
+    const t = tEl.getBoundingClientRect();
+
+    if ((s.width === 0 && s.height === 0) || (t.width === 0 && t.height === 0)) {
+      clearRulerGuide();
+      return;
+    }
+
+    rulerContainer.innerHTML = '';
+    rulerContainer.style.display = 'block';
+
+    updateSelectedBox(sEl);
+
+    // Helper to create a line + badge
+    const addGuide = (x1, y1, x2, y2, distance, orientation) => {
+      const dist = Math.round(distance);
+      if (dist <= 0) return;
+
+      const line = document.createElement('div');
+      line.className = `ei-ruler-line ${orientation === 'h' ? 'ei-ruler-line--h' : 'ei-ruler-line--v'}`;
+
+      const left = Math.min(x1, x2);
+      const top = Math.min(y1, y2);
+      const width = orientation === 'h' ? Math.abs(x2 - x1) : 1.5;
+      const height = orientation === 'v' ? Math.abs(y2 - y1) : 1.5;
+
+      Object.assign(line.style, {
+        left: `${left}px`,
+        top: `${top}px`,
+        width: `${width}px`,
+        height: `${height}px`
+      });
+      rulerContainer.appendChild(line);
+
+      const badge = document.createElement('div');
+      badge.className = 'ei-ruler-badge';
+      badge.textContent = `${dist}px`;
+
+      const midX = (x1 + x2) / 2;
+      const midY = (y1 + y2) / 2;
+      Object.assign(badge.style, {
+        left: `${midX}px`,
+        top: `${midY}px`
+      });
+      rulerContainer.appendChild(badge);
+    };
+
+    // Check if target is inside selected
+    const tInsideS = (t.left >= s.left && t.right <= s.right && t.top >= s.top && t.bottom <= s.bottom);
+    // Check if selected is inside target
+    const sInsideT = (s.left >= t.left && s.right <= t.right && s.top >= t.top && s.bottom <= t.bottom);
+
+    if (tInsideS) {
+      const midX = t.left + t.width / 2;
+      const midY = t.top + t.height / 2;
+      if (t.top - s.top > 0) addGuide(midX, s.top, midX, t.top, t.top - s.top, 'v');
+      if (s.bottom - t.bottom > 0) addGuide(midX, t.bottom, midX, s.bottom, s.bottom - t.bottom, 'v');
+      if (t.left - s.left > 0) addGuide(s.left, midY, t.left, midY, t.left - s.left, 'h');
+      if (s.right - t.right > 0) addGuide(t.right, midY, s.right, midY, s.right - t.right, 'h');
+      return;
+    }
+
+    if (sInsideT) {
+      const midX = s.left + s.width / 2;
+      const midY = s.top + s.height / 2;
+      if (s.top - t.top > 0) addGuide(midX, t.top, midX, s.top, s.top - t.top, 'v');
+      if (t.bottom - s.bottom > 0) addGuide(midX, s.bottom, midX, t.bottom, t.bottom - s.bottom, 'v');
+      if (s.left - t.left > 0) addGuide(t.left, midY, s.left, midY, s.left - t.left, 'h');
+      if (t.right - s.right > 0) addGuide(s.right, midY, t.right, midY, t.right - s.right, 'h');
+      return;
+    }
+
+    // External or partial overlap:
+    // 1. Horizontal distance
+    if (t.right <= s.left) {
+      const midY = (Math.max(s.top, t.top) + Math.min(s.bottom, t.bottom)) / 2;
+      const validY = (s.bottom >= t.top && s.top <= t.bottom) ? midY : (s.top + s.height / 2);
+      addGuide(t.right, validY, s.left, validY, s.left - t.right, 'h');
+    } else if (s.right <= t.left) {
+      const midY = (Math.max(s.top, t.top) + Math.min(s.bottom, t.bottom)) / 2;
+      const validY = (s.bottom >= t.top && s.top <= t.bottom) ? midY : (s.top + s.height / 2);
+      addGuide(s.right, validY, t.left, validY, t.left - s.right, 'h');
+    }
+
+    // 2. Vertical distance
+    if (t.bottom <= s.top) {
+      const midX = (Math.max(s.left, t.left) + Math.min(s.right, t.right)) / 2;
+      const validX = (s.right >= t.left && s.left <= t.right) ? midX : (s.left + s.width / 2);
+      addGuide(validX, t.bottom, validX, s.top, s.top - t.bottom, 'v');
+    } else if (s.bottom <= t.top) {
+      const midX = (Math.max(s.left, t.left) + Math.min(s.right, t.right)) / 2;
+      const validX = (s.right >= t.left && s.left <= t.right) ? midX : (s.left + s.width / 2);
+      addGuide(validX, s.bottom, validX, t.top, t.top - s.bottom, 'v');
+    }
+  }
+
   // ─── Get Copy Value by Type ───────────────────────────────────────────────
 
   function getCopyValue(el, type) {
     switch (type) {
+      case 'tailwind':
+        return generateTailwindClasses(el);
       case 'curl':
         return generateFormCurl(el);
       case 'selector':
@@ -2857,6 +3750,7 @@
     document.addEventListener('mousemove', onMouseMove, true);
     document.addEventListener('click',     onClick,     true);
     document.addEventListener('keydown',   onKeyDown,   true);
+    document.addEventListener('keyup',     onKeyUp,     true);
     document.addEventListener('scroll',    onScroll,    true);
     window.addEventListener('resize',      onResize,    true);
 
@@ -2873,13 +3767,17 @@
     document.removeEventListener('mousemove', onMouseMove, true);
     document.removeEventListener('click',     onClick,     true);
     document.removeEventListener('keydown',   onKeyDown,   true);
+    document.removeEventListener('keyup',     onKeyUp,     true);
     document.removeEventListener('scroll',    onScroll,    true);
     window.removeEventListener('resize',      onResize,    true);
 
     hideHighlight();
+    hideSelectedBox();
+    clearRulerGuide();
     hideCard();
     hoveredEl = null;
     selectedEl = null;
+    isAltKeyDown = false;
     updateBadge(false);
   }
 
@@ -2972,6 +3870,9 @@
     if (target !== hoveredEl) {
       hoveredEl = target;
       positionHighlight(hoveredEl);
+      if (selectedEl && (isRulerMode || isAltKeyDown)) {
+        renderRulerGuide(selectedEl, hoveredEl);
+      }
     }
   }
 
@@ -2986,6 +3887,8 @@
     if (!hoveredEl || isInspectorElement(hoveredEl)) return;
     selectedEl = hoveredEl;
     showCard(selectedEl, e.clientX, e.clientY);
+    updateSelectedBox(selectedEl);
+    clearRulerGuide();
   }
 
   function onKeyDown(e) {
@@ -3002,6 +3905,13 @@
       return;
     }
 
+    if (e.key === 'Alt') {
+      isAltKeyDown = true;
+      if (selectedEl && hoveredEl && selectedEl !== hoveredEl) {
+        renderRulerGuide(selectedEl, hoveredEl);
+      }
+    }
+
     if (e.key === 'Escape') {
       if (inspectCard && inspectCard.classList.contains('mv-active')) {
         hideCard();
@@ -3011,12 +3921,25 @@
     }
   }
 
+  function onKeyUp(e) {
+    if (e.key === 'Alt') {
+      isAltKeyDown = false;
+      if (!isRulerMode) {
+        clearRulerGuide();
+      }
+    }
+  }
+
   function onScroll() {
     if (hoveredEl && !isInspectorElement(hoveredEl)) positionHighlight(hoveredEl);
+    if (selectedEl && !isInspectorElement(selectedEl)) updateSelectedBox(selectedEl);
+    if (selectedEl && hoveredEl && (isRulerMode || isAltKeyDown)) renderRulerGuide(selectedEl, hoveredEl);
   }
 
   function onResize() {
     if (hoveredEl && !isInspectorElement(hoveredEl)) positionHighlight(hoveredEl);
+    if (selectedEl && !isInspectorElement(selectedEl)) updateSelectedBox(selectedEl);
+    if (selectedEl && hoveredEl && (isRulerMode || isAltKeyDown)) renderRulerGuide(selectedEl, hoveredEl);
   }
 
   // ─── Render Card Data ─────────────────────────────────────────────────────
@@ -3115,6 +4038,59 @@
         curlBtn.style.opacity = '0.75';
       }
     }
+
+    // 8. Update UI/UX Designer Tools: Color Palette, Typography, and Tailwind CSS
+    // 8a. Color Palette Swatches
+    const paletteGrid = inspectCard.querySelector('#mv-palette-grid');
+    if (paletteGrid) {
+      paletteGrid.innerHTML = '';
+      const colors = extractElementColors(el);
+      if (colors.length > 0) {
+        colors.forEach((c) => {
+          const chip = document.createElement('button');
+          chip.className = 'mv-palette-chip';
+          chip.title = `Click to copy ${c.label} color: ${c.hex}`;
+          chip.innerHTML = `
+            <span class="mv-palette-dot" style="background-color: ${c.raw};"></span>
+            <span>${c.hex}</span>
+            <span class="mv-palette-tag">${c.label}</span>
+          `;
+          chip.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            await copyToClipboard(c.hex, chip, '✓ Copied!');
+            showToast(`✓ Copied ${c.label} color: ${c.hex}`);
+          });
+          paletteGrid.appendChild(chip);
+        });
+      } else {
+        paletteGrid.innerHTML = '<span style="font-size:10px; color:#64748b;">No colors extracted</span>';
+      }
+    }
+
+    // 8b. Typography Panel
+    const typo = extractTypography(el);
+    if (typo) {
+      const famEl = inspectCard.querySelector('#mv-typo-family');
+      const swEl = inspectCard.querySelector('#mv-typo-size-weight');
+      const lhEl = inspectCard.querySelector('#mv-typo-line-height');
+      const alEl = inspectCard.querySelector('#mv-typo-align');
+
+      if (famEl) { famEl.textContent = typo.family; famEl.title = cs.fontFamily; }
+      if (swEl) { swEl.textContent = `${typo.size} / ${typo.weight}`; }
+      if (lhEl) { lhEl.textContent = typo.lineHeight; }
+      if (alEl) { alEl.textContent = `${typo.textAlign} (ls: ${typo.letterSpacing})`; }
+    }
+
+    // 8c. Tailwind CSS Converter
+    const tailwindCode = inspectCard.querySelector('#mv-tailwind-code');
+    if (tailwindCode) {
+      const tw = generateTailwindClasses(el);
+      tailwindCode.textContent = tw || '/* No utility classes mapped */';
+      tailwindCode.title = 'Click to copy Tailwind classes';
+    }
+
+    // 8d. Update Selected Box outline
+    updateSelectedBox(el);
   }
 
   // ─── Show / Hide Card ─────────────────────────────────────────────────────
@@ -3151,7 +4127,10 @@
     if (inspectCard) {
       inspectCard.classList.remove('mv-active');
     }
-}
+    selectedEl = null;
+    hideSelectedBox();
+    clearRulerGuide();
+  }
 
   // ─── Algorithm: Extract Styled Rich Text matching Web Appearance ──────────
 
