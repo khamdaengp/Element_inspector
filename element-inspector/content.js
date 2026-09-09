@@ -3642,20 +3642,26 @@
 
   function parseColorToHex(colorStr) {
     if (!colorStr || colorStr === 'transparent' || colorStr === 'none') return null;
+    if (typeof colorStr !== 'string') return null;
+    const trimmed = colorStr.trim();
+    if (trimmed === 'rgba(0, 0, 0, 0)' || trimmed === 'transparent') return null;
 
-    if (colorStr.startsWith('#')) {
-      return colorStr.toUpperCase();
+    // Fast path: standard 6-digit or 8-digit HEX
+    if (/^#[0-9a-fA-F]{6}$/.test(trimmed) || /^#[0-9a-fA-F]{8}$/.test(trimmed)) {
+      return trimmed.toUpperCase();
+    }
+    if (/^#[0-9a-fA-F]{3}$/.test(trimmed)) {
+      return `#${trimmed[1]}${trimmed[1]}${trimmed[2]}${trimmed[2]}${trimmed[3]}${trimmed[3]}`.toUpperCase();
     }
 
-    const rgbMatch = colorStr.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d\.]+))?\s*\)/i);
+    // Fast path: standard comma-separated rgb/rgba
+    const rgbMatch = trimmed.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d\.]+))?\s*\)/i);
     if (rgbMatch) {
       const r = parseInt(rgbMatch[1], 10);
       const g = parseInt(rgbMatch[2], 10);
       const b = parseInt(rgbMatch[3], 10);
       const a = rgbMatch[4] !== undefined ? parseFloat(rgbMatch[4]) : 1;
-
       if (a === 0) return null;
-
       const toHex = (n) => n.toString(16).padStart(2, '0').toUpperCase();
       if (a < 1) {
         const alphaHex = Math.round(a * 255).toString(16).padStart(2, '0').toUpperCase();
@@ -3663,7 +3669,40 @@
       }
       return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
     }
-    return colorStr;
+
+    // Fallback: Use browser Canvas 2D to normalize modern syntax:
+    // rgb(255 255 255 / 0.5), oklch(...), hsl(...), named colors
+    try {
+      if (!parseColorToHex._canvas) {
+        parseColorToHex._canvas = document.createElement('canvas');
+        parseColorToHex._canvas.width = 1;
+        parseColorToHex._canvas.height = 1;
+        parseColorToHex._ctx = parseColorToHex._canvas.getContext('2d', { willReadFrequently: true });
+      }
+      const ctx = parseColorToHex._ctx;
+      if (ctx) {
+        ctx.fillStyle = '#000000';
+        ctx.fillStyle = trimmed;
+        const comp = ctx.fillStyle;
+        if (comp.startsWith('#')) return comp.toUpperCase();
+        const m = comp.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d\.]+))?\s*\)/i);
+        if (m) {
+          const r = parseInt(m[1], 10);
+          const g = parseInt(m[2], 10);
+          const b = parseInt(m[3], 10);
+          const a = m[4] !== undefined ? parseFloat(m[4]) : 1;
+          if (a === 0) return null;
+          const toHex = (n) => n.toString(16).padStart(2, '0').toUpperCase();
+          if (a < 1) {
+            const alphaHex = Math.round(a * 255).toString(16).padStart(2, '0').toUpperCase();
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}${alphaHex}`;
+          }
+          return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+      }
+    } catch (_) {}
+
+    return trimmed;
   }
 
   function extractElementColors(el) {
@@ -4121,8 +4160,12 @@ text-align: ${cs.textAlign};`;
           if (!node.textContent || !node.textContent.trim()) {
             return NodeFilter.FILTER_REJECT;
           }
-          if (node.parentElement && isInspectorElement(node.parentElement)) {
-            return NodeFilter.FILTER_REJECT;
+          if (node.parentElement) {
+            if (isInspectorElement(node.parentElement)) return NodeFilter.FILTER_REJECT;
+            // Exclude text inside SVGs (handled by vector SVG icon renderer)
+            if (node.parentElement.tagName === 'svg' || node.parentElement.closest('svg')) {
+              return NodeFilter.FILTER_REJECT;
+            }
           }
           return NodeFilter.FILTER_ACCEPT;
         }
@@ -4199,52 +4242,162 @@ text-align: ${cs.textAlign};`;
       } catch (_) {}
     }
 
+    // Also extract input and textarea values or placeholders as clean text layers
+    try {
+      const inputs = [];
+      if (rootEl.tagName === 'INPUT' || rootEl.tagName === 'TEXTAREA') inputs.push(rootEl);
+      rootEl.querySelectorAll('input, textarea').forEach(inp => inputs.push(inp));
+
+      inputs.forEach(inp => {
+        if (isInspectorElement(inp)) return;
+        const cs = window.getComputedStyle(inp);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) return;
+
+        const r = inp.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) return;
+
+        const isPassword = inp.type === 'password';
+        let displayText = inp.value;
+        let isPlaceholder = false;
+        if (displayText) {
+          if (isPassword) displayText = '••••••••';
+        } else if (inp.placeholder) {
+          displayText = inp.placeholder;
+          isPlaceholder = true;
+        }
+
+        if (!displayText || !displayText.trim()) return;
+
+        const fontFamily = (cs.fontFamily || 'sans-serif').split(',')[0].replace(/['"]/g, '').trim() || 'sans-serif';
+        const fontSize = parseFloat(cs.fontSize) || 14;
+        const fontWeight = cs.fontWeight || '400';
+        const padLeft = parseFloat(cs.paddingLeft) || 12;
+        const fill = isPlaceholder ? '#94A3B8' : (parseColorToHex(cs.color) || '#000000');
+
+        const x = Math.round(r.left - rootRect.left + padLeft);
+        const y = Math.round(r.top - rootRect.top + (r.height / 2) + (fontSize * 0.35));
+
+        textLayers.push(
+          `<text x="${x}" y="${y}" font-family="${escapeXml(fontFamily)}" font-size="${fontSize}px" font-weight="${fontWeight}" fill="${fill}">${escapeXml(displayText.trim())}</text>`
+        );
+      });
+    } catch (_) {}
+
     return textLayers;
   }
 
   async function captureElementCanvasWithoutText(el, format = 'png', quality = 0.95) {
     const modified = [];
+    let tempStyleEl = null;
 
-    const processElement = (elem) => {
-      if (!elem || elem.nodeType !== Node.ELEMENT_NODE || isInspectorElement(elem)) return;
-      const cs = window.getComputedStyle(elem);
-
-      if (cs.color && cs.color !== 'rgba(0, 0, 0, 0)' && cs.color !== 'transparent') {
-        modified.push({
-          elem,
-          color: elem.style.getPropertyValue('color'),
-          priority: elem.style.getPropertyPriority('color')
-        });
-        elem.style.setProperty('color', 'transparent', 'important');
-      }
-
-      if (elem.tagName === 'INPUT' || elem.tagName === 'TEXTAREA') {
-        if (elem.value) {
-          modified.push({ elem, isInput: true, val: elem.value });
-          elem.value = '';
-        }
-      }
-    };
-
-    processElement(el);
-    el.querySelectorAll('*').forEach(processElement);
-
-    let captured = null;
     try {
-      captured = await captureElementCanvas(el, format, quality);
+      // 1. Lock all SVG icons and their children with their computed colors
+      // so they NEVER turn transparent when text colors are masked!
+      const allSvgs = el.querySelectorAll ? Array.from(el.querySelectorAll('svg')) : [];
+      if (el.tagName === 'svg') allSvgs.unshift(el);
+
+      allSvgs.forEach((svg) => {
+        const csSvg = window.getComputedStyle(svg);
+        const compColor = csSvg.color || '#000000';
+        const compStroke = csSvg.stroke && csSvg.stroke !== 'none' ? csSvg.stroke : null;
+        const compFill = csSvg.fill && csSvg.fill !== 'none' ? csSvg.fill : null;
+
+        modified.push({
+          elem: svg,
+          isSvg: true,
+          color: svg.style.getPropertyValue('color'),
+          priority: svg.style.getPropertyPriority('color'),
+          stroke: svg.getAttribute('stroke'),
+          fill: svg.getAttribute('fill')
+        });
+
+        svg.style.setProperty('color', compColor, 'important');
+        if (svg.getAttribute('stroke') === 'currentColor' || (!svg.getAttribute('stroke') && compStroke)) {
+          svg.setAttribute('stroke', compStroke || compColor);
+        }
+        if (svg.getAttribute('fill') === 'currentColor' || (!svg.getAttribute('fill') && compFill)) {
+          svg.setAttribute('fill', compFill || compColor);
+        }
+
+        svg.querySelectorAll('*').forEach((child) => {
+          if (child.getAttribute('stroke') === 'currentColor') {
+            modified.push({ elem: child, isAttr: true, attr: 'stroke', val: 'currentColor' });
+            child.setAttribute('stroke', compColor);
+          }
+          if (child.getAttribute('fill') === 'currentColor') {
+            modified.push({ elem: child, isAttr: true, attr: 'fill', val: 'currentColor' });
+            child.setAttribute('fill', compColor);
+          }
+        });
+      });
+
+      // 2. Hide input/textarea text and placeholder cleanly without mutating values or changing box model
+      tempStyleEl = document.createElement('style');
+      tempStyleEl.id = 'mv-temp-figma-hide-text';
+      tempStyleEl.textContent = `
+        input, textarea { color: transparent !important; }
+        input::placeholder, textarea::placeholder { color: transparent !important; }
+      `;
+      (document.head || document.documentElement).appendChild(tempStyleEl);
+
+      // 3. Mask text color only on elements that actually have direct text nodes and are NOT SVGs
+      const processElement = (elem) => {
+        if (!elem || elem.nodeType !== Node.ELEMENT_NODE || isInspectorElement(elem)) return;
+        if (elem.tagName === 'svg' || (elem.closest && elem.closest('svg'))) return;
+
+        const cs = window.getComputedStyle(elem);
+
+        // Only set color: transparent if element directly contains non-empty text
+        let hasDirectText = false;
+        for (let i = 0; i < elem.childNodes.length; i++) {
+          const ch = elem.childNodes[i];
+          if (ch.nodeType === Node.TEXT_NODE && ch.textContent && ch.textContent.trim().length > 0) {
+            hasDirectText = true;
+            break;
+          }
+        }
+
+        if (hasDirectText && cs.color && cs.color !== 'rgba(0, 0, 0, 0)' && cs.color !== 'transparent') {
+          modified.push({
+            elem,
+            color: elem.style.getPropertyValue('color'),
+            priority: elem.style.getPropertyPriority('color')
+          });
+          elem.style.setProperty('color', 'transparent', 'important');
+        }
+      };
+
+      processElement(el);
+      if (el.querySelectorAll) {
+        el.querySelectorAll('*').forEach(processElement);
+      }
+
+      return await captureElementCanvas(el, format, quality);
     } finally {
+      // Clean up temporary styles
+      if (tempStyleEl && tempStyleEl.parentNode) {
+        tempStyleEl.parentNode.removeChild(tempStyleEl);
+      }
+
+      // Restore all original styles and attributes
       modified.forEach((item) => {
-        if (item.isInput) {
-          item.elem.value = item.val;
-        } else if (item.color) {
-          item.elem.style.setProperty('color', item.color, item.priority);
+        if (item.isAttr) {
+          item.elem.setAttribute(item.attr, item.val);
+        } else if (item.isSvg) {
+          if (item.color) item.elem.style.setProperty('color', item.color, item.priority);
+          else item.elem.style.removeProperty('color');
+
+          if (item.stroke !== null && item.stroke !== undefined) item.elem.setAttribute('stroke', item.stroke);
+          else item.elem.removeAttribute('stroke');
+
+          if (item.fill !== null && item.fill !== undefined) item.elem.setAttribute('fill', item.fill);
+          else item.elem.removeAttribute('fill');
         } else {
-          item.elem.style.removeProperty('color');
+          if (item.color) item.elem.style.setProperty('color', item.color, item.priority);
+          else item.elem.style.removeProperty('color');
         }
       });
     }
-
-    return captured;
   }
 
   async function copyFigmaRealLook(el, btnElement) {
@@ -4365,7 +4518,7 @@ text-align: ${cs.textAlign};`;
 
     // 4. Hierarchical DOM to SVG serialization for HTML elements
     const svgLayers = [];
-    const MAX_NODES = 300;
+    const MAX_NODES = 1200;
     let nodeCount = 0;
 
     function addTextNodes(node, cs, x, y, w) {
@@ -4436,19 +4589,66 @@ text-align: ${cs.textAlign};`;
 
       const nTag = (node.tagName || '').toLowerCase();
 
-      // Nested SVG icon or graphic with resolved currentColor
+      // Nested SVG icon or graphic with 100% resolved currentColor, stroke & fill preservation
       if (!isRoot && nTag === 'svg') {
+        const csSvg = window.getComputedStyle(node);
+        const computedColor = parseColorToHex(csSvg.color) || '#000000';
+        const csStroke = parseColorToHex(csSvg.stroke);
+        const csFill = parseColorToHex(csSvg.fill);
+        const strokeW = parseFloat(csSvg.strokeWidth) || parseFloat(node.getAttribute('stroke-width')) || 0;
+        const strokeCap = csSvg.strokeLinecap || node.getAttribute('stroke-linecap') || 'round';
+        const strokeJoin = csSvg.strokeLinejoin || node.getAttribute('stroke-linejoin') || 'round';
+
         const svgClone = node.cloneNode(true);
-        const computedColor = parseColorToHex(cs.color) || '#000000';
-        svgClone.querySelectorAll('*').forEach((childEl) => {
-          if (childEl.getAttribute('fill') === 'currentColor') childEl.setAttribute('fill', computedColor);
-          if (childEl.getAttribute('stroke') === 'currentColor') childEl.setAttribute('stroke', computedColor);
-        });
-        const inner = svgClone.innerHTML.trim();
-        if (inner) {
-          const vb = node.getAttribute('viewBox') || `0 0 ${w} ${h}`;
-          svgLayers.push(`  <g transform="translate(${x}, ${y})"><svg width="${w}" height="${h}" viewBox="${vb}">${inner}</svg></g>`);
+        if (!svgClone.getAttribute('xmlns')) {
+          svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         }
+        if (!svgClone.getAttribute('viewBox')) {
+          svgClone.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        }
+        svgClone.setAttribute('width', String(w));
+        svgClone.setAttribute('height', String(h));
+
+        // Resolve stroke on root SVG
+        const origStroke = svgClone.getAttribute('stroke');
+        if (origStroke === 'currentColor') {
+          svgClone.setAttribute('stroke', computedColor);
+        } else if (!origStroke && csStroke && csStroke !== 'none') {
+          svgClone.setAttribute('stroke', csStroke);
+        }
+
+        // Ensure stroke attributes are present if icon is stroked
+        if (svgClone.getAttribute('stroke') && svgClone.getAttribute('stroke') !== 'none') {
+          if (!svgClone.getAttribute('stroke-width') && strokeW > 0) {
+            svgClone.setAttribute('stroke-width', String(strokeW));
+          }
+          if (!svgClone.getAttribute('stroke-linecap')) {
+            svgClone.setAttribute('stroke-linecap', strokeCap);
+          }
+          if (!svgClone.getAttribute('stroke-linejoin')) {
+            svgClone.setAttribute('stroke-linejoin', strokeJoin);
+          }
+        }
+
+        // Resolve fill on root SVG
+        const origFill = svgClone.getAttribute('fill');
+        if (origFill === 'currentColor') {
+          svgClone.setAttribute('fill', computedColor);
+        } else if (!origFill && csFill && csFill !== 'none') {
+          svgClone.setAttribute('fill', csFill);
+        }
+
+        // Resolve currentColor on all descendants
+        svgClone.querySelectorAll('*').forEach((childEl) => {
+          if (childEl.getAttribute('fill') === 'currentColor') {
+            childEl.setAttribute('fill', computedColor);
+          }
+          if (childEl.getAttribute('stroke') === 'currentColor') {
+            childEl.setAttribute('stroke', computedColor);
+          }
+        });
+
+        svgLayers.push(`  <g transform="translate(${x}, ${y})">${svgClone.outerHTML}</g>`);
         return; // Do not descend into svg children
       }
 
@@ -4472,26 +4672,61 @@ text-align: ${cs.textAlign};`;
         } catch (_) {}
       }
 
-      // Background, Border and Radius (Figma converts <rect> to native Rectangle layer)
+      // Background, Borders, Dividers, Radius and Tailwind Ring
+      const bTop = parseFloat(cs.borderTopWidth) || 0;
+      const bRight = parseFloat(cs.borderRightWidth) || 0;
+      const bBottom = parseFloat(cs.borderBottomWidth) || 0;
+      const bLeft = parseFloat(cs.borderLeftWidth) || 0;
+
+      const cTop = parseColorToHex(cs.borderTopColor);
+      const cRight = parseColorToHex(cs.borderRightColor);
+      const cBottom = parseColorToHex(cs.borderBottomColor);
+      const cLeft = parseColorToHex(cs.borderLeftColor);
+
       const bgHex = parseColorToHex(cs.backgroundColor);
-      const borderTopW = parseFloat(cs.borderTopWidth) || 0;
-      const borderTopStyle = cs.borderTopStyle;
-      const borderTopColor = parseColorToHex(cs.borderTopColor);
       const rx = parseFloat(cs.borderTopLeftRadius) || 0;
 
-      const hasBg = !!bgHex;
-      const hasBorder = borderTopW > 0 && borderTopStyle !== 'none' && !!borderTopColor;
+      // Detect Tailwind ring / box-shadow border
+      let ringWidth = 0;
+      let ringColor = null;
+      if (cs.boxShadow && cs.boxShadow !== 'none') {
+        const ringMatch = cs.boxShadow.match(/(?:inset\s+)?(?:([a-z0-9#(),.\s\/]+)\s+)?0px\s+0px\s+0px\s+([\d\.]+)px(?:\s+([a-z0-9#(),.\s\/]+))?/i);
+        if (ringMatch) {
+          ringWidth = parseFloat(ringMatch[2]) || 0;
+          ringColor = parseColorToHex(ringMatch[1] || ringMatch[3]);
+        }
+      }
 
-      if (hasBg || hasBorder) {
+      const isFullBorder = (bTop > 0 && bBottom > 0 && bLeft > 0 && bRight > 0);
+      const hasRing = ringWidth > 0 && !!ringColor;
+      const hasBg = !!bgHex;
+
+      if (hasBg || isFullBorder || hasRing) {
         let rectStr = `  <rect x="${x}" y="${y}" width="${w}" height="${h}"`;
         if (rx > 0) rectStr += ` rx="${Math.round(rx)}" ry="${Math.round(rx)}"`;
         if (hasBg) rectStr += ` fill="${bgHex}"`;
         else rectStr += ` fill="none"`;
-        if (hasBorder) rectStr += ` stroke="${borderTopColor}" stroke-width="${borderTopW}"`;
+
+        if (isFullBorder) {
+          rectStr += ` stroke="${cTop || '#000000'}" stroke-width="${bTop}"`;
+        } else if (hasRing) {
+          rectStr += ` stroke="${ringColor}" stroke-width="${ringWidth}"`;
+        }
         const op = parseFloat(cs.opacity);
         if (!isNaN(op) && op < 1) rectStr += ` opacity="${op}"`;
         rectStr += ` />`;
         svgLayers.push(rectStr);
+      } else {
+        // Handle partial borders (e.g. divider lines: border-bottom)
+        if (bBottom > 0 && cBottom && cs.borderBottomStyle !== 'none') {
+          svgLayers.push(`  <line x1="${x}" y1="${y + h}" x2="${x + w}" y2="${y + h}" stroke="${cBottom}" stroke-width="${bBottom}" />`);
+        } else if (bTop > 0 && cTop && cs.borderTopStyle !== 'none') {
+          svgLayers.push(`  <line x1="${x}" y1="${y}" x2="${x + w}" y2="${y}" stroke="${cTop}" stroke-width="${bTop}" />`);
+        } else if (bLeft > 0 && cLeft && cs.borderLeftStyle !== 'none') {
+          svgLayers.push(`  <line x1="${x}" y1="${y}" x2="${x}" y2="${y + h}" stroke="${cLeft}" stroke-width="${bLeft}" />`);
+        } else if (bRight > 0 && cRight && cs.borderRightStyle !== 'none') {
+          svgLayers.push(`  <line x1="${x + w}" y1="${y}" x2="${x + w}" y2="${y + h}" stroke="${cRight}" stroke-width="${bRight}" />`);
+        }
       }
 
       // Check CSS background-image
@@ -4500,6 +4735,30 @@ text-align: ${cs.textAlign};`;
         const m = bgImg.match(/url\(["']?([^"']+)["']?\)/);
         if (m && m[1] && !m[1].startsWith('chrome-extension://')) {
           svgLayers.push(`  <image x="${x}" y="${y}" width="${w}" height="${h}" href="${escapeXml(m[1])}" preserveAspectRatio="xMidYMid slice" />`);
+        }
+      }
+
+      // Input / Textarea element value or placeholder rendering
+      if (nTag === 'input' || nTag === 'textarea') {
+        const isPassword = node.type === 'password';
+        let inputDisplay = node.value;
+        let isPlaceholder = false;
+        if (inputDisplay) {
+          if (isPassword) inputDisplay = '•'.repeat(Math.min(node.value.length, 12));
+        } else if (node.placeholder) {
+          inputDisplay = node.placeholder;
+          isPlaceholder = true;
+        }
+
+        if (inputDisplay && inputDisplay.trim()) {
+          const fontFamily = (cs.fontFamily || 'sans-serif').split(',')[0].replace(/['"]/g, '').trim() || 'sans-serif';
+          const fontSize = parseFloat(cs.fontSize) || 14;
+          const fontWeight = cs.fontWeight || '400';
+          const padLeft = parseFloat(cs.paddingLeft) || 12;
+          const fill = isPlaceholder ? '#94A3B8' : (parseColorToHex(cs.color) || '#000000');
+          const textX = x + padLeft;
+          const textY = Math.round(y + (h / 2) + (fontSize * 0.35));
+          svgLayers.push(`  <text x="${Math.round(textX)}" y="${Math.round(textY)}" font-family="${escapeXml(fontFamily)}" font-size="${fontSize}px" font-weight="${fontWeight}" fill="${fill}">${escapeXml(inputDisplay.trim())}</text>`);
         }
       }
 
