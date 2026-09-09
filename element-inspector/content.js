@@ -1585,73 +1585,6 @@
   border-color: #818cf8;
 }
 
-/* QA Date & Calendar Picker Controls */
-.mv-qa-date-box {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 5px !important;
-  background: rgba(16, 185, 129, 0.08) !important;
-  border: 1px solid rgba(16, 185, 129, 0.3) !important;
-  border-radius: 6px !important;
-  padding: 7px 8px !important;
-  margin-top: 2px !important;
-}
-
-.mv-qa-date-header {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  font-size: 10.5px !important;
-  font-weight: 700 !important;
-  color: #6ee7b7 !important;
-}
-
-.mv-qa-date-row {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 4px !important;
-}
-
-.mv-qa-btn-calendar {
-  grid-column: span 2 !important;
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
-  color: #ffffff !important;
-  border: 1px solid #6ee7b7 !important;
-  font-weight: 700 !important;
-  font-size: 11px !important;
-  padding: 6px 10px !important;
-  border-radius: 5px !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 5px !important;
-}
-
-.mv-qa-btn-calendar:hover {
-  background: linear-gradient(135deg, #047857 0%, #059669 100%) !important;
-  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.45) !important;
-}
-
-.mv-qa-btn-date-step {
-  font-size: 10px !important;
-  padding: 4px 6px !important;
-  background: #182234 !important;
-  border: 1px solid #233858 !important;
-  color: #93c5fd !important;
-  border-radius: 4px !important;
-  cursor: pointer !important;
-  font-weight: 600 !important;
-  text-align: center !important;
-  transition: all 0.12s ease !important;
-}
-
-.mv-qa-btn-date-step:hover {
-  background: #1e3a5f !important;
-  color: #ffffff !important;
-  border-color: #3b82f6 !important;
-}
-
 /* QA Fake File Options Row */
 .mv-qa-file-selectors-row {
   display: flex !important;
@@ -2269,28 +2202,6 @@
           </button>
         </div>
 
-        <!-- Direct Calendar Trigger & Year/Month Stepper -->
-        <div class="mv-qa-date-box" id="mv-qa-date-box" style="display:none;">
-          <div class="mv-qa-date-header">
-            <span>📅 Date &amp; Calendar Controls</span>
-            <button class="mv-qa-btn-calendar" id="mv-btn-open-picker" title="Open native or custom date calendar popup and enable Free Click">
-              <span>📅 Open Calendar</span>
-            </button>
-          </div>
-          <div class="mv-qa-date-row">
-            <span class="mv-qa-date-lbl">Year:</span>
-            <button class="mv-qa-btn-date-step" id="mv-btn-prev-year" title="Subtract 1 year">◀ -1 Year</button>
-            <button class="mv-qa-btn-date-step" id="mv-btn-next-year" title="Add 1 year">+1 Year ▶</button>
-          </div>
-          <div class="mv-qa-date-row">
-            <span class="mv-qa-date-lbl">Month:</span>
-            <button class="mv-qa-btn-date-step" id="mv-btn-prev-month" title="Subtract 1 month">◀ -1 Mo</button>
-            <button class="mv-qa-btn-date-step" id="mv-btn-next-month" title="Add 1 month">+1 Mo ▶</button>
-            <button class="mv-qa-btn-date-step" id="mv-btn-date-today" title="Set to Today's Date">Today</button>
-            <button class="mv-qa-btn-date-step" id="mv-btn-date-random" title="Pick Random Date">🎲</button>
-          </div>
-        </div>
-
         <!-- 1-Click Fake File Attach with Size & Filename Length Selectors -->
         <div class="mv-qa-file-section" id="mv-qa-file-section">
           <div class="mv-qa-file-header-row">
@@ -2772,89 +2683,6 @@
         } catch (err) {
           showToast('⚠️ Click failed: ' + (err.message || 'unknown error'));
         }
-      });
-    }
-
-    // QA Tool: Date & Calendar Controls
-    const openPickerBtn = inspectCard.querySelector('#mv-btn-open-picker');
-    if (openPickerBtn) {
-      openPickerBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!selectedEl) return;
-        const input = getTargetDateInput(selectedEl);
-        if (input) {
-          try {
-            input.focus();
-            if (typeof input.showPicker === 'function') {
-              input.showPicker();
-            }
-          } catch (_) {}
-          setInteractiveMode(true);
-          flashElement(openPickerBtn, '📅 Opened & Free Click ON', 'mv-copy--success');
-          showToast('📅 Calendar opened! Free Click mode ON — click any date/month/year freely.');
-        } else {
-          flashElement(openPickerBtn, 'No Date Input', 'mv-copy--error');
-        }
-      });
-    }
-
-    const prevYearBtn = inspectCard.querySelector('#mv-btn-prev-year');
-    if (prevYearBtn) {
-      prevYearBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!selectedEl) return;
-        const ok = adjustInputDate(selectedEl, -1, 0);
-        if (ok) flashElement(prevYearBtn, '-1Y ✓', 'mv-copy--success');
-      });
-    }
-
-    const nextYearBtn = inspectCard.querySelector('#mv-btn-next-year');
-    if (nextYearBtn) {
-      nextYearBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!selectedEl) return;
-        const ok = adjustInputDate(selectedEl, 1, 0);
-        if (ok) flashElement(nextYearBtn, '+1Y ✓', 'mv-copy--success');
-      });
-    }
-
-    const prevMonthBtn = inspectCard.querySelector('#mv-btn-prev-month');
-    if (prevMonthBtn) {
-      prevMonthBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!selectedEl) return;
-        const ok = adjustInputDate(selectedEl, 0, -1);
-        if (ok) flashElement(prevMonthBtn, '-1M ✓', 'mv-copy--success');
-      });
-    }
-
-    const nextMonthBtn = inspectCard.querySelector('#mv-btn-next-month');
-    if (nextMonthBtn) {
-      nextMonthBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!selectedEl) return;
-        const ok = adjustInputDate(selectedEl, 0, 1);
-        if (ok) flashElement(nextMonthBtn, '+1M ✓', 'mv-copy--success');
-      });
-    }
-
-    const dateTodayBtn = inspectCard.querySelector('#mv-btn-date-today');
-    if (dateTodayBtn) {
-      dateTodayBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!selectedEl) return;
-        const ok = adjustInputDate(selectedEl, 0, 0, true, false);
-        if (ok) flashElement(dateTodayBtn, 'Today ✓', 'mv-copy--success');
-      });
-    }
-
-    const dateRandomBtn = inspectCard.querySelector('#mv-btn-date-random');
-    if (dateRandomBtn) {
-      dateRandomBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!selectedEl) return;
-        const ok = adjustInputDate(selectedEl, 0, 0, false, true);
-        if (ok) flashElement(dateRandomBtn, '🎲 ✓', 'mv-copy--success');
       });
     }
 
@@ -4396,70 +4224,6 @@
     return restored;
   }
 
-  // ─── QA Tool: Date & Calendar Helper Functions ────────────────────────────
-
-  function getTargetDateInput(el) {
-    if (!el || isInspectorElement(el)) return null;
-    const tag = (el.tagName || '').toLowerCase();
-    const type = (el.type || '').toLowerCase();
-    if (tag === 'input' && ['date', 'datetime-local', 'month', 'week', 'time', 'text'].includes(type)) {
-      return el;
-    }
-    if (el.querySelector) {
-      const found = el.querySelector('input[type="date"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="time"]');
-      if (found) return found;
-      const fallback = el.querySelector('input[name*="date" i], input[id*="date" i], input.datepicker');
-      if (fallback) return fallback;
-    }
-    return null;
-  }
-
-  function adjustInputDate(el, deltaYears = 0, deltaMonths = 0, setToday = false, setRandom = false) {
-    const input = getTargetDateInput(el);
-    if (!input) return false;
-
-    let baseDate = new Date();
-
-    if (setToday) {
-      baseDate = new Date();
-    } else if (setRandom) {
-      const randYear = Math.floor(1990 + Math.random() * 41);
-      const randMonth = Math.floor(Math.random() * 12);
-      const randDay = Math.floor(1 + Math.random() * 28);
-      baseDate = new Date(randYear, randMonth, randDay);
-    } else {
-      const curVal = (input.value || '').trim();
-      if (curVal) {
-        const parsed = new Date(curVal);
-        if (!isNaN(parsed.getTime())) {
-          baseDate = parsed;
-        }
-      }
-      if (deltaYears !== 0) {
-        baseDate.setFullYear(baseDate.getFullYear() + deltaYears);
-      }
-      if (deltaMonths !== 0) {
-        baseDate.setMonth(baseDate.getMonth() + deltaMonths);
-      }
-    }
-
-    const y = baseDate.getFullYear();
-    const m = String(baseDate.getMonth() + 1).padStart(2, '0');
-    const d = String(baseDate.getDate()).padStart(2, '0');
-    const type = (input.type || '').toLowerCase();
-
-    let formattedVal = `${y}-${m}-${d}`;
-    if (type === 'month') {
-      formattedVal = `${y}-${m}`;
-    } else if (type === 'datetime-local') {
-      const hh = String(baseDate.getHours()).padStart(2, '0');
-      const mm = String(baseDate.getMinutes()).padStart(2, '0');
-      formattedVal = `${y}-${m}-${d}T${hh}:${mm}`;
-    }
-
-    injectInputValue(input, formattedVal);
-    return true;
-  }
 
   // ─── QA Tool: MaxLength & Length Testing Helpers ──────────────────────────
 
@@ -6676,15 +6440,6 @@ text-align: ${cs.textAlign};`;
     const fileSection = inspectCard.querySelector('#mv-qa-file-section');
     if (fileSection) {
       fileSection.style.display = hasFileInput ? 'flex' : 'none';
-    }
-
-    // 6b. Check date inputs and display date controls box
-    const hasDateInput = (tag === 'input' && ['date', 'datetime-local', 'month', 'week', 'time'].includes((el.type || '').toLowerCase())) ||
-      (el.querySelector && el.querySelector('input[type="date"], input[type="datetime-local"], input[type="month"]')) ||
-      (tag === 'input' && (el.name && el.name.toLowerCase().includes('date') || el.id && el.id.toLowerCase().includes('date')));
-    const dateBox = inspectCard.querySelector('#mv-qa-date-box');
-    if (dateBox) {
-      dateBox.style.display = hasDateInput ? 'block' : 'none';
     }
 
     // 6c. Check text input/textarea and display MaxLength testing box
