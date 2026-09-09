@@ -3298,14 +3298,78 @@
     if (!annotatorCanvas) return false;
     try {
       window.focus();
-      const pngBlob = await new Promise((res) => annotatorCanvas.toBlob(res, 'image/png'));
-      if (pngBlob && navigator.clipboard && window.ClipboardItem) {
-        await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
+    } catch (_) {}
+
+    // Method 1: Modern ClipboardItem with synchronous gesture preservation
+    if (navigator.clipboard && typeof navigator.clipboard.write === 'function' && window.ClipboardItem) {
+      try {
+        const blobPromise = new Promise((resolve, reject) => {
+          annotatorCanvas.toBlob((b) => {
+            if (b) resolve(b);
+            else reject(new Error('Canvas toBlob failed'));
+          }, 'image/png');
+        });
+
+        const dataUrl = annotatorCanvas.toDataURL('image/png');
+        const htmlBlob = new Blob([`<img src="${dataUrl}">`], { type: 'text/html' });
+
+        const item = new ClipboardItem({
+          'image/png': blobPromise,
+          'text/html': htmlBlob
+        });
+
+        await navigator.clipboard.write([item]);
+        return true;
+      } catch (err) {
+        console.warn('[Inspector] Promise ClipboardItem failed, trying direct blob:', err);
+      }
+
+      try {
+        const blob = await new Promise((res) => annotatorCanvas.toBlob(res, 'image/png'));
+        if (blob) {
+          const item = new ClipboardItem({ 'image/png': blob });
+          await navigator.clipboard.write([item]);
+          return true;
+        }
+      } catch (err) {
+        console.warn('[Inspector] Direct Blob clipboard write failed:', err);
+      }
+    }
+
+    // Method 2: document.execCommand('copy') via contentEditable <img>
+    // Reliable fallback on Windows when clipboard API is restricted in content scripts
+    try {
+      const dataUrl = annotatorCanvas.toDataURL('image/png');
+      const container = document.createElement('div');
+      container.contentEditable = 'true';
+      container.style.position = 'fixed';
+      container.style.left = '-9999px';
+      container.style.top = '-9999px';
+      container.style.opacity = '0';
+
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      container.appendChild(img);
+      (document.body || document.documentElement).appendChild(container);
+
+      container.focus();
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      const range = document.createRange();
+      range.selectNode(img);
+      selection.addRange(range);
+
+      const success = document.execCommand('copy');
+      selection.removeAllRanges();
+      container.remove();
+
+      if (success) {
         return true;
       }
     } catch (err) {
-      console.warn('[Inspector] Clipboard write image error on Windows:', err);
+      console.warn('[Inspector] execCommand image copy fallback failed:', err);
     }
+
     return false;
   }
 
@@ -3458,25 +3522,19 @@
       clearAllRectangles();
     });
 
-    // 1. Copy Image button (with auto PC-download fallback on Windows 10)
+    // 1. Copy Image button (Strictly copies to clipboard, NEVER downloads!)
     const copyBtn = annotatorModal.querySelector('#ei-annotator-copy');
     copyBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
       flashElement(copyBtn, '⏳ Copying...', 'mv-copy--success');
       const copied = await copyAnnotatorCanvasToClipboard();
       if (copied) {
-        showToast('✓ Image copied to clipboard!');
-        closeAnnotationModal();
+        flashElement(copyBtn, '✓ Copied!', 'mv-copy--success');
+        showToast('✓ Image copied to clipboard! Paste with Ctrl+V');
+        setTimeout(() => closeAnnotationModal(), 500);
       } else {
-        // If clipboard write is blocked on Windows 10, automatically download to PC
-        flashElement(copyBtn, '⬇️ Downloading...', 'mv-copy--success');
-        const ok = await downloadAnnotatorCanvas('png');
-        if (ok) {
-          showToast('✓ Downloaded to PC (Clipboard write blocked by browser)!');
-          closeAnnotationModal();
-        } else {
-          flashElement(copyBtn, '✕ Error', 'mv-copy--error');
-        }
+        flashElement(copyBtn, '✕ Copy Failed', 'mv-copy--error');
+        showToast('✕ Clipboard copy failed. Please click "Download" button to save image.');
       }
     });
 
@@ -6044,23 +6102,85 @@ text-align: ${cs.textAlign};`;
       return;
     }
 
-    try {
-      const blob = await new Promise((resolve) => captured.canvas.toBlob(resolve, 'image/png'));
-      if (!blob) throw new Error('Blob creation failed');
+    const canvas = captured.canvas;
+    let copied = false;
 
-      if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
-        const item = new ClipboardItem({ 'image/png': blob });
+    try {
+      window.focus();
+    } catch (_) {}
+
+    // Method 1: Modern ClipboardItem with Promise (preserves user gesture tick)
+    if (navigator.clipboard && typeof navigator.clipboard.write === 'function' && window.ClipboardItem) {
+      try {
+        const blobPromise = new Promise((resolve, reject) => {
+          canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('Canvas toBlob failed'))), 'image/png');
+        });
+        const dataUrl = canvas.toDataURL('image/png');
+        const htmlBlob = new Blob([`<img src="${dataUrl}">`], { type: 'text/html' });
+
+        const item = new ClipboardItem({
+          'image/png': blobPromise,
+          'text/html': htmlBlob
+        });
+
         await navigator.clipboard.write([item]);
-        const msg = isFullPage ? '✓ Copied Full Page PNG!' : '✓ Copied PNG for Figma!';
-        flashElement(btnElement, msg, 'mv-copy--success');
-        showToast('🖼️ Copied PNG! Press Ctrl+V in Figma to paste 1:1 image layer');
-      } else {
-        throw new Error('ClipboardItem image/png not supported');
+        copied = true;
+      } catch (err) {
+        console.warn('[Inspector] Promise ClipboardItem failed, trying direct blob:', err);
       }
-    } catch (err) {
-      console.error('[Inspector] Copy PNG for Figma error:', err);
+
+      if (!copied) {
+        try {
+          const blob = await new Promise((res) => canvas.toBlob(res, 'image/png'));
+          if (blob) {
+            const item = new ClipboardItem({ 'image/png': blob });
+            await navigator.clipboard.write([item]);
+            copied = true;
+          }
+        } catch (err) {
+          console.warn('[Inspector] Direct Blob clipboard write failed:', err);
+        }
+      }
+    }
+
+    // Method 2: document.execCommand('copy') via contentEditable <img>
+    if (!copied) {
+      try {
+        const dataUrl = canvas.toDataURL('image/png');
+        const container = document.createElement('div');
+        container.contentEditable = 'true';
+        container.style.position = 'fixed';
+        container.style.left = '-9999px';
+        container.style.top = '-9999px';
+        container.style.opacity = '0';
+
+        const img = document.createElement('img');
+        img.src = dataUrl;
+        container.appendChild(img);
+        (document.body || document.documentElement).appendChild(container);
+
+        container.focus();
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        const range = document.createRange();
+        range.selectNode(img);
+        sel.addRange(range);
+
+        copied = document.execCommand('copy');
+        sel.removeAllRanges();
+        container.remove();
+      } catch (err) {
+        console.warn('[Inspector] execCommand image copy failed:', err);
+      }
+    }
+
+    if (copied) {
+      const msg = isFullPage ? '✓ Copied Full Page PNG!' : '✓ Copied PNG for Figma!';
+      flashElement(btnElement, msg, 'mv-copy--success');
+      showToast('🖼️ Copied PNG! Press Ctrl+V in Figma to paste 1:1 image layer');
+    } else {
       flashElement(btnElement, '✕ Copy Failed', 'mv-copy--error');
-      showToast('✕ Direct image copy to clipboard not supported on this browser');
+      showToast('✕ Image copy to clipboard failed on this browser');
     }
   }
 
