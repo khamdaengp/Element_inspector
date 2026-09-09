@@ -87,6 +87,8 @@
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
   animation: mv-card-in 0.16s cubic-bezier(0.16, 1, 0.3, 1) both !important;
 }
 
@@ -100,15 +102,16 @@
   display: none !important;
 }
 
-.mv-inspect-card::-webkit-scrollbar {
-  width: 5px !important;
+.mv-inspect-card::-webkit-scrollbar,
+.mv-inspect-card *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
-.mv-inspect-card::-webkit-scrollbar-track {
-  background: #14151f !important;
-}
-.mv-inspect-card::-webkit-scrollbar-thumb {
-  background: #2d3148 !important;
-  border-radius: 3px !important;
+.mv-inspect-card,
+.mv-inspect-card * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 @keyframes mv-card-in {
@@ -390,15 +393,13 @@
 }
 
 .mv-snippet-code::-webkit-scrollbar {
-  width: 4px !important;
-  height: 4px !important;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
-.mv-snippet-code::-webkit-scrollbar-track {
-  background: #090a10 !important;
-}
-.mv-snippet-code::-webkit-scrollbar-thumb {
-  background: #2d3148 !important;
-  border-radius: 3px !important;
+.mv-snippet-code {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 .mv-actions-section {
