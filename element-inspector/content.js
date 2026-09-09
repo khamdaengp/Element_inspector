@@ -1496,6 +1496,33 @@
   let cardStartX    = 0;
   let cardStartY    = 0;
 
+  // Live Interact Mode (allows clicking buttons, submits, links naturally without closing extension)
+  let isInteractiveMode = false;
+
+  function setInteractiveMode(enabled) {
+    isInteractiveMode = !!enabled;
+    const modeBtn = inspectCard ? inspectCard.querySelector('#mv-inspect-mode-toggle') : null;
+    if (modeBtn) {
+      if (isInteractiveMode) {
+        modeBtn.classList.add('mv-interact-active');
+        modeBtn.innerHTML = '<span>🔍 Inspect</span>';
+        modeBtn.title = 'Live Mode Active: You can click buttons, submit forms, or navigate! Click to resume inspecting (Shortcut: Space or Ctrl+Click)';
+      } else {
+        modeBtn.classList.remove('mv-interact-active');
+        modeBtn.innerHTML = '<span>👆 Live</span>';
+        modeBtn.title = 'Inspect Mode: Hover & click to inspect elements. Click to switch to Live Mode (Shortcut: Space or Ctrl+Click)';
+      }
+    }
+
+    if (isInteractiveMode) {
+      hideHighlight();
+      showToast('👆 Live Mode Active: Clicks pass through to page! (Press Space to Inspect)');
+    } else {
+      showToast('🔍 Inspect Mode Active: Hover & click to inspect elements');
+      if (hoveredEl) positionHighlight(hoveredEl);
+    }
+  }
+
   // ─── Inspector Element and Event Detection ────────────────────────────────
 
   function isInspectorElement(el) {
@@ -1590,6 +1617,7 @@
           <span class="mv-inspect-dims" id="mv-inspect-dims">0 × 0 px</span>
         </div>
         <div class="mv-header-actions">
+          <button class="mv-btn-icon mv-btn-interact" id="mv-inspect-mode-toggle" title="Toggle Live Interact Mode (Click buttons, submit forms, or navigate without closing inspector). Shortcut: Space or Ctrl+Click">👆 Live</button>
           <button class="mv-btn-icon mv-btn-dock" id="mv-inspect-dock" title="Toggle Right Side Panel (like Ask Gemini) or Floating Window">📌 Side</button>
           <button class="mv-btn-icon mv-btn-screenshot" id="mv-inspect-screenshot" title="Capture & download element screenshot as JPG (and copy to clipboard)">📸 JPG</button>
           <button class="mv-btn-icon mv-btn-parent" id="mv-inspect-parent" title="Select parent element" style="display:none;">↑ Parent</button>
@@ -1779,6 +1807,13 @@
           </div>
         </div>
 
+        <!-- Click / Submit Trigger for clickable elements -->
+        <div class="mv-qa-actions-row" id="mv-row-trigger-click" style="display:none;">
+          <button class="mv-qa-btn mv-qa-btn-trigger" id="mv-btn-trigger-click" style="grid-column: span 2;" title="Trigger a real native click/submit on this element without closing inspector">
+            <span>▶</span> <span id="mv-trigger-click-text">Click / Submit Element</span>
+          </button>
+        </div>
+
         <!-- Utility Actions -->
         <div class="mv-qa-actions-row">
           <button class="mv-qa-btn" id="mv-btn-unlock" title="Remove disabled, readonly, maxlength, pattern, and required constraints">
@@ -1890,6 +1925,9 @@
             <button class="mv-qa-chip mv-qa-chip-security" data-fill="cmd-semi" title="Command Injection: ; ls -la">💻 OS Semi</button>
           </div>
         </div>
+      <!-- Interaction Shortcut Tip -->
+      <div class="mv-inspect-footer-hint" id="mv-inspect-footer-hint">
+        💡 Tip: Hold <kbd>Ctrl</kbd>+Click or switch to <kbd>👆 Live</kbd> to submit forms &amp; open links without closing!
       </div>
 
       <!-- Card Footer -->
@@ -1924,6 +1962,15 @@
       minimizeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleMinimizeCard();
+      });
+    }
+
+    // Live Interact Mode toggle button (👆 Live <-> 🔍 Inspect)
+    const liveToggleBtn = inspectCard.querySelector('#mv-inspect-mode-toggle');
+    if (liveToggleBtn) {
+      liveToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setInteractiveMode(!isInteractiveMode);
       });
     }
 
@@ -2173,6 +2220,31 @@
         e.stopPropagation();
         if (!selectedEl) return;
         await copyPngForFigma(selectedEl, copyFigmaPngBtn);
+      });
+    }
+
+    // QA Tool: Trigger Native Click / Submit
+    const triggerClickBtn = inspectCard.querySelector('#mv-btn-trigger-click');
+    if (triggerClickBtn) {
+      triggerClickBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        try {
+          const tag = getSafeTag(selectedEl);
+          if (tag === 'form') {
+            if (typeof selectedEl.requestSubmit === 'function') {
+              selectedEl.requestSubmit();
+            } else {
+              selectedEl.submit();
+            }
+            showToast('🚀 Form submitted!');
+          } else {
+            selectedEl.click();
+            showToast('▶ Click triggered on element!');
+          }
+        } catch (err) {
+          showToast('⚠️ Click failed: ' + (err.message || 'unknown error'));
+        }
       });
     }
 
@@ -5031,6 +5103,7 @@ text-align: ${cs.textAlign};`;
     hoveredEl = null;
     selectedEl = null;
     isAltKeyDown = false;
+    isInteractiveMode = false;
     updateBadge(false);
   }
 
@@ -5112,6 +5185,7 @@ text-align: ${cs.textAlign};`;
     if (isInspectorEvent(e)) return;
     const target = e.target;
     if (isInspectorElement(target)) return;
+    if (isInteractiveMode) return;
     hoveredEl = target;
     positionHighlight(hoveredEl);
   }
@@ -5120,6 +5194,7 @@ text-align: ${cs.textAlign};`;
     if (isInspectorEvent(e)) return;
     const target = e.target;
     if (isInspectorElement(target)) return;
+    if (isInteractiveMode) return;
     if (target !== hoveredEl) {
       hoveredEl = target;
       positionHighlight(hoveredEl);
@@ -5133,6 +5208,15 @@ text-align: ${cs.textAlign};`;
     // If the click is on or inside our inspector card, let it handle the event naturally!
     if (isInspectorEvent(e)) return;
     if (isInspectorElement(e.target)) return;
+
+    // Instant Pass-Through: In Live Mode or holding modifier keys (Ctrl, Meta/Cmd, Shift)
+    // Allows submitting forms, clicking buttons, following links naturally without closing the extension!
+    if (isInteractiveMode || e.ctrlKey || e.metaKey || e.shiftKey) {
+      if (e.ctrlKey || e.metaKey || e.shiftKey) {
+        showToast('👆 Click passed through to page!');
+      }
+      return;
+    }
 
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -5156,6 +5240,17 @@ text-align: ${cs.textAlign};`;
         return;
       }
       return;
+    }
+
+    // Space key: toggle Live Interact Mode (Click buttons/submit without closing)
+    if (e.code === 'Space' || e.key === ' ') {
+      const tag = (e.target.tagName || '').toUpperCase();
+      const isInput = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable;
+      if (!isInput && inspectCard && inspectCard.classList.contains('mv-active')) {
+        e.preventDefault();
+        setInteractiveMode(!isInteractiveMode);
+        return;
+      }
     }
 
     if (e.key === 'Alt') {
@@ -5307,6 +5402,35 @@ text-align: ${cs.textAlign};`;
         curlBtn.title = 'Generate and copy complete ready-to-run cURL command for this form / input';
       } else {
         curlBtn.style.opacity = '0.75';
+      }
+    }
+
+    // 7b. Update Click / Submit trigger button
+    const triggerRow = inspectCard.querySelector('#mv-row-trigger-click');
+    const triggerText = inspectCard.querySelector('#mv-trigger-click-text');
+    if (triggerRow && triggerText) {
+      const isClickable = ['button', 'a'].includes(tag) ||
+        (tag === 'input' && ['button', 'submit', 'reset', 'checkbox', 'radio', 'image'].includes((el.type || '').toLowerCase())) ||
+        tag === 'form' ||
+        el.getAttribute('role') === 'button' ||
+        el.getAttribute('role') === 'link' ||
+        el.getAttribute('role') === 'tab' ||
+        typeof el.onclick === 'function' ||
+        cs.cursor === 'pointer';
+
+      if (isClickable) {
+        triggerRow.style.display = 'grid';
+        if (tag === 'form') {
+          triggerText.textContent = 'Submit Form';
+        } else if (tag === 'a') {
+          triggerText.textContent = 'Follow Link';
+        } else if (tag === 'input' && (el.type || '').toLowerCase() === 'submit') {
+          triggerText.textContent = 'Submit Form';
+        } else {
+          triggerText.textContent = 'Click Element';
+        }
+      } else {
+        triggerRow.style.display = 'none';
       }
     }
 

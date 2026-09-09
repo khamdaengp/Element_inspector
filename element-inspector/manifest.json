@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Element Inspector & Copier",
-  "version": "2.5.3",
-  "description": "DOM inspector with Full Page Layout Figma Export, 100% Exact Figma Real-Look, SVG Icons preservation, Tailwind Rings & Input Borders, Clean Editable Text Overlay, Card Minimize (-), and QA Tools.",
+  "version": "2.5.4",
+  "description": "DOM inspector with Live Interact Mode & Click Pass-Through, Full Page Layout Figma Export, 100% Exact Figma Real-Look, SVG Icons preservation, and QA Tools.",
   "icons": {
     "16":  "icons/icon16.png",
     "32":  "icons/icon32.png",
