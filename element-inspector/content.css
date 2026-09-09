@@ -806,6 +806,18 @@
   border-color: #60a5fa !important;
 }
 
+.ei-btn-download-png {
+  background: #1e293b !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  color: #38bdf8 !important;
+}
+
+.ei-btn-download-png:hover {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #38bdf8 !important;
+}
+
 .ei-btn-close {
   padding: 3px 8px !important;
   font-size: 13px !important;

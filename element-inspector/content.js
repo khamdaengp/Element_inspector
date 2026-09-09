@@ -818,6 +818,18 @@
   border-color: #60a5fa !important;
 }
 
+.ei-btn-download-png {
+  background: #1e293b !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  color: #38bdf8 !important;
+}
+
+.ei-btn-download-png:hover {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #38bdf8 !important;
+}
+
 .ei-btn-close {
   padding: 3px 8px !important;
   font-size: 13px !important;
@@ -1538,21 +1550,17 @@
 
   async function copyAnnotatorCanvasToClipboard() {
     if (!annotatorCanvas) return false;
-    let copied = false;
     try {
+      window.focus();
       const pngBlob = await new Promise((res) => annotatorCanvas.toBlob(res, 'image/png'));
       if (pngBlob && navigator.clipboard && window.ClipboardItem) {
         await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
-        copied = true;
+        return true;
       }
     } catch (err) {
       console.warn('[Inspector] Clipboard write image error on Windows:', err);
     }
-    // If clipboard copy fails or is blocked on Windows 10, seamlessly download to PC!
-    if (!copied) {
-      return await downloadAnnotatorCanvas('png');
-    }
-    return true;
+    return false;
   }
 
   async function downloadAnnotatorCanvas(format = 'jpeg') {
@@ -1652,8 +1660,9 @@
             <button class="ei-tool-btn" id="ei-clear-btn" title="Clear all drawn boxes">🧹 Clear</button>
           </div>
           <div class="ei-annotator-actions">
-            <button class="ei-tool-btn ei-btn-copy" id="ei-annotator-copy" title="Download image as .PNG directly to your PC">🖼️ Download .PNG</button>
-            <button class="ei-tool-btn ei-btn-save" id="ei-annotator-download" title="Download image as .JPG directly to your PC">💾 Download .JPG</button>
+            <button class="ei-tool-btn ei-btn-copy" id="ei-annotator-copy" title="Copy annotated image to clipboard">📋 Copy</button>
+            <button class="ei-tool-btn ei-btn-save" id="ei-annotator-download" title="Download image to your PC as .JPG">💾 Download .JPG</button>
+            <button class="ei-tool-btn ei-btn-download-png" id="ei-annotator-download-png" title="Download image to your PC as .PNG">⬇️ .PNG</button>
             <button class="ei-tool-btn ei-btn-close" id="ei-annotator-close" title="Close editor (Esc)">✕</button>
           </div>
         </div>
@@ -1703,21 +1712,29 @@
       clearAllRectangles();
     });
 
-    // Download .PNG button (direct download to PC)
-    const pngBtn = annotatorModal.querySelector('#ei-annotator-copy');
-    pngBtn.addEventListener('click', async (e) => {
+    // 1. Copy Image button (with auto PC-download fallback on Windows 10)
+    const copyBtn = annotatorModal.querySelector('#ei-annotator-copy');
+    copyBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      flashElement(pngBtn, '⏳ Downloading...', 'mv-copy--success');
-      const ok = await downloadAnnotatorCanvas('png');
-      if (ok) {
-        showToast('✓ Downloaded .PNG to your PC!');
+      flashElement(copyBtn, '⏳ Copying...', 'mv-copy--success');
+      const copied = await copyAnnotatorCanvasToClipboard();
+      if (copied) {
+        showToast('✓ Image copied to clipboard!');
         closeAnnotationModal();
       } else {
-        flashElement(pngBtn, '✕ Error', 'mv-copy--error');
+        // If clipboard write is blocked on Windows 10, automatically download to PC
+        flashElement(copyBtn, '⬇️ Downloading...', 'mv-copy--success');
+        const ok = await downloadAnnotatorCanvas('png');
+        if (ok) {
+          showToast('✓ Downloaded to PC (Clipboard write blocked by browser)!');
+          closeAnnotationModal();
+        } else {
+          flashElement(copyBtn, '✕ Error', 'mv-copy--error');
+        }
       }
     });
 
-    // Download .JPG button (direct download to PC)
+    // 2. Download .JPG button (direct download to PC)
     const downloadBtn = annotatorModal.querySelector('#ei-annotator-download');
     downloadBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -1730,6 +1747,22 @@
         flashElement(downloadBtn, '✕ Error', 'mv-copy--error');
       }
     });
+
+    // 3. Download .PNG button (direct download to PC)
+    const downloadPngBtn = annotatorModal.querySelector('#ei-annotator-download-png');
+    if (downloadPngBtn) {
+      downloadPngBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        flashElement(downloadPngBtn, '⏳ Downloading...', 'mv-copy--success');
+        const ok = await downloadAnnotatorCanvas('png');
+        if (ok) {
+          showToast('✓ Downloaded .PNG to your PC!');
+          closeAnnotationModal();
+        } else {
+          flashElement(downloadPngBtn, '✕ Error', 'mv-copy--error');
+        }
+      });
+    }
 
     annotatorCanvas = annotatorModal.querySelector('#ei-draw-canvas');
     annotatorCtx = annotatorCanvas.getContext('2d');
