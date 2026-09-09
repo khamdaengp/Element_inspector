@@ -1747,17 +1747,17 @@
             <span class="mv-figma-badge">Ctrl+V Ready</span>
           </div>
 
-          <!-- Primary 100% Real Page Look + Editable Text -->
-          <button class="mv-figma-btn-primary" id="mv-btn-copy-figma-real" title="Copy 100% real page look with all data, images, styling & editable text layers for Figma">
-            <span>❖</span> <span>Copy for Figma (Real Look + Text)</span>
+          <!-- Primary: Clean Text Overlay + Real Background (Zero Double-Text) -->
+          <button class="mv-figma-btn-primary" id="mv-btn-copy-figma-real" title="Copy clean background graphic and editable text (Zero double-text/clash in Figma)">
+            <span>❖</span> <span>Copy for Figma (Clean Text Overlay)</span>
           </button>
 
           <div class="mv-figma-actions">
-            <button class="mv-figma-btn mv-figma-btn-svg" id="mv-btn-copy-figma-svg" title="Copy pure Vector SVG (shapes, inlined images & typography layers)">
-              <span>📐</span> <span>Pure Vector SVG</span>
+            <button class="mv-figma-btn mv-figma-btn-svg" id="mv-btn-copy-figma-svg" title="Copy pure editable vector shapes & text (No background image underneath)">
+              <span>📐</span> <span>Pure Vector (No Image)</span>
             </button>
-            <button class="mv-figma-btn mv-figma-btn-png" id="mv-btn-copy-figma-png" title="Copy 1:1 Pixel-Perfect PNG image layer">
-              <span>🖼️</span> <span>Copy PNG Layer</span>
+            <button class="mv-figma-btn mv-figma-btn-png" id="mv-btn-copy-figma-png" title="Copy single 1:1 pixel-perfect PNG image layer">
+              <span>🖼️</span> <span>Single Image Layer</span>
             </button>
           </div>
         </div>
@@ -4202,9 +4202,54 @@ text-align: ${cs.textAlign};`;
     return textLayers;
   }
 
+  async function captureElementCanvasWithoutText(el, format = 'png', quality = 0.95) {
+    const modified = [];
+
+    const processElement = (elem) => {
+      if (!elem || elem.nodeType !== Node.ELEMENT_NODE || isInspectorElement(elem)) return;
+      const cs = window.getComputedStyle(elem);
+
+      if (cs.color && cs.color !== 'rgba(0, 0, 0, 0)' && cs.color !== 'transparent') {
+        modified.push({
+          elem,
+          color: elem.style.getPropertyValue('color'),
+          priority: elem.style.getPropertyPriority('color')
+        });
+        elem.style.setProperty('color', 'transparent', 'important');
+      }
+
+      if (elem.tagName === 'INPUT' || elem.tagName === 'TEXTAREA') {
+        if (elem.value) {
+          modified.push({ elem, isInput: true, val: elem.value });
+          elem.value = '';
+        }
+      }
+    };
+
+    processElement(el);
+    el.querySelectorAll('*').forEach(processElement);
+
+    let captured = null;
+    try {
+      captured = await captureElementCanvas(el, format, quality);
+    } finally {
+      modified.forEach((item) => {
+        if (item.isInput) {
+          item.elem.value = item.val;
+        } else if (item.color) {
+          item.elem.style.setProperty('color', item.color, item.priority);
+        } else {
+          item.elem.style.removeProperty('color');
+        }
+      });
+    }
+
+    return captured;
+  }
+
   async function copyFigmaRealLook(el, btnElement) {
     if (!el) return;
-    flashElement(btnElement, '⏳ Rendering 1:1...', 'mv-copy--success');
+    flashElement(btnElement, '⏳ Rendering...', 'mv-copy--success');
 
     const rootRect = el.getBoundingClientRect();
     const W = Math.max(1, Math.round(rootRect.width));
@@ -4213,8 +4258,8 @@ text-align: ${cs.textAlign};`;
     const cs = window.getComputedStyle(el);
     const rootRx = parseFloat(cs.borderTopLeftRadius) || 0;
 
-    // 1. Capture 100% pixel-perfect render from real page
-    const captured = await captureElementCanvas(el, 'png');
+    // 1. Capture pixel-perfect render WITHOUT text (so no double-text / clash in Figma!)
+    const captured = await captureElementCanvasWithoutText(el, 'png');
     if (!captured || !captured.canvas) {
       flashElement(btnElement, '✕ Capture Failed', 'mv-copy--error');
       showToast('✕ Failed to capture element graphics');
@@ -4226,23 +4271,21 @@ text-align: ${cs.textAlign};`;
     // 2. Extract all editable text layers with exact positions
     const textLayers = extractTextLayers(el, rootRect);
 
-    // 3. Assemble hybrid SVG for Figma
+    // 3. Assemble unified SVG for Figma (Single Frame, clean overlay, zero ghosting)
     const clipDef = rootRx > 0 ? `
-    <clipPath id="figma-root-clip">
+    <clipPath id="figma-bg-clip">
       <rect width="${W}" height="${H}" rx="${Math.round(rootRx)}" ry="${Math.round(rootRx)}" />
     </clipPath>` : '';
 
-    const clipAttr = rootRx > 0 ? ' clip-path="url(#figma-root-clip)"' : '';
+    const clipAttr = rootRx > 0 ? ' clip-path="url(#figma-bg-clip)"' : '';
 
     const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>${clipDef}
   </defs>
-  <!-- Real Page Visual Layer (All images, data, gradients, shadows & styling) -->
-  <g id="real-page-design"${clipAttr}>
-    <image width="${W}" height="${H}" href="${snapshotDataUrl}" preserveAspectRatio="none" />
-  </g>
-  <!-- Native Figma Editable Text Layers -->
-  <g id="editable-text-layers">
+  <!-- Background Graphic Layer (Text masked out to eliminate double-text) -->
+  <image id="background-graphic" x="0" y="0" width="${W}" height="${H}" href="${snapshotDataUrl}" preserveAspectRatio="none"${clipAttr} />
+  <!-- Editable Text Layers (Clean overlay) -->
+  <g id="editable-text">
     ${textLayers.join('\n    ')}
   </g>
 </svg>`;
@@ -4268,13 +4311,13 @@ text-align: ${cs.textAlign};`;
     if (!success) {
       success = await copyToClipboard(svgContent, btnElement, '✓ Copied for Figma!');
       if (success) {
-        showToast('❖ Copied for Figma! Press Ctrl+V in Figma to paste real-page look & text');
+        showToast('❖ Copied for Figma! Press Ctrl+V in Figma to paste clean text overlay');
       }
       return;
     }
 
     flashElement(btnElement, '✓ Copied for Figma!', 'mv-copy--success');
-    showToast('❖ Copied 100% Real Page Component! Press Ctrl+V in Figma to paste all images, data & editable text');
+    showToast('❖ Copied for Figma! Clean background + editable text overlay (No double-text)');
   }
 
   function elementToSvgString(el) {
