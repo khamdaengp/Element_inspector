@@ -1310,6 +1310,30 @@
   padding: 1px 6px;
 }
 
+.mv-figma-btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  border: 1px solid #c084fc;
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 6.5px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+}
+
+.mv-figma-btn-primary:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #7e22ce 100%);
+  border-color: #e9d5ff;
+  box-shadow: 0 0 12px rgba(192, 132, 252, 0.5);
+}
+
 .mv-figma-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;

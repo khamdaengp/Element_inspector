@@ -1322,6 +1322,30 @@
   padding: 1px 6px;
 }
 
+.mv-figma-btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  border: 1px solid #c084fc;
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 6.5px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+}
+
+.mv-figma-btn-primary:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #7e22ce 100%);
+  border-color: #e9d5ff;
+  box-shadow: 0 0 12px rgba(192, 132, 252, 0.5);
+}
+
 .mv-figma-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1671,12 +1695,18 @@
             </div>
             <span class="mv-figma-badge">Ctrl+V Ready</span>
           </div>
+
+          <!-- Primary 100% Real Page Look + Editable Text -->
+          <button class="mv-figma-btn-primary" id="mv-btn-copy-figma-real" title="Copy 100% real page look with all data, images, styling & editable text layers for Figma">
+            <span>❖</span> <span>Copy for Figma (Real Look + Text)</span>
+          </button>
+
           <div class="mv-figma-actions">
-            <button class="mv-figma-btn mv-figma-btn-svg" id="mv-btn-copy-figma-svg" title="Copy editable Vector SVG (Ctrl+V in Figma to paste native shapes & text layers)">
-              <span>❖</span> <span>Copy SVG (Vector)</span>
+            <button class="mv-figma-btn mv-figma-btn-svg" id="mv-btn-copy-figma-svg" title="Copy pure Vector SVG (shapes, inlined images & typography layers)">
+              <span>📐</span> <span>Pure Vector SVG</span>
             </button>
-            <button class="mv-figma-btn mv-figma-btn-png" id="mv-btn-copy-figma-png" title="Copy 1:1 Pixel-Perfect PNG (Ctrl+V in Figma to paste image layer)">
-              <span>🖼️</span> <span>Copy PNG (Layer)</span>
+            <button class="mv-figma-btn mv-figma-btn-png" id="mv-btn-copy-figma-png" title="Copy 1:1 Pixel-Perfect PNG image layer">
+              <span>🖼️</span> <span>Copy PNG Layer</span>
             </button>
           </div>
         </div>
@@ -1947,7 +1977,7 @@
         if (type === 'styledtext') {
           await copyRichText(selectedEl, chip, '✓ Copied Styled Text!');
         } else if (type === 'figmasvg') {
-          await copySvgForFigma(selectedEl, chip);
+          await copyFigmaRealLook(selectedEl, chip);
         } else if (type === 'innertext' || type === 'text') {
           const text = (selectedEl.innerText || selectedEl.textContent || '').trim();
           await copyToClipboard(text, chip, '✓ Copied Inner Text!');
@@ -2018,7 +2048,17 @@
       });
     }
 
-    // Designer Tool: Copy SVG for Figma (Vector Shapes & Text)
+    // Designer Tool: Copy Real-Look Figma (100% Real Page Look + All Images, Data & Editable Text)
+    const copyFigmaRealBtn = inspectCard.querySelector('#mv-btn-copy-figma-real');
+    if (copyFigmaRealBtn) {
+      copyFigmaRealBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        await copyFigmaRealLook(selectedEl, copyFigmaRealBtn);
+      });
+    }
+
+    // Designer Tool: Copy Pure Vector SVG for Figma
     const copyFigmaSvgBtn = inspectCard.querySelector('#mv-btn-copy-figma-svg');
     if (copyFigmaSvgBtn) {
       copyFigmaSvgBtn.addEventListener('click', async (e) => {
@@ -3985,6 +4025,189 @@ text-align: ${cs.textAlign};`;
       .replace(/'/g, '&apos;');
   }
 
+  function getBase64FromImage(imgNode) {
+    if (!imgNode) return '';
+    try {
+      if (imgNode.naturalWidth > 0 && imgNode.naturalHeight > 0) {
+        const c = document.createElement('canvas');
+        c.width = imgNode.naturalWidth;
+        c.height = imgNode.naturalHeight;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(imgNode, 0, 0);
+        return c.toDataURL('image/png');
+      }
+    } catch (_) {}
+    return imgNode.currentSrc || imgNode.src || '';
+  }
+
+  function extractTextLayers(rootEl, rootRect) {
+    const textLayers = [];
+    if (!rootEl || !rootRect) return textLayers;
+
+    const walker = document.createTreeWalker(
+      rootEl,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode(node) {
+          if (!node.textContent || !node.textContent.trim()) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          if (node.parentElement && isInspectorElement(node.parentElement)) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      }
+    );
+
+    let current;
+    while ((current = walker.nextNode())) {
+      const parent = current.parentElement;
+      if (!parent) continue;
+
+      const cs = window.getComputedStyle(parent);
+      if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) {
+        continue;
+      }
+
+      try {
+        const range = document.createRange();
+        range.selectNodeContents(current);
+        const rects = range.getClientRects();
+
+        const fontFamily = (cs.fontFamily || 'sans-serif').split(',')[0].replace(/['"]/g, '').trim() || 'sans-serif';
+        const fontSize = parseFloat(cs.fontSize) || 14;
+        const fontWeight = cs.fontWeight || '400';
+        const fill = parseColorToHex(cs.color) || '#000000';
+        const letterSpacing = parseFloat(cs.letterSpacing) || 0;
+        const textTransform = cs.textTransform;
+
+        let rawText = current.textContent || '';
+        if (textTransform === 'uppercase') rawText = rawText.toUpperCase();
+        else if (textTransform === 'lowercase') rawText = rawText.toLowerCase();
+        else if (textTransform === 'capitalize') {
+          rawText = rawText.replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        const trimmed = rawText.trim();
+        if (!trimmed) continue;
+
+        if (rects && rects.length > 0) {
+          if (rects.length === 1) {
+            const r = rects[0];
+            const x = Math.round(r.left - rootRect.left);
+            const y = Math.round(r.bottom - rootRect.top - (fontSize * 0.18));
+            let extra = letterSpacing ? ` letter-spacing="${letterSpacing}px"` : '';
+            textLayers.push(
+              `<text x="${x}" y="${y}" font-family="${escapeXml(fontFamily)}" font-size="${fontSize}px" font-weight="${fontWeight}" fill="${fill}"${extra}>${escapeXml(trimmed)}</text>`
+            );
+          } else {
+            const words = trimmed.split(/\s+/);
+            for (let i = 0; i < rects.length; i++) {
+              const r = rects[i];
+              if (r.width <= 0 || r.height <= 0) continue;
+              const x = Math.round(r.left - rootRect.left);
+              const y = Math.round(r.bottom - rootRect.top - (fontSize * 0.18));
+              let extra = letterSpacing ? ` letter-spacing="${letterSpacing}px"` : '';
+              const startIdx = Math.floor((i / rects.length) * words.length);
+              const endIdx = Math.floor(((i + 1) / rects.length) * words.length);
+              const lineChunk = words.slice(startIdx, endIdx).join(' ');
+              if (lineChunk) {
+                textLayers.push(
+                  `<text x="${x}" y="${y}" font-family="${escapeXml(fontFamily)}" font-size="${fontSize}px" font-weight="${fontWeight}" fill="${fill}"${extra}>${escapeXml(lineChunk)}</text>`
+                );
+              }
+            }
+          }
+        } else {
+          const pr = parent.getBoundingClientRect();
+          const x = Math.round(pr.left - rootRect.left);
+          const y = Math.round(pr.top - rootRect.top + fontSize);
+          textLayers.push(
+            `<text x="${x}" y="${y}" font-family="${escapeXml(fontFamily)}" font-size="${fontSize}px" font-weight="${fontWeight}" fill="${fill}">${escapeXml(trimmed)}</text>`
+          );
+        }
+      } catch (_) {}
+    }
+
+    return textLayers;
+  }
+
+  async function copyFigmaRealLook(el, btnElement) {
+    if (!el) return;
+    flashElement(btnElement, '⏳ Rendering 1:1...', 'mv-copy--success');
+
+    const rootRect = el.getBoundingClientRect();
+    const W = Math.max(1, Math.round(rootRect.width));
+    const H = Math.max(1, Math.round(rootRect.height));
+
+    const cs = window.getComputedStyle(el);
+    const rootRx = parseFloat(cs.borderTopLeftRadius) || 0;
+
+    // 1. Capture 100% pixel-perfect render from real page
+    const captured = await captureElementCanvas(el, 'png');
+    if (!captured || !captured.canvas) {
+      flashElement(btnElement, '✕ Capture Failed', 'mv-copy--error');
+      showToast('✕ Failed to capture element graphics');
+      return;
+    }
+
+    const snapshotDataUrl = captured.canvas.toDataURL('image/png');
+
+    // 2. Extract all editable text layers with exact positions
+    const textLayers = extractTextLayers(el, rootRect);
+
+    // 3. Assemble hybrid SVG for Figma
+    const clipDef = rootRx > 0 ? `
+    <clipPath id="figma-root-clip">
+      <rect width="${W}" height="${H}" rx="${Math.round(rootRx)}" ry="${Math.round(rootRx)}" />
+    </clipPath>` : '';
+
+    const clipAttr = rootRx > 0 ? ' clip-path="url(#figma-root-clip)"' : '';
+
+    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <defs>${clipDef}
+  </defs>
+  <!-- Real Page Visual Layer (All images, data, gradients, shadows & styling) -->
+  <g id="real-page-design"${clipAttr}>
+    <image width="${W}" height="${H}" href="${snapshotDataUrl}" preserveAspectRatio="none" />
+  </g>
+  <!-- Native Figma Editable Text Layers -->
+  <g id="editable-text-layers">
+    ${textLayers.join('\n    ')}
+  </g>
+</svg>`;
+
+    // 4. Write to clipboard
+    let success = false;
+    if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
+      try {
+        const blobPlain = new Blob([svgContent], { type: 'text/plain' });
+        const blobHtml = new Blob([svgContent], { type: 'text/html' });
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/plain': blobPlain,
+            'text/html': blobHtml
+          })
+        ]);
+        success = true;
+      } catch (err) {
+        console.warn('[Inspector] Async clipboard SVG write failed:', err);
+      }
+    }
+
+    if (!success) {
+      success = await copyToClipboard(svgContent, btnElement, '✓ Copied for Figma!');
+      if (success) {
+        showToast('❖ Copied for Figma! Press Ctrl+V in Figma to paste real-page look & text');
+      }
+      return;
+    }
+
+    flashElement(btnElement, '✓ Copied for Figma!', 'mv-copy--success');
+    showToast('❖ Copied 100% Real Page Component! Press Ctrl+V in Figma to paste all images, data & editable text');
+  }
+
   function elementToSvgString(el) {
     if (!el || !el.getBoundingClientRect) return '';
 
@@ -4024,7 +4247,7 @@ text-align: ${cs.textAlign};`;
 
     // 3. If element is a single <img>
     if (tag === 'img') {
-      const src = el.currentSrc || el.src;
+      const src = getBase64FromImage(el);
       return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">\n  <image x="0" y="0" width="${W}" height="${H}" href="${escapeXml(src)}" preserveAspectRatio="xMidYMid slice" />\n</svg>`;
     }
 
@@ -4101,28 +4324,40 @@ text-align: ${cs.textAlign};`;
 
       const nTag = (node.tagName || '').toLowerCase();
 
-      // Nested SVG icon or graphic
+      // Nested SVG icon or graphic with resolved currentColor
       if (!isRoot && nTag === 'svg') {
         const svgClone = node.cloneNode(true);
+        const computedColor = parseColorToHex(cs.color) || '#000000';
+        svgClone.querySelectorAll('*').forEach((childEl) => {
+          if (childEl.getAttribute('fill') === 'currentColor') childEl.setAttribute('fill', computedColor);
+          if (childEl.getAttribute('stroke') === 'currentColor') childEl.setAttribute('stroke', computedColor);
+        });
         const inner = svgClone.innerHTML.trim();
         if (inner) {
-          const vb = node.getAttribute('viewBox');
-          if (vb) {
-            svgLayers.push(`  <g transform="translate(${x}, ${y})"><svg width="${w}" height="${h}" viewBox="${vb}">${inner}</svg></g>`);
-          } else {
-            svgLayers.push(`  <g transform="translate(${x}, ${y})">${inner}</g>`);
-          }
+          const vb = node.getAttribute('viewBox') || `0 0 ${w} ${h}`;
+          svgLayers.push(`  <g transform="translate(${x}, ${y})"><svg width="${w}" height="${h}" viewBox="${vb}">${inner}</svg></g>`);
         }
         return; // Do not descend into svg children
       }
 
-      // Nested <img>
+      // Nested <img> with base64 data URL
       if (!isRoot && nTag === 'img') {
-        const src = node.currentSrc || node.src;
+        const src = getBase64FromImage(node);
         if (src && !src.startsWith('chrome-extension://')) {
           svgLayers.push(`  <image x="${x}" y="${y}" width="${w}" height="${h}" href="${escapeXml(src)}" preserveAspectRatio="xMidYMid slice" />`);
         }
         return;
+      }
+
+      // Nested <canvas>
+      if (!isRoot && nTag === 'canvas') {
+        try {
+          const cData = node.toDataURL('image/png');
+          if (cData) {
+            svgLayers.push(`  <image x="${x}" y="${y}" width="${w}" height="${h}" href="${cData}" />`);
+            return;
+          }
+        } catch (_) {}
       }
 
       // Background, Border and Radius (Figma converts <rect> to native Rectangle layer)
@@ -4147,7 +4382,16 @@ text-align: ${cs.textAlign};`;
         svgLayers.push(rectStr);
       }
 
-      // Direct text nodes inside this element (Figma converts <text> to native editable Text layer)
+      // Check CSS background-image
+      const bgImg = cs.backgroundImage;
+      if (bgImg && bgImg !== 'none' && bgImg.includes('url(')) {
+        const m = bgImg.match(/url\(["']?([^"']+)["']?\)/);
+        if (m && m[1] && !m[1].startsWith('chrome-extension://')) {
+          svgLayers.push(`  <image x="${x}" y="${y}" width="${w}" height="${h}" href="${escapeXml(m[1])}" preserveAspectRatio="xMidYMid slice" />`);
+        }
+      }
+
+      // Direct text nodes inside this element
       addTextNodes(node, cs, x, y, w);
 
       // Descend into children
@@ -4746,6 +4990,9 @@ text-align: ${cs.textAlign};`;
     const STYLE_PROPS = [
       'color',
       'background-color',
+      'background',
+      'background-image',
+      'box-shadow',
       'font-family',
       'font-size',
       'font-weight',
@@ -4758,10 +5005,16 @@ text-align: ${cs.textAlign};`;
       'text-decoration-style',
       'text-transform',
       'display',
+      'flex-direction',
+      'justify-content',
+      'align-items',
+      'gap',
+      'width', 'height',
       'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
       'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
       'border-top', 'border-right', 'border-bottom', 'border-left',
-      'border-radius'
+      'border-radius',
+      'box-sizing'
     ];
 
     const origNodes = [el, ...el.querySelectorAll('*')];
@@ -4793,11 +5046,16 @@ text-align: ${cs.textAlign};`;
         }
 
         // Preserve external link destinations and image URLs
-        if (orig.tagName.toLowerCase() === 'a' && orig.href) {
+        const tag = orig.tagName.toLowerCase();
+        if (tag === 'a' && orig.href) {
           cln.setAttribute('href', orig.href);
         }
-        if (orig.tagName.toLowerCase() === 'img' && orig.src) {
+        if (tag === 'img' && orig.src) {
           cln.setAttribute('src', orig.src);
+          if (orig.naturalWidth > 0) {
+            cln.setAttribute('width', String(orig.clientWidth || orig.naturalWidth));
+            cln.setAttribute('height', String(orig.clientHeight || orig.naturalHeight));
+          }
         }
 
         if (styleStr.trim()) {

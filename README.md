@@ -9,7 +9,8 @@ A powerful Google Chrome Extension (Manifest V3) designed for Developers, QA Eng
 - **📸 Clean JPG Element Screenshots:** One-click pixel-perfect element capture without inspector overlay interference.
 - **🎨 Developer & UI/UX Design Tools:**
   - ❖ **Figma Design Exporter:**
-    - **❖ Copy SVG (Vector):** Converts any inspected HTML element or SVG component into standards-compliant SVG with exact vector shapes (`<rect>`, `<path>`, `<circle>`), typography (`<text>` with font family, size, weight, fill), and images (`<image>`). Press `Ctrl + V` directly in Figma to paste fully editable native Figma frames, shapes, and text layers!
+    - **❖ Copy for Figma (Real Look + Text):** Captures 100% of the visual styling, high-resolution images, data, colors, gradients, shadows, and canvas from the real webpage, bundled with native, editable Figma text layers. Press `Ctrl + V` in Figma to paste a component that looks **100% identical to the real page** with all images, data, and editable text!
+    - **📐 Pure Vector SVG:** Serializes DOM elements into vector shapes (`<rect>`, `<path>`, `<circle>`), with all images inlined as base64 data URIs, resolved SVG icons with accurate colors, and line-by-line measured typography (`<text>`).
     - **🖼️ Copy PNG (Bitmap):** Captures high-resolution, pixel-perfect 1:1 raster layer to the system clipboard (`image/png`). Press `Ctrl + V` in Figma to paste an instant image layer.
   - 📏 **Figma-Style Ruler Guide:** Real-time pixel distance measurement between the selected element and any hovered element across 4 directions (Top, Right, Bottom, Left, and Inner padding) with live coral guide lines and `px` badges (toggle via button or hold `Alt` key).
   - 🎨 **Color Palette Inspector:** Auto-extracts all colors (`Text`, `Bg`, `Border`, `Shadow`, `Fill`, `Stroke`) into interactive color swatches with 1-click Hex code copy.
