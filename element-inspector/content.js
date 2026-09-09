@@ -476,6 +476,32 @@
   padding: 4px 6px !important;
 }
 
+.mv-qa-btn-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+.mv-qa-btn-primary:hover {
+  background: #1d4ed8 !important;
+  border-color: #60a5fa !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4) !important;
+}
+
+.mv-qa-btn-sub {
+  background: #0f172a !important;
+  color: #38bdf8 !important;
+  border-color: #0284c7 !important;
+}
+
+.mv-qa-btn-sub:hover {
+  background: #0284c7 !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35) !important;
+}
+
 .mv-qa-fill-label {
   font-size: 10px !important;
   font-weight: 600 !important;
@@ -975,9 +1001,37 @@
           </button>
         </div>
 
-        <!-- Quick Test Data Fillers -->
-        <div class="mv-qa-fill-label">⚡ 1-Click Test Data Fill:</div>
+        <!-- Random Auto-Fill Tools -->
+        <div class="mv-qa-actions-row">
+          <button class="mv-qa-btn mv-qa-btn-primary" id="mv-btn-random-input" title="Smartly detect input type and auto-fill realistic random data (Email, Name, Phone, Number, etc.)">
+            <span>🎲</span> <span>Random Input</span>
+          </button>
+          <button class="mv-qa-btn mv-qa-btn-sub" id="mv-btn-fill-form" title="Auto-fill ALL input fields inside this form or container with realistic random test data">
+            <span>⚡</span> <span>Fill Entire Form</span>
+          </button>
+        </div>
+
+        <!-- Quick Random & Test Data Fillers -->
+        <div class="mv-qa-fill-label">🎲 Quick Random &amp; Test Data Fill:</div>
         <div class="mv-qa-fill-grid">
+          <button class="mv-qa-chip" data-fill="rand-name" title="Fill random full name (e.g. Alex Smith)">
+            <span>👤 Name</span>
+          </button>
+          <button class="mv-qa-chip" data-fill="rand-email" title="Fill random valid email (e.g. alex.789@example.com)">
+            <span>📧 Email</span>
+          </button>
+          <button class="mv-qa-chip" data-fill="rand-phone" title="Fill random phone number (e.g. 02055667788)">
+            <span>📱 Phone</span>
+          </button>
+          <button class="mv-qa-chip" data-fill="rand-pass" title="Fill strong random password (e.g. Pass@9821_Secure!)">
+            <span>🔑 Password</span>
+          </button>
+          <button class="mv-qa-chip" data-fill="rand-text" title="Fill random message / paragraph">
+            <span>📝 Text</span>
+          </button>
+          <button class="mv-qa-chip" data-fill="number" title="Fill integer boundary number: 999999999">
+            <span>Max Number</span>
+          </button>
           <button class="mv-qa-chip" data-fill="long" title="Fill 300-character boundary test string">
             <span>Long (300)</span>
           </button>
@@ -987,14 +1041,11 @@
           <button class="mv-qa-chip" data-fill="unicode" title="Fill international Unicode & emojis: 🚀🌟测试اختبار">
             <span>Unicode / Emoji</span>
           </button>
-          <button class="mv-qa-chip" data-fill="number" title="Fill integer boundary number: 999999999">
-            <span>Max Number</span>
-          </button>
           <button class="mv-qa-chip" data-fill="probe" title="Fill benign encoding test probe: &lt;test'&quot;&gt;">
             <span>HTML Probe</span>
           </button>
-          <button class="mv-qa-chip" data-fill="clear" title="Clear input value completely">
-            <span>🧹 Clear</span>
+          <button class="mv-qa-chip" data-fill="clear" title="Clear input value completely" style="grid-column: span 2;">
+            <span>🧹 Clear Input</span>
           </button>
         </div>
       </div>
@@ -1102,6 +1153,36 @@
       const code = generateCypressCode(selectedEl);
       await copyToClipboard(code, cypressBtn, '✓ Copied Cypress!');
     });
+
+    // QA Tool: Smart Random Auto Input for selected element
+    const randomInputBtn = inspectCard.querySelector('#mv-btn-random-input');
+    if (randomInputBtn) {
+      randomInputBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const ok = autoFillRandomInput(selectedEl);
+        if (ok) {
+          flashElement(randomInputBtn, '✓ Auto-Filled!', 'mv-copy--success');
+        } else {
+          flashElement(randomInputBtn, 'No Input Found', 'mv-copy--error');
+        }
+      });
+    }
+
+    // QA Tool: Fill entire form / container with random test data
+    const fillFormBtn = inspectCard.querySelector('#mv-btn-fill-form');
+    if (fillFormBtn) {
+      fillFormBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const count = autoFillEntireForm(selectedEl);
+        if (count > 0) {
+          flashElement(fillFormBtn, `✓ Filled ${count} Inputs!`, 'mv-copy--success');
+        } else {
+          flashElement(fillFormBtn, 'No Inputs Found', 'mv-copy--error');
+        }
+      });
+    }
 
     // QA Tool: 1-Click Test Data Fillers
     const fillChips = inspectCard.querySelectorAll('.mv-qa-chip');
@@ -1548,10 +1629,52 @@
     return true;
   }
 
-  // ─── QA Data Values ───────────────────────────────────────────────────────
+  // ─── QA Data Values & Random Data Generator ────────────────────────────────
+
+  const RANDOM_FIRST_NAMES = [
+    'Alex', 'Jordan', 'Taylor', 'Morgan', 'Sam', 'Chris', 'David', 'Emma',
+    'Michael', 'Sarah', 'Khamdaeng', 'Noy', 'Somchai', 'Anousone', 'Vilayvanh',
+    'Daniel', 'Sophia', 'James', 'Olivia', 'Ethan', 'Grace', 'Liam', 'Mia', 'Keo'
+  ];
+
+  const RANDOM_LAST_NAMES = [
+    'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Wilson',
+    'Souvanh', 'Phommachan', 'Keomany', 'Vongsa', 'Inthavong', 'Nguyen', 'Tran'
+  ];
+
+  const RANDOM_STREETS = [
+    'Lane Xang Ave', 'Souphanouvong Rd', 'Samsenthai Rd', 'Setthathirath Rd',
+    'Main Street', 'Market Street', 'Broadway Ave', 'Park Blvd', 'Sunset Blvd'
+  ];
+
+  const RANDOM_CITIES = ['Vientiane', 'Luang Prabang', 'Pakse', 'Savannakhet', 'Bangkok', 'Singapore', 'New York'];
+
+  const RANDOM_COMPANIES = ['Vientiane Tech Co.', 'Lao Telecom Group', 'Digital Solutions Ltd.', 'Pacific Global', 'Alpha Innovations'];
+
+  const RANDOM_PARAGRAPHS = [
+    'This is an automated test message generated for QA validation. Form input handling and boundary constraints are being verified.',
+    'User feedback testing in progress. System performance, accessibility standards, and responsive UI components are validated.',
+    'Automated testing payload submitted to verify input persistence, XSS sanitization, and state management.'
+  ];
 
   function getFillValue(type) {
     switch (type) {
+      case 'rand-name': {
+        const fn = RANDOM_FIRST_NAMES[Math.floor(Math.random() * RANDOM_FIRST_NAMES.length)];
+        const ln = RANDOM_LAST_NAMES[Math.floor(Math.random() * RANDOM_LAST_NAMES.length)];
+        return `${fn} ${ln}`;
+      }
+      case 'rand-email': {
+        const fn = RANDOM_FIRST_NAMES[Math.floor(Math.random() * RANDOM_FIRST_NAMES.length)].toLowerCase();
+        const randNum = Math.floor(100 + Math.random() * 900);
+        return `${fn}.${randNum}@example.com`;
+      }
+      case 'rand-phone':
+        return `020${Math.floor(10000000 + Math.random() * 90000000)}`;
+      case 'rand-pass':
+        return `Pass@${Math.floor(1000 + Math.random() * 9000)}_Secure#`;
+      case 'rand-text':
+        return RANDOM_PARAGRAPHS[Math.floor(Math.random() * RANDOM_PARAGRAPHS.length)];
       case 'long':
         return 'A'.repeat(300);
       case 'special':
@@ -1569,6 +1692,161 @@
     }
   }
 
+  function generateSmartRandomValue(inputEl) {
+    if (!inputEl) return 'Test';
+
+    const tag = (inputEl.tagName || '').toLowerCase();
+    const type = (inputEl.type || 'text').toLowerCase();
+    const name = (inputEl.name || '').toLowerCase();
+    const id = (inputEl.id || '').toLowerCase();
+    const placeholder = (inputEl.placeholder || '').toLowerCase();
+    const ariaLabel = (inputEl.getAttribute('aria-label') || '').toLowerCase();
+    const autocomplete = (inputEl.autocomplete || '').toLowerCase();
+    const className = (typeof inputEl.className === 'string' ? inputEl.className : '').toLowerCase();
+    const combined = `${name} ${id} ${placeholder} ${ariaLabel} ${autocomplete} ${className}`;
+
+    // 1. Email
+    if (type === 'email' || combined.includes('email') || combined.includes('mail')) {
+      const fn = RANDOM_FIRST_NAMES[Math.floor(Math.random() * RANDOM_FIRST_NAMES.length)].toLowerCase();
+      const num = Math.floor(100 + Math.random() * 900);
+      return `${fn}.${num}@example.com`;
+    }
+
+    // 2. Phone / Tel / Mobile
+    if (type === 'tel' || combined.includes('phone') || combined.includes('tel') || combined.includes('mobile') || combined.includes('cell')) {
+      return `020${Math.floor(10000000 + Math.random() * 90000000)}`;
+    }
+
+    // 3. Password
+    if (type === 'password' || combined.includes('pass') || combined.includes('pwd')) {
+      return `Pass@${Math.floor(1000 + Math.random() * 9000)}_Secure#`;
+    }
+
+    // 4. Number / Quantity / Price / Age
+    if (type === 'number' || combined.includes('amount') || combined.includes('qty') || combined.includes('quantity') || combined.includes('price') || combined.includes('cost')) {
+      const min = inputEl.min !== '' ? parseInt(inputEl.min, 10) : 1;
+      const max = inputEl.max !== '' ? parseInt(inputEl.max, 10) : 1000;
+      return String(Math.floor(min + Math.random() * (Math.min(max, 1000) - min + 1)));
+    }
+    if (combined.includes('age')) {
+      return String(Math.floor(20 + Math.random() * 45));
+    }
+
+    // 5. Date
+    if (type === 'date' || combined.includes('date') || combined.includes('birth') || combined.includes('dob')) {
+      const m = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
+      const d = String(Math.floor(1 + Math.random() * 28)).padStart(2, '0');
+      return `2026-${m}-${d}`;
+    }
+
+    // 6. URL
+    if (type === 'url' || combined.includes('url') || combined.includes('website') || combined.includes('link')) {
+      return `https://example.com/test-${Math.floor(Math.random() * 1000)}`;
+    }
+
+    // 7. Names
+    if (combined.includes('first')) {
+      return RANDOM_FIRST_NAMES[Math.floor(Math.random() * RANDOM_FIRST_NAMES.length)];
+    }
+    if (combined.includes('last') || combined.includes('surname')) {
+      return RANDOM_LAST_NAMES[Math.floor(Math.random() * RANDOM_LAST_NAMES.length)];
+    }
+    if (combined.includes('name') || combined.includes('user') || combined.includes('author') || combined.includes('contact') || combined.includes('recipient')) {
+      const fn = RANDOM_FIRST_NAMES[Math.floor(Math.random() * RANDOM_FIRST_NAMES.length)];
+      const ln = RANDOM_LAST_NAMES[Math.floor(Math.random() * RANDOM_LAST_NAMES.length)];
+      return `${fn} ${ln}`;
+    }
+
+    // 8. Address / City / Country / Company
+    if (combined.includes('address') || combined.includes('street')) {
+      const num = Math.floor(10 + Math.random() * 980);
+      const st = RANDOM_STREETS[Math.floor(Math.random() * RANDOM_STREETS.length)];
+      return `${num} ${st}`;
+    }
+    if (combined.includes('city') || combined.includes('province')) {
+      return RANDOM_CITIES[Math.floor(Math.random() * RANDOM_CITIES.length)];
+    }
+    if (combined.includes('company') || combined.includes('org')) {
+      return RANDOM_COMPANIES[Math.floor(Math.random() * RANDOM_COMPANIES.length)];
+    }
+    if (combined.includes('zip') || combined.includes('postal')) {
+      return String(Math.floor(10000 + Math.random() * 90000));
+    }
+
+    // 9. Subject / Title / Topic
+    if (combined.includes('subject') || combined.includes('title') || combined.includes('topic')) {
+      return `QA Test Report #${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+
+    // 10. Textarea or Comment / Message / Description / Bio / Notes
+    if (tag === 'textarea' || combined.includes('desc') || combined.includes('comment') || combined.includes('message') || combined.includes('body') || combined.includes('detail') || combined.includes('note')) {
+      return RANDOM_PARAGRAPHS[Math.floor(Math.random() * RANDOM_PARAGRAPHS.length)];
+    }
+
+    // 11. Color
+    if (type === 'color') {
+      const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // Default fallback
+    const randStr = Math.random().toString(36).substring(2, 7);
+    return `Auto_${randStr}`;
+  }
+
+  // ─── QA Tool: Smart Random Auto-Fill for Selected Element ───────────────────
+
+  function autoFillRandomInput(el) {
+    if (!el || isInspectorElement(el)) return false;
+
+    let targetInput = el;
+    const tag = targetInput.tagName ? targetInput.tagName.toLowerCase() : '';
+    if (!['input', 'textarea', 'select'].includes(tag)) {
+      targetInput = el.querySelector('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), textarea, select');
+    }
+    if (!targetInput) return false;
+
+    const val = generateSmartRandomValue(targetInput);
+    return injectInputValue(targetInput, val);
+  }
+
+  // ─── QA Tool: Auto-Fill Entire Form / Container ───────────────────────────
+
+  function autoFillEntireForm(el) {
+    if (!el || isInspectorElement(el)) return 0;
+
+    // Find closest form, or container, or root
+    let root = el.closest('form') || el.closest('[role="form"]');
+    if (!root) {
+      const tag = (el.tagName || '').toLowerCase();
+      if (['form', 'div', 'section', 'article', 'main', 'body', 'table'].includes(tag)) {
+        root = el;
+      } else {
+        root = el.parentElement || document.body;
+      }
+    }
+
+    const selector = 'input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), textarea, select';
+    let inputs = Array.from(root.querySelectorAll(selector));
+
+    // If root had no inputs, fallback to entire document
+    if (inputs.length === 0) {
+      inputs = Array.from(document.querySelectorAll(selector));
+    }
+
+    let filledCount = 0;
+    for (const inputNode of inputs) {
+      if (isInspectorElement(inputNode)) continue;
+      if (inputNode.disabled || inputNode.readOnly) continue;
+
+      const val = generateSmartRandomValue(inputNode);
+      const ok = injectInputValue(inputNode, val);
+      if (ok) filledCount++;
+    }
+
+    return filledCount;
+  }
+
   // ─── QA Tool: Inject Value into Input (React/Vue/Angular safe) ─────────────
 
   function injectInputValue(el, value) {
@@ -1583,7 +1861,30 @@
 
     targetInput.focus();
 
-    // Bypass React / Vue prototype overriding to ensure state sync
+    const targetTag = targetInput.tagName.toLowerCase();
+
+    // 1. Dropdown Select handling
+    if (targetTag === 'select') {
+      const opts = Array.from(targetInput.options).filter(o => !o.disabled && o.value !== '');
+      if (opts.length > 0) {
+        targetInput.value = opts[Math.floor(Math.random() * opts.length)].value;
+      }
+      targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+      targetInput.dispatchEvent(new Event('change', { bubbles: true }));
+      flashInputOutline(targetInput);
+      return true;
+    }
+
+    // 2. Checkbox & Radio handling
+    if (targetTag === 'input' && ['checkbox', 'radio'].includes(targetInput.type)) {
+      targetInput.checked = (targetInput.type === 'radio') ? true : !targetInput.checked;
+      targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+      targetInput.dispatchEvent(new Event('change', { bubbles: true }));
+      flashInputOutline(targetInput);
+      return true;
+    }
+
+    // 3. Text, textarea, password, number handling (Bypass React / Vue prototype overriding)
     const nativeInputValSetter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
       'value'
@@ -1593,7 +1894,6 @@
       'value'
     )?.set;
 
-    const targetTag = targetInput.tagName.toLowerCase();
     if (targetTag === 'textarea' && nativeTextAreaValSetter) {
       nativeTextAreaValSetter.call(targetInput, value);
     } else if (targetTag === 'input' && nativeInputValSetter) {
@@ -1606,7 +1906,12 @@
     targetInput.dispatchEvent(new Event('input', { bubbles: true }));
     targetInput.dispatchEvent(new Event('change', { bubbles: true }));
 
-    // Green outline flash on the target input element
+    flashInputOutline(targetInput);
+    return true;
+  }
+
+  function flashInputOutline(targetInput) {
+    if (!targetInput) return;
     const prevOutline = targetInput.style.outline;
     const prevTransition = targetInput.style.transition;
     targetInput.style.transition = 'outline 0.15s ease';
@@ -1615,8 +1920,6 @@
       targetInput.style.outline = prevOutline;
       targetInput.style.transition = prevTransition;
     }, 600);
-
-    return true;
   }
 
   // ─── QA Tool: Unlock Form / Input Constraints ─────────────────────────────

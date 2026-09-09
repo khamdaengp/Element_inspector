@@ -1,4 +1,4 @@
-﻿# Element Inspector & Copier 🔍
+# Element Inspector & Copier 🔍
 
 A powerful Google Chrome Extension (Manifest V3) designed for Developers, QA Engineers, and Penetration Testers.
 
@@ -7,11 +7,14 @@ A powerful Google Chrome Extension (Manifest V3) designed for Developers, QA Eng
 - **🎯 Interactive DOM Inspection:** Hover and inspect any element on any webpage with isolated Shadow DOM UI (100% CSP-safe).
 - **📸 Clean JPG Element Screenshots:** One-click pixel-perfect element capture without inspector overlay interference.
 - **⚡ QA & PenTest Tools:**
+  - 🎲 **Smart Random Auto-Input:** Context-aware automatic data generation (Name, Email, Phone, Password, Address, Date, Numbers, URLs) that injects realistic mock data with native React/Vue/Angular prototype synchronization.
+  - ⚡ **Fill Entire Form:** 1-Click to automatically fill all inputs, textareas, select dropdowns, and checkboxes across the entire form or container.
+  - 🧩 **Quick Mock Chips:** 1-Click chips for realistic `👤 Name`, `📧 Email`, `📱 Phone`, `🔑 Password`, and `📝 Text`.
   - 🔓 **Unlock Form Constraints:** Remove `disabled`, `readonly`, `maxlength`, `pattern`, `required`, and `novalidate` restrictions with 1 click.
   - 👁️ **Show Password:** Instantly unmask and toggle masked password fields.
   - 🎭 **Playwright Automation Locators:** Generate ready-to-use Playwright scripts (`getByTestId`, `getByRole`, `locator`).
   - 🌲 **Cypress Automation Locators:** Generate ready-to-use Cypress scripts.
-  - ⚡ **1-Click Test Data Fillers:** Inject boundary strings (Long 300), Special Characters (`!@#$%...`), Unicode/Emojis (`🚀🌟...`), Max Numbers (`999999999`), HTML XSS Probes (`<test'"`>`), and Quick Clear (React/Vue/Angular safe).
+  - ⚡ **Boundary & Security Test Data:** Inject boundary strings (Long 300), Special Characters (`!@#$%...`), Unicode/Emojis (`🚀🌟...`), Max Numbers (`999999999`), HTML XSS Probes (`<test'"`>`), and Quick Clear.
 - **📋 Rich Copy Formats:**
   - CSS Selector
   - JS Path (`document.querySelector(...)`)
