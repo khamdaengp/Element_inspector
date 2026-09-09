@@ -1593,6 +1593,7 @@
           <button class="mv-btn-icon mv-btn-dock" id="mv-inspect-dock" title="Toggle Right Side Panel (like Ask Gemini) or Floating Window">📌 Side</button>
           <button class="mv-btn-icon mv-btn-screenshot" id="mv-inspect-screenshot" title="Capture & download element screenshot as JPG (and copy to clipboard)">📸 JPG</button>
           <button class="mv-btn-icon mv-btn-parent" id="mv-inspect-parent" title="Select parent element" style="display:none;">↑ Parent</button>
+          <button class="mv-btn-icon mv-btn-fullpage-nav" id="mv-inspect-fullpage" title="Select Full Page (Body)">🌐 Full</button>
           <button class="mv-btn-icon mv-btn-minimize" id="mv-inspect-minimize" title="Minimize (−)">−</button>
           <button class="mv-btn-icon mv-btn-close" id="mv-inspect-close" title="Close (Esc)">✕</button>
         </div>
@@ -1747,17 +1748,22 @@
             <span class="mv-figma-badge">Ctrl+V Ready</span>
           </div>
 
-          <!-- Primary: Clean Text Overlay + Real Background (Zero Double-Text) -->
-          <button class="mv-figma-btn-primary" id="mv-btn-copy-figma-real" title="Copy clean background graphic and editable text (Zero double-text/clash in Figma)">
-            <span>❖</span> <span>Copy for Figma (Clean Text Overlay)</span>
-          </button>
+          <!-- Primary: Selected vs Full Page Layout -->
+          <div class="mv-figma-primary-row">
+            <button class="mv-figma-btn-primary" id="mv-btn-copy-figma-real" title="Copy selected element with clean background and editable text overlay">
+              <span>❖</span> <span>Copy Selected</span>
+            </button>
+            <button class="mv-figma-btn-fullpage" id="mv-btn-copy-figma-fullpage" title="Copy entire visible page layout (Full Screen) with clean graphics and editable text into Figma">
+              <span>🌐</span> <span>Full Page Layout</span>
+            </button>
+          </div>
 
           <div class="mv-figma-actions">
             <button class="mv-figma-btn mv-figma-btn-svg" id="mv-btn-copy-figma-svg" title="Copy pure editable vector shapes & text (No background image underneath)">
-              <span>📐</span> <span>Pure Vector (No Image)</span>
+              <span>📐</span> <span>Pure Vector</span>
             </button>
             <button class="mv-figma-btn mv-figma-btn-png" id="mv-btn-copy-figma-png" title="Copy single 1:1 pixel-perfect PNG image layer">
-              <span>🖼️</span> <span>Single Image Layer</span>
+              <span>🖼️</span> <span>Single PNG</span>
             </button>
           </div>
         </div>
@@ -2022,6 +2028,20 @@
       }
     });
 
+    const fullpageNavBtn = inspectCard.querySelector('#mv-inspect-fullpage');
+    if (fullpageNavBtn) {
+      fullpageNavBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const target = document.body || document.documentElement;
+        if (target) {
+          selectedEl = target;
+          hoveredEl = target;
+          positionHighlight(target);
+          renderCardData(target);
+        }
+      });
+    }
+
     const snippetCode = inspectCard.querySelector('#mv-inspect-code');
     snippetCode.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -2124,6 +2144,15 @@
         e.stopPropagation();
         if (!selectedEl) return;
         await copyFigmaRealLook(selectedEl, copyFigmaRealBtn);
+      });
+    }
+
+    // Designer Tool: Copy Full Page Layout for Figma
+    const copyFigmaFullPageBtn = inspectCard.querySelector('#mv-btn-copy-figma-fullpage');
+    if (copyFigmaFullPageBtn) {
+      copyFigmaFullPageBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        await copyFigmaRealLook(document.body || document.documentElement, copyFigmaFullPageBtn, true);
       });
     }
 
@@ -2336,10 +2365,12 @@
 
   // ─── Unified Element Screen/Canvas Capture Helper ─────────────────────────
 
-  async function captureElementCanvas(el, format = 'png', quality = 0.95) {
+  async function captureElementCanvas(el, format = 'png', quality = 0.95, isFullPage = false) {
     if (!el || isInspectorElement(el)) return null;
 
-    const rect = el.getBoundingClientRect();
+    const rect = isFullPage
+      ? { left: 0, top: 0, right: window.innerWidth, bottom: window.innerHeight, width: window.innerWidth, height: window.innerHeight }
+      : el.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) return null;
 
     // Temporarily hide ALL inspector UI completely so screenshot captures clean host element
@@ -2407,10 +2438,10 @@
     const scaleX = (window.innerWidth > 0) ? (img.width / window.innerWidth) : (window.devicePixelRatio || 1);
     const scaleY = (window.innerHeight > 0) ? (img.height / window.innerHeight) : (window.devicePixelRatio || 1);
 
-    const sx = Math.max(0, Math.round(rect.left * scaleX));
-    const sy = Math.max(0, Math.round(rect.top * scaleY));
-    const sw = Math.min(img.width - sx, Math.round(rect.width * scaleX));
-    const sh = Math.min(img.height - sy, Math.round(rect.height * scaleY));
+    const sx = isFullPage ? 0 : Math.max(0, Math.round(rect.left * scaleX));
+    const sy = isFullPage ? 0 : Math.max(0, Math.round(rect.top * scaleY));
+    const sw = isFullPage ? img.width : Math.min(img.width - sx, Math.round(rect.width * scaleX));
+    const sh = isFullPage ? img.height : Math.min(img.height - sy, Math.round(rect.height * scaleY));
 
     if (sw <= 0 || sh <= 0) return null;
 
@@ -4148,7 +4179,7 @@ text-align: ${cs.textAlign};`;
     return imgNode.currentSrc || imgNode.src || '';
   }
 
-  function extractTextLayers(rootEl, rootRect) {
+  function extractTextLayers(rootEl, rootRect, isFullPage = false) {
     const textLayers = [];
     if (!rootEl || !rootRect) return textLayers;
 
@@ -4205,6 +4236,11 @@ text-align: ${cs.textAlign};`;
         if (!trimmed) continue;
 
         if (rects && rects.length > 0) {
+          const firstR = rects[0];
+          if (isFullPage && (firstR.bottom < 0 || firstR.top > window.innerHeight || firstR.right < 0 || firstR.left > window.innerWidth)) {
+            continue;
+          }
+
           if (rects.length === 1) {
             const r = rects[0];
             const x = Math.round(r.left - rootRect.left);
@@ -4218,6 +4254,9 @@ text-align: ${cs.textAlign};`;
             for (let i = 0; i < rects.length; i++) {
               const r = rects[i];
               if (r.width <= 0 || r.height <= 0) continue;
+              if (isFullPage && (r.bottom < 0 || r.top > window.innerHeight || r.right < 0 || r.left > window.innerWidth)) {
+                continue;
+              }
               const x = Math.round(r.left - rootRect.left);
               const y = Math.round(r.bottom - rootRect.top - (fontSize * 0.18));
               let extra = letterSpacing ? ` letter-spacing="${letterSpacing}px"` : '';
@@ -4233,6 +4272,9 @@ text-align: ${cs.textAlign};`;
           }
         } else {
           const pr = parent.getBoundingClientRect();
+          if (isFullPage && (pr.bottom < 0 || pr.top > window.innerHeight || pr.right < 0 || pr.left > window.innerWidth)) {
+            continue;
+          }
           const x = Math.round(pr.left - rootRect.left);
           const y = Math.round(pr.top - rootRect.top + fontSize);
           textLayers.push(
@@ -4255,6 +4297,7 @@ text-align: ${cs.textAlign};`;
 
         const r = inp.getBoundingClientRect();
         if (r.width <= 0 || r.height <= 0) return;
+        if (isFullPage && (r.bottom < 0 || r.top > window.innerHeight || r.right < 0 || r.left > window.innerWidth)) return;
 
         const isPassword = inp.type === 'password';
         let displayText = inp.value;
@@ -4286,7 +4329,7 @@ text-align: ${cs.textAlign};`;
     return textLayers;
   }
 
-  async function captureElementCanvasWithoutText(el, format = 'png', quality = 0.95) {
+  async function captureElementCanvasWithoutText(el, format = 'png', quality = 0.95, isFullPage = false) {
     const modified = [];
     let tempStyleEl = null;
 
@@ -4372,7 +4415,7 @@ text-align: ${cs.textAlign};`;
         el.querySelectorAll('*').forEach(processElement);
       }
 
-      return await captureElementCanvas(el, format, quality);
+      return await captureElementCanvas(el, format, quality, isFullPage);
     } finally {
       // Clean up temporary styles
       if (tempStyleEl && tempStyleEl.parentNode) {
@@ -4400,37 +4443,40 @@ text-align: ${cs.textAlign};`;
     }
   }
 
-  async function copyFigmaRealLook(el, btnElement) {
-    if (!el) return;
+  async function copyFigmaRealLook(el, btnElement, isFullPage = false) {
+    const targetEl = isFullPage ? (document.body || document.documentElement) : el;
+    if (!targetEl) return;
     flashElement(btnElement, '⏳ Rendering...', 'mv-copy--success');
 
-    const rootRect = el.getBoundingClientRect();
+    const rootRect = isFullPage
+      ? { left: 0, top: 0, right: window.innerWidth, bottom: window.innerHeight, width: window.innerWidth, height: window.innerHeight }
+      : targetEl.getBoundingClientRect();
     const W = Math.max(1, Math.round(rootRect.width));
     const H = Math.max(1, Math.round(rootRect.height));
 
-    const cs = window.getComputedStyle(el);
+    const cs = isFullPage ? { borderTopLeftRadius: '0' } : window.getComputedStyle(targetEl);
     const rootRx = parseFloat(cs.borderTopLeftRadius) || 0;
 
     // 1. Capture pixel-perfect render WITHOUT text (so no double-text / clash in Figma!)
-    const captured = await captureElementCanvasWithoutText(el, 'png');
+    const captured = await captureElementCanvasWithoutText(targetEl, 'png', 0.95, isFullPage);
     if (!captured || !captured.canvas) {
       flashElement(btnElement, '✕ Capture Failed', 'mv-copy--error');
-      showToast('✕ Failed to capture element graphics');
+      showToast('✕ Failed to capture ' + (isFullPage ? 'full page' : 'element') + ' graphics');
       return;
     }
 
     const snapshotDataUrl = captured.canvas.toDataURL('image/png');
 
     // 2. Extract all editable text layers with exact positions
-    const textLayers = extractTextLayers(el, rootRect);
+    const textLayers = extractTextLayers(targetEl, rootRect, isFullPage);
 
     // 3. Assemble unified SVG for Figma (Single Frame, clean overlay, zero ghosting)
-    const clipDef = rootRx > 0 ? `
+    const clipDef = (!isFullPage && rootRx > 0) ? `
     <clipPath id="figma-bg-clip">
       <rect width="${W}" height="${H}" rx="${Math.round(rootRx)}" ry="${Math.round(rootRx)}" />
     </clipPath>` : '';
 
-    const clipAttr = rootRx > 0 ? ' clip-path="url(#figma-bg-clip)"' : '';
+    const clipAttr = (!isFullPage && rootRx > 0) ? ' clip-path="url(#figma-bg-clip)"' : '';
 
     const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>${clipDef}
@@ -4461,30 +4507,38 @@ text-align: ${cs.textAlign};`;
       }
     }
 
+    const successMsg = isFullPage ? '✓ Copied Full Page!' : '✓ Copied for Figma!';
+    const toastMsg = isFullPage
+      ? '❖ Copied Full Page Layout for Figma! Press Ctrl+V in Figma to paste screen'
+      : '❖ Copied for Figma! Clean background + editable text overlay (No double-text)';
+
     if (!success) {
-      success = await copyToClipboard(svgContent, btnElement, '✓ Copied for Figma!');
+      success = await copyToClipboard(svgContent, btnElement, successMsg);
       if (success) {
-        showToast('❖ Copied for Figma! Press Ctrl+V in Figma to paste clean text overlay');
+        showToast(toastMsg);
       }
       return;
     }
 
-    flashElement(btnElement, '✓ Copied for Figma!', 'mv-copy--success');
-    showToast('❖ Copied for Figma! Clean background + editable text overlay (No double-text)');
+    flashElement(btnElement, successMsg, 'mv-copy--success');
+    showToast(toastMsg);
   }
 
-  function elementToSvgString(el) {
-    if (!el || !el.getBoundingClientRect) return '';
+  function elementToSvgString(el, isFullPage = false) {
+    const targetEl = isFullPage ? (document.body || document.documentElement) : el;
+    if (!targetEl || !targetEl.getBoundingClientRect) return '';
 
-    const rootRect = el.getBoundingClientRect();
+    const rootRect = isFullPage
+      ? { left: 0, top: 0, right: window.innerWidth, bottom: window.innerHeight, width: window.innerWidth, height: window.innerHeight }
+      : targetEl.getBoundingClientRect();
     const W = Math.max(1, Math.round(rootRect.width));
     const H = Math.max(1, Math.round(rootRect.height));
 
-    const tag = (el.tagName || '').toLowerCase();
+    const tag = (targetEl.tagName || '').toLowerCase();
 
     // 1. If element itself is an SVG
-    if (tag === 'svg') {
-      const clone = el.cloneNode(true);
+    if (!isFullPage && tag === 'svg') {
+      const clone = targetEl.cloneNode(true);
       if (!clone.getAttribute('xmlns')) {
         clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       }
@@ -4501,8 +4555,8 @@ text-align: ${cs.textAlign};`;
     }
 
     // 2. If element is inside an SVG (e.g. <path>, <g>, <circle>)
-    if (el.closest && el.closest('svg')) {
-      const parentSvg = el.closest('svg');
+    if (!isFullPage && targetEl.closest && targetEl.closest('svg')) {
+      const parentSvg = targetEl.closest('svg');
       const clone = parentSvg.cloneNode(true);
       if (!clone.getAttribute('xmlns')) {
         clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -4511,8 +4565,8 @@ text-align: ${cs.textAlign};`;
     }
 
     // 3. If element is a single <img>
-    if (tag === 'img') {
-      const src = getBase64FromImage(el);
+    if (!isFullPage && tag === 'img') {
+      const src = getBase64FromImage(targetEl);
       return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">\n  <image x="0" y="0" width="${W}" height="${H}" href="${escapeXml(src)}" preserveAspectRatio="xMidYMid slice" />\n</svg>`;
     }
 
@@ -4572,7 +4626,7 @@ text-align: ${cs.textAlign};`;
       const r = node.getBoundingClientRect();
       if (!isRoot && (r.width <= 0 || r.height <= 0)) return;
 
-      // Skip elements completely outside root bounding box
+      // Skip elements completely outside visible bounding box
       if (!isRoot && (r.right < rootRect.left || r.left > rootRect.right || r.bottom < rootRect.top || r.top > rootRect.bottom)) {
         return;
       }
@@ -4771,7 +4825,7 @@ text-align: ${cs.textAlign};`;
       }
     }
 
-    traverse(el, true);
+    traverse(targetEl, true);
 
     if (svgLayers.length === 0) {
       svgLayers.push(`  <rect x="0" y="0" width="${W}" height="${H}" fill="none" stroke="#94a3b8" stroke-dasharray="4 4" />`);
@@ -4780,12 +4834,13 @@ text-align: ${cs.textAlign};`;
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">\n${svgLayers.join('\n')}\n</svg>`;
   }
 
-  async function copySvgForFigma(el, btnElement) {
-    if (!el) return;
-    const svgText = elementToSvgString(el);
+  async function copySvgForFigma(el, btnElement, isFullPage = false) {
+    const targetEl = isFullPage ? (document.body || document.documentElement) : el;
+    if (!targetEl) return;
+    const svgText = elementToSvgString(targetEl, isFullPage);
     if (!svgText) {
       flashElement(btnElement, '✕ SVG Error', 'mv-copy--error');
-      showToast('✕ Could not generate SVG for this element');
+      showToast('✕ Could not generate SVG for this ' + (isFullPage ? 'full page' : 'element'));
       return;
     }
 
@@ -4807,27 +4862,33 @@ text-align: ${cs.textAlign};`;
       }
     }
 
+    const successMsg = isFullPage ? '✓ Copied Full Page SVG!' : '✓ Copied SVG for Figma!';
+    const toastMsg = isFullPage
+      ? '❖ Copied Full Page Vector! Press Ctrl+V in Figma to paste screen layers'
+      : '❖ Copied SVG Vector! Press Ctrl+V in Figma to paste layers';
+
     // Fallback to plain text writeText or execCommand
     if (!success) {
-      success = await copyToClipboard(svgText, btnElement, '✓ Copied SVG for Figma!');
+      success = await copyToClipboard(svgText, btnElement, successMsg);
       if (success) {
-        showToast('❖ Copied SVG Vector! Press Ctrl+V in Figma to paste layers');
+        showToast(toastMsg);
       }
       return;
     }
 
-    flashElement(btnElement, '✓ Copied SVG for Figma!', 'mv-copy--success');
-    showToast('❖ Copied SVG Vector! Press Ctrl+V in Figma to paste editable layers');
+    flashElement(btnElement, successMsg, 'mv-copy--success');
+    showToast(toastMsg);
   }
 
-  async function copyPngForFigma(el, btnElement) {
-    if (!el) return;
+  async function copyPngForFigma(el, btnElement, isFullPage = false) {
+    const targetEl = isFullPage ? (document.body || document.documentElement) : el;
+    if (!targetEl) return;
     flashElement(btnElement, '⏳ Capturing...', 'mv-copy--success');
 
-    const captured = await captureElementCanvas(el, 'png');
+    const captured = await captureElementCanvas(targetEl, 'png', 0.95, isFullPage);
     if (!captured || !captured.canvas) {
       flashElement(btnElement, '✕ Capture Failed', 'mv-copy--error');
-      showToast('✕ Failed to capture element screen');
+      showToast('✕ Failed to capture ' + (isFullPage ? 'full page' : 'element') + ' screen');
       return;
     }
 
@@ -4838,7 +4899,8 @@ text-align: ${cs.textAlign};`;
       if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
         const item = new ClipboardItem({ 'image/png': blob });
         await navigator.clipboard.write([item]);
-        flashElement(btnElement, '✓ Copied PNG for Figma!', 'mv-copy--success');
+        const msg = isFullPage ? '✓ Copied Full Page PNG!' : '✓ Copied PNG for Figma!';
+        flashElement(btnElement, msg, 'mv-copy--success');
         showToast('🖼️ Copied PNG! Press Ctrl+V in Figma to paste 1:1 image layer');
       } else {
         throw new Error('ClipboardItem image/png not supported');
@@ -5175,6 +5237,16 @@ text-align: ${cs.textAlign};`;
       parentBtn.title = `Inspect parent <${getSafeTag(el.parentElement)}>`;
     } else {
       parentBtn.style.display = 'none';
+    }
+
+    // Full page select button visibility
+    const fullpageNavBtn = inspectCard.querySelector('#mv-inspect-fullpage');
+    if (fullpageNavBtn) {
+      if (el === document.body || el === document.documentElement) {
+        fullpageNavBtn.style.display = 'none';
+      } else {
+        fullpageNavBtn.style.display = 'inline-flex';
+      }
     }
 
     // 2. Metrics: Font, Color, Padding, Margin
