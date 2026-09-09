@@ -7,8 +7,11 @@ A powerful Google Chrome Extension (Manifest V3) designed for Developers, QA Eng
 - **🎯 Interactive DOM Inspection:** Hover and inspect any element on any webpage with isolated Shadow DOM UI (100% CSP-safe).
 - **📸 Clean JPG Element Screenshots:** One-click pixel-perfect element capture without inspector overlay interference.
 - **⚡ QA & PenTest Tools:**
+  - 📁 **1-Click Fake File Generator:** Inject realistic mock files (`📄 PDF`, `🖼️ JPG`, `📊 CSV`, `⚠️ 15MB Oversize`, `🚫 .exe script`) directly into `<input type="file">` via the native `DataTransfer` API without needing physical files on disk.
+  - 🇱🇦 **Lao & Global Mock Data Presets:** One-click locale toggle (`🇱🇦 LA` / `🌐 EN`) generating localized Lao names, 020 phones, Lao provinces/districts, streets, and companies.
+  - 💾 **Form State Save & Restore:** Snapshot all form field values into browser storage (`chrome.storage`) and restore them across sessions in 1 click.
   - 🎲 **Smart Random Auto-Input:** Context-aware automatic data generation (Name, Email, Phone, Password, Address, Date, Numbers, URLs) that injects realistic mock data with native React/Vue/Angular prototype synchronization.
-  - ⚡ **Fill Entire Form:** 1-Click to automatically fill all inputs, textareas, select dropdowns, and checkboxes across the entire form or container.
+  - ⚡ **Fill Entire Form:** 1-Click to automatically fill all inputs, textareas, select dropdowns, checkboxes, and file uploads across the entire form or container.
   - 🧩 **Quick Mock Chips:** 1-Click chips for realistic `👤 Name`, `📧 Email`, `📱 Phone`, `🔑 Password`, and `📝 Text`.
   - 🔓 **Unlock Form Constraints:** Remove `disabled`, `readonly`, `maxlength`, `pattern`, `required`, and `novalidate` restrictions with 1 click.
   - 👁️ **Show Password:** Instantly unmask and toggle masked password fields.

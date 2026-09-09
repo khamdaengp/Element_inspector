@@ -433,6 +433,33 @@
   color: #f59e0b !important;
 }
 
+.mv-qa-header-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.mv-locale-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1px 6px !important;
+  background: #1e2133 !important;
+  color: #38bdf8 !important;
+  border: 1px solid #0284c7 !important;
+  border-radius: 4px !important;
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  user-select: none !important;
+}
+
+.mv-locale-toggle:hover {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
 .mv-qa-badge {
   font-size: 9.5px !important;
   font-weight: 600 !important;
@@ -447,6 +474,47 @@
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   gap: 5px !important;
+}
+
+.mv-qa-btn-profile {
+  background: #181b2a !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+.mv-qa-btn-profile:hover {
+  background: #334155 !important;
+  color: #f8fafc !important;
+  border-color: #64748b !important;
+}
+
+.mv-qa-file-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  margin-top: 2px !important;
+  padding-top: 6px !important;
+  border-top: 1px dashed #25283c !important;
+}
+
+.mv-qa-file-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 4px !important;
+}
+
+.mv-qa-chip--file {
+  font-size: 9px !important;
+  padding: 4px 2px !important;
+  background: #141b2d !important;
+  border-color: #2563eb !important;
+  color: #93c5fd !important;
+}
+
+.mv-qa-chip--file:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #60a5fa !important;
 }
 
 .mv-qa-btn {
@@ -978,7 +1046,10 @@
       <div class="mv-qa-section" id="mv-qa-section">
         <div class="mv-qa-header">
           <span>⚡ QA &amp; PenTest Tools</span>
-          <span class="mv-qa-badge" id="mv-qa-type-badge">Element</span>
+          <div class="mv-qa-header-right">
+            <button class="mv-locale-toggle" id="mv-locale-toggle" title="Switch data generator locale (Lao / English)">🇱🇦 LA</button>
+            <span class="mv-qa-badge" id="mv-qa-type-badge">Element</span>
+          </div>
         </div>
 
         <!-- Utility Actions -->
@@ -1001,6 +1072,16 @@
           </button>
         </div>
 
+        <!-- Form State Profile Save & Restore -->
+        <div class="mv-qa-actions-row">
+          <button class="mv-qa-btn mv-qa-btn-sm mv-qa-btn-profile" id="mv-btn-save-form" title="Save current form values to memory/storage">
+            <span>💾 Save Form</span>
+          </button>
+          <button class="mv-qa-btn mv-qa-btn-sm mv-qa-btn-profile" id="mv-btn-restore-form" title="Restore saved form values">
+            <span>📂 Restore Form</span>
+          </button>
+        </div>
+
         <!-- Random Auto-Fill Tools -->
         <div class="mv-qa-actions-row">
           <button class="mv-qa-btn mv-qa-btn-primary" id="mv-btn-random-input" title="Smartly detect input type and auto-fill realistic random data (Email, Name, Phone, Number, etc.)">
@@ -1011,13 +1092,25 @@
           </button>
         </div>
 
+        <!-- 1-Click Fake File Attach -->
+        <div class="mv-qa-file-section" id="mv-qa-file-section">
+          <div class="mv-qa-fill-label">📁 1-Click Fake File Attach:</div>
+          <div class="mv-qa-file-grid">
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="pdf" title="Attach valid PDF (test_document.pdf)">📄 PDF</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="jpg" title="Attach sample JPG image (sample_photo.jpg)">🖼️ JPG</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="csv" title="Attach spreadsheet CSV (sample_data.csv)">📊 CSV</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="oversize" title="Attach 15MB file to test size limit">⚠️ 15MB</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="invalid" title="Attach script file to test security filter (malicious.exe)">🚫 .exe</button>
+          </div>
+        </div>
+
         <!-- Quick Random & Test Data Fillers -->
         <div class="mv-qa-fill-label">🎲 Quick Random &amp; Test Data Fill:</div>
         <div class="mv-qa-fill-grid">
-          <button class="mv-qa-chip" data-fill="rand-name" title="Fill random full name (e.g. Alex Smith)">
+          <button class="mv-qa-chip" data-fill="rand-name" title="Fill random full name">
             <span>👤 Name</span>
           </button>
-          <button class="mv-qa-chip" data-fill="rand-email" title="Fill random valid email (e.g. alex.789@example.com)">
+          <button class="mv-qa-chip" data-fill="rand-email" title="Fill random valid email">
             <span>📧 Email</span>
           </button>
           <button class="mv-qa-chip" data-fill="rand-phone" title="Fill random phone number (e.g. 02055667788)">
@@ -1184,8 +1277,73 @@
       });
     }
 
+    // QA Tool: Locale switcher (Lao <-> English)
+    const localeToggleBtn = inspectCard.querySelector('#mv-locale-toggle');
+    if (localeToggleBtn) {
+      localeToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentLocale = (currentLocale === 'LA') ? 'EN' : 'LA';
+        localeToggleBtn.textContent = (currentLocale === 'LA') ? '🇱🇦 LA' : '🌐 EN';
+        try {
+          localStorage.setItem('ei_locale', currentLocale);
+        } catch (_) {}
+        showToast(`✓ Switched to ${currentLocale === 'LA' ? 'Lao (🇱🇦)' : 'English (🌐)'} data!`);
+      });
+    }
+
+    // QA Tool: Form State Save
+    const saveFormBtn = inspectCard.querySelector('#mv-btn-save-form');
+    if (saveFormBtn) {
+      saveFormBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const count = saveFormState(selectedEl);
+        if (count > 0) {
+          flashElement(saveFormBtn, `✓ Saved ${count} Fields!`, 'mv-copy--success');
+          showToast(`✓ Form profile saved (${count} fields)!`);
+        } else {
+          flashElement(saveFormBtn, 'No Form Data', 'mv-copy--error');
+        }
+      });
+    }
+
+    // QA Tool: Form State Restore
+    const restoreFormBtn = inspectCard.querySelector('#mv-btn-restore-form');
+    if (restoreFormBtn) {
+      restoreFormBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        flashElement(restoreFormBtn, '⏳ Restoring...', 'mv-copy--success');
+        const count = await restoreFormState(selectedEl);
+        if (count > 0) {
+          flashElement(restoreFormBtn, `✓ Restored ${count}!`, 'mv-copy--success');
+          showToast(`✓ Restored ${count} form fields from saved profile!`);
+        } else {
+          flashElement(restoreFormBtn, 'No Profile Found', 'mv-copy--error');
+        }
+      });
+    }
+
+    // QA Tool: 1-Click Fake File Chips
+    const fileChips = inspectCard.querySelectorAll('.mv-qa-chip--file[data-file]');
+    fileChips.forEach((chip) => {
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const fileType = chip.getAttribute('data-file');
+        const file = generateMockFile(fileType);
+        const ok = injectFileToInput(selectedEl, file);
+        if (ok) {
+          flashElement(chip, '✓ Attached!', 'mv-copy--success');
+          showToast(`✓ Attached ${file.name} to file input!`);
+        } else {
+          flashElement(chip, 'No File Input', 'mv-copy--error');
+        }
+      });
+    });
+
     // QA Tool: 1-Click Test Data Fillers
-    const fillChips = inspectCard.querySelectorAll('.mv-qa-chip');
+    const fillChips = inspectCard.querySelectorAll('.mv-qa-chip[data-fill]');
     fillChips.forEach((chip) => {
       chip.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1629,37 +1787,90 @@
     return true;
   }
 
-  // ─── QA Data Values & Random Data Generator ────────────────────────────────
+  // ─── QA Data Values & Localized Mock Data Generator ──────────────────────
 
+  let currentLocale = 'LA';
+  try {
+    const savedLoc = localStorage.getItem('ei_locale');
+    if (savedLoc === 'EN' || savedLoc === 'LA') currentLocale = savedLoc;
+  } catch (_) {}
+
+  // Global / English Datasets
   const RANDOM_FIRST_NAMES = [
     'Alex', 'Jordan', 'Taylor', 'Morgan', 'Sam', 'Chris', 'David', 'Emma',
-    'Michael', 'Sarah', 'Khamdaeng', 'Noy', 'Somchai', 'Anousone', 'Vilayvanh',
-    'Daniel', 'Sophia', 'James', 'Olivia', 'Ethan', 'Grace', 'Liam', 'Mia', 'Keo'
+    'Michael', 'Sarah', 'Daniel', 'Sophia', 'James', 'Olivia', 'Ethan', 'Grace', 'Liam', 'Mia'
   ];
 
   const RANDOM_LAST_NAMES = [
     'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Wilson',
-    'Souvanh', 'Phommachan', 'Keomany', 'Vongsa', 'Inthavong', 'Nguyen', 'Tran'
+    'Anderson', 'Taylor', 'Thomas', 'Moore', 'Jackson', 'Martin'
   ];
 
   const RANDOM_STREETS = [
-    'Lane Xang Ave', 'Souphanouvong Rd', 'Samsenthai Rd', 'Setthathirath Rd',
-    'Main Street', 'Market Street', 'Broadway Ave', 'Park Blvd', 'Sunset Blvd'
+    'Main Street', 'Market Street', 'Broadway Ave', 'Park Blvd', 'Sunset Blvd',
+    'Highland Ave', 'Oak Street', 'Maple Ave'
   ];
 
-  const RANDOM_CITIES = ['Vientiane', 'Luang Prabang', 'Pakse', 'Savannakhet', 'Bangkok', 'Singapore', 'New York'];
-
-  const RANDOM_COMPANIES = ['Vientiane Tech Co.', 'Lao Telecom Group', 'Digital Solutions Ltd.', 'Pacific Global', 'Alpha Innovations'];
-
+  const RANDOM_CITIES = ['New York', 'San Francisco', 'London', 'Singapore', 'Sydney', 'Tokyo', 'Berlin'];
+  const RANDOM_COMPANIES = ['Alpha Global Tech', 'Apex Solutions Ltd', 'Pacific Systems', 'Starlight Media', 'Nexus Dynamics'];
   const RANDOM_PARAGRAPHS = [
     'This is an automated test message generated for QA validation. Form input handling and boundary constraints are being verified.',
     'User feedback testing in progress. System performance, accessibility standards, and responsive UI components are validated.',
     'Automated testing payload submitted to verify input persistence, XSS sanitization, and state management.'
   ];
 
+  // Lao Localized Datasets (🇱🇦)
+  const LAO_FIRST_NAMES = [
+    'ສົມສັກ', 'ຄຳແພງ', 'ບຸນມີ', 'ວັນໄຊ', 'ທິດາ', 'ມະນີວັນ', 'ສຸກັນ', 'ອາລຸນ',
+    'ດາວີ', 'ສີວິໄລ', 'ເກດສະໜາ', 'ພອນໄຊ', 'ຈັນທາ', 'ສຸລິຍາ', 'ແກ້ວມະນີ',
+    'ອານຸສອນ', 'ວິໄລສັກ', 'ສຸກສາຄອນ', 'ນ້ອຍ', 'ສົມຊາຍ', 'ພອນທິບ', 'ມານີ'
+  ];
+
+  const LAO_LAST_NAMES = [
+    'ໄຊຍະວົງ', 'ສີສຸລາດ', 'ວົງສາ', 'ແກ້ວມະນີວົງ', 'ພົມມະຈັນ', 'ອິນທະວົງ',
+    'ລັດຕະນະວົງ', 'ດວງດາລາ', 'ສຸລິວົງ', 'ພອນປະເສີດ', 'ຄຳມະນີ', 'ຈັນທະລັງສີ',
+    'ສິດທິໄຊ', 'ມະນີວົງ', 'ທຳມະວົງ', 'ສົມພອນ'
+  ];
+
+  const LAO_STREETS = [
+    'ຖະໜົນ ລ້ານຊ້າງ', 'ຖະໜົນ ສຸພານຸວົງ', 'ຖະໜົນ ສາມແສນໄທ', 'ຖະໜົນ ເສດຖາທິຣາດ',
+    'ຖະໜົນ ໄກສອນ ພົມວິຫານ', 'ຖະໜົນ ດົງໂດກ', 'ຖະໜົນ ຄູວຽງ', 'ຖະໜົນ 23 ສິງຫາ'
+  ];
+
+  const LAO_PROVINCES = [
+    'ນະຄອນຫຼວງວຽງຈັນ', 'ຫຼວງພະບາງ', 'ສະຫວັນນະເຂດ', 'ຈຳປາສັກ', 'ແຂວງວຽງຈັນ',
+    'ຄຳມ່ວນ', 'ບໍລິຄຳໄຊ', 'ຊຽງຂວາງ', 'ອຸດົມໄຊ', 'ບໍ່ແກ້ວ', 'ຫຼວງນ້ຳທາ',
+    'ສາລະວັນ', 'ເຊກອງ', 'ອັດຕະປື', 'ໄຊຍະບູລີ', 'ຫົວພັນ', 'ຜົ້ງສາລີ', 'ໄຊສົມບູນ'
+  ];
+
+  const LAO_DISTRICTS = [
+    'ເມືອງ ຈັນທະບູລີ', 'ເມືອງ ສີໂຄດຕະບອງ', 'ເມືອງ ໄຊເສດຖາ', 'ເມືອງ ສີສັດຕະນາກ',
+    'ເມືອງ ຫາດຊາຍຟອງ', 'ເມືອງ ນາຊາຍທອງ', 'ເມືອງ ໄຊທານີ'
+  ];
+
+  const LAO_COMPANIES = [
+    'ລັດວິສາຫະກິດ ໂທລະຄົມມະນາຄົມລາວ (Lao Telecom)',
+    'ບໍລິສັດ ພັດທະນາດີຈິຕອນ ລາວ ຈຳກັດ',
+    'ກຸ່ມບໍລິສັດ ວຽງຈັນ ເຕັກໂນໂລຊີ',
+    'ທະນາຄານ ການຄ້າຕ່າງປະເທດລາວ (BCEL)',
+    'ບໍລິສັດ ດາວເຮືອງ ກຣຸບ'
+  ];
+
+  const LAO_PARAGRAPHS = [
+    'ລະບົບກວດສອບ ແລະ ທົດສອບຟອມອັດຕະໂນມັດ ຊ່ວຍໃຫ້ການເຮັດວຽກຂອງ Developer ແລະ QA ວ່ອງໄວ ແລະ ມີປະສິດທິພາບສູງ.',
+    'ການທົດສອບຊອບແວແມ່ນຂະບວນການສຳຄັນທີ່ສຸດເພື່ອຮັບປະກັນຄຸນນະພາບ, ຄວາມປອດໄພ ແລະ ຄວາມຖືກຕ້ອງຂອງລະບົບ.',
+    'ຂໍ້ຄວາມທົດສອບອັດຕະໂນມັດຖືກສົ່ງເພື່ອຢືນຢັນການເຮັດວຽກຂອງ Input ແລະ Validation ຂອງລະບົບ.'
+  ];
+
   function getFillValue(type) {
+    const isLao = (currentLocale === 'LA');
     switch (type) {
       case 'rand-name': {
+        if (isLao) {
+          const fn = LAO_FIRST_NAMES[Math.floor(Math.random() * LAO_FIRST_NAMES.length)];
+          const ln = LAO_LAST_NAMES[Math.floor(Math.random() * LAO_LAST_NAMES.length)];
+          return `${fn} ${ln}`;
+        }
         const fn = RANDOM_FIRST_NAMES[Math.floor(Math.random() * RANDOM_FIRST_NAMES.length)];
         const ln = RANDOM_LAST_NAMES[Math.floor(Math.random() * RANDOM_LAST_NAMES.length)];
         return `${fn} ${ln}`;
@@ -1674,6 +1885,9 @@
       case 'rand-pass':
         return `Pass@${Math.floor(1000 + Math.random() * 9000)}_Secure#`;
       case 'rand-text':
+        if (isLao) {
+          return LAO_PARAGRAPHS[Math.floor(Math.random() * LAO_PARAGRAPHS.length)];
+        }
         return RANDOM_PARAGRAPHS[Math.floor(Math.random() * RANDOM_PARAGRAPHS.length)];
       case 'long':
         return 'A'.repeat(300);
@@ -1704,6 +1918,7 @@
     const autocomplete = (inputEl.autocomplete || '').toLowerCase();
     const className = (typeof inputEl.className === 'string' ? inputEl.className : '').toLowerCase();
     const combined = `${name} ${id} ${placeholder} ${ariaLabel} ${autocomplete} ${className}`;
+    const isLao = (currentLocale === 'LA');
 
     // 1. Email
     if (type === 'email' || combined.includes('email') || combined.includes('mail')) {
@@ -1746,12 +1961,19 @@
 
     // 7. Names
     if (combined.includes('first')) {
+      if (isLao) return LAO_FIRST_NAMES[Math.floor(Math.random() * LAO_FIRST_NAMES.length)];
       return RANDOM_FIRST_NAMES[Math.floor(Math.random() * RANDOM_FIRST_NAMES.length)];
     }
     if (combined.includes('last') || combined.includes('surname')) {
+      if (isLao) return LAO_LAST_NAMES[Math.floor(Math.random() * LAO_LAST_NAMES.length)];
       return RANDOM_LAST_NAMES[Math.floor(Math.random() * RANDOM_LAST_NAMES.length)];
     }
     if (combined.includes('name') || combined.includes('user') || combined.includes('author') || combined.includes('contact') || combined.includes('recipient')) {
+      if (isLao) {
+        const fn = LAO_FIRST_NAMES[Math.floor(Math.random() * LAO_FIRST_NAMES.length)];
+        const ln = LAO_LAST_NAMES[Math.floor(Math.random() * LAO_LAST_NAMES.length)];
+        return `${fn} ${ln}`;
+      }
       const fn = RANDOM_FIRST_NAMES[Math.floor(Math.random() * RANDOM_FIRST_NAMES.length)];
       const ln = RANDOM_LAST_NAMES[Math.floor(Math.random() * RANDOM_LAST_NAMES.length)];
       return `${fn} ${ln}`;
@@ -1760,13 +1982,23 @@
     // 8. Address / City / Country / Company
     if (combined.includes('address') || combined.includes('street')) {
       const num = Math.floor(10 + Math.random() * 980);
+      if (isLao) {
+        const st = LAO_STREETS[Math.floor(Math.random() * LAO_STREETS.length)];
+        return `${st}, ເຮືອນເລກທີ ${num}`;
+      }
       const st = RANDOM_STREETS[Math.floor(Math.random() * RANDOM_STREETS.length)];
       return `${num} ${st}`;
     }
     if (combined.includes('city') || combined.includes('province')) {
+      if (isLao) return LAO_PROVINCES[Math.floor(Math.random() * LAO_PROVINCES.length)];
       return RANDOM_CITIES[Math.floor(Math.random() * RANDOM_CITIES.length)];
     }
+    if (combined.includes('district')) {
+      if (isLao) return LAO_DISTRICTS[Math.floor(Math.random() * LAO_DISTRICTS.length)];
+      return 'Central District';
+    }
     if (combined.includes('company') || combined.includes('org')) {
+      if (isLao) return LAO_COMPANIES[Math.floor(Math.random() * LAO_COMPANIES.length)];
       return RANDOM_COMPANIES[Math.floor(Math.random() * RANDOM_COMPANIES.length)];
     }
     if (combined.includes('zip') || combined.includes('postal')) {
@@ -1775,11 +2007,13 @@
 
     // 9. Subject / Title / Topic
     if (combined.includes('subject') || combined.includes('title') || combined.includes('topic')) {
+      if (isLao) return `ບົດລາຍງານການທົດສອບ QA #${Math.floor(1000 + Math.random() * 9000)}`;
       return `QA Test Report #${Math.floor(1000 + Math.random() * 9000)}`;
     }
 
     // 10. Textarea or Comment / Message / Description / Bio / Notes
     if (tag === 'textarea' || combined.includes('desc') || combined.includes('comment') || combined.includes('message') || combined.includes('body') || combined.includes('detail') || combined.includes('note')) {
+      if (isLao) return LAO_PARAGRAPHS[Math.floor(Math.random() * LAO_PARAGRAPHS.length)];
       return RANDOM_PARAGRAPHS[Math.floor(Math.random() * RANDOM_PARAGRAPHS.length)];
     }
 
@@ -1791,7 +2025,185 @@
 
     // Default fallback
     const randStr = Math.random().toString(36).substring(2, 7);
-    return `Auto_${randStr}`;
+    return isLao ? `ທົດສອບ_${randStr}` : `Auto_${randStr}`;
+  }
+
+  // ─── QA Tool: 1-Click Fake File Generator & Attacher ───────────────────────
+
+  function generateMockFile(type) {
+    switch (type) {
+      case 'pdf': {
+        const pdfData = `%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 300 144]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000010 00000 n \n0000000060 00000 n \n0000000118 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n198\n%%EOF`;
+        return new File([pdfData], 'test_document.pdf', { type: 'application/pdf' });
+      }
+      case 'jpg': {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = 320;
+          canvas.height = 200;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(0, 0, 320, 200);
+          ctx.fillStyle = '#2563eb';
+          ctx.fillRect(10, 10, 300, 180);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 20px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('SAMPLE IMAGE', 160, 100);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+          const byteStr = atob(dataUrl.split(',')[1]);
+          const ab = new ArrayBuffer(byteStr.length);
+          const ia = new Uint8Array(ab);
+          for (let i = 0; i < byteStr.length; i++) {
+            ia[i] = byteStr.charCodeAt(i);
+          }
+          return new File([ia], 'sample_photo.jpg', { type: 'image/jpeg' });
+        } catch (_) {
+          return new File(['DUMMY_IMAGE_DATA'], 'sample_photo.jpg', { type: 'image/jpeg' });
+        }
+      }
+      case 'csv': {
+        const csv = "id,name,email,role,status\n1,Alex Smith,alex@example.com,QA Tester,Active\n2,Somxai Vongsa,somxai@laotel.com,Developer,Active\n3,Jane Davis,jane@example.com,Admin,Pending\n4,Khamdaeng Xai,khamdaeng@test.la,Security,Active\n";
+        return new File([csv], 'sample_data.csv', { type: 'text/csv' });
+      }
+      case 'oversize': {
+        // 15 MB binary file to trigger upload file size limits
+        const size = 15 * 1024 * 1024;
+        const buf = new Uint8Array(size);
+        return new File([buf], 'oversize_test_15mb.pdf', { type: 'application/pdf' });
+      }
+      case 'invalid': {
+        return new File(['MZ_MOCK_EXECUTABLE_BINARY_PAYLOAD'], 'malicious_test.exe', { type: 'application/x-msdownload' });
+      }
+      default:
+        return new File(['test file content'], 'test_file.txt', { type: 'text/plain' });
+    }
+  }
+
+  function injectFileToInput(target, file) {
+    if (!target) return false;
+    let fileInput = target;
+    const tag = (fileInput.tagName || '').toLowerCase();
+    if (tag !== 'input' || (fileInput.type || '').toLowerCase() !== 'file') {
+      fileInput = target.querySelector ? target.querySelector('input[type="file"]') : null;
+    }
+    if (!fileInput) {
+      const form = target.closest ? target.closest('form') : null;
+      if (form) fileInput = form.querySelector('input[type="file"]');
+      if (!fileInput) fileInput = document.querySelector('input[type="file"]');
+    }
+    if (!fileInput) return false;
+
+    try {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      fileInput.dispatchEvent(new Event('input', { bubbles: true }));
+      fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+      flashInputOutline(fileInput);
+      return true;
+    } catch (err) {
+      console.warn('EI: File injection failed', err);
+      return false;
+    }
+  }
+
+  // ─── QA Tool: Form State Save & Restore Profile ────────────────────────────
+
+  function getFormContainer(el) {
+    if (!el) return document.body;
+    return el.closest('form') || el.closest('[role="form"]') || (['form', 'div', 'section', 'article', 'body'].includes((el.tagName || '').toLowerCase()) ? el : el.parentElement) || document.body;
+  }
+
+  function saveFormState(el) {
+    const container = getFormContainer(el);
+    const inputs = Array.from(container.querySelectorAll('input, textarea, select'));
+    if (inputs.length === 0) return 0;
+
+    const data = [];
+    inputs.forEach((input, index) => {
+      if (isInspectorElement(input)) return;
+      const type = (input.type || '').toLowerCase();
+      if (['submit', 'button', 'reset', 'file'].includes(type)) return;
+
+      const identifier = input.name ? `name:${input.name}` : (input.id ? `id:${input.id}` : `idx:${index}`);
+      let val = (type === 'checkbox' || type === 'radio') ? input.checked : input.value;
+
+      data.push({
+        identifier,
+        tagName: (input.tagName || '').toLowerCase(),
+        type,
+        value: val
+      });
+    });
+
+    if (data.length === 0) return 0;
+
+    const storageKey = `ei_form_${window.location.hostname}_${window.location.pathname}`;
+    try {
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.set({ [storageKey]: data });
+      } else {
+        localStorage.setItem(storageKey, JSON.stringify(data));
+      }
+    } catch (_) {
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    }
+
+    return data.length;
+  }
+
+  async function restoreFormState(el) {
+    const container = getFormContainer(el);
+    const inputs = Array.from(container.querySelectorAll('input, textarea, select'));
+    if (inputs.length === 0) return 0;
+
+    const storageKey = `ei_form_${window.location.hostname}_${window.location.pathname}`;
+    let data = null;
+
+    try {
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        const res = await new Promise(r => chrome.storage.local.get(storageKey, r));
+        data = res ? res[storageKey] : null;
+      }
+    } catch (_) {}
+
+    if (!data) {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (raw) data = JSON.parse(raw);
+      } catch (_) {}
+    }
+
+    if (!data || !Array.isArray(data) || data.length === 0) return 0;
+
+    let restored = 0;
+    inputs.forEach((input, index) => {
+      if (isInspectorElement(input)) return;
+      const type = (input.type || '').toLowerCase();
+      if (['submit', 'button', 'reset', 'file'].includes(type)) return;
+
+      const nameId = input.name ? `name:${input.name}` : null;
+      const idId = input.id ? `id:${input.id}` : null;
+      const idxId = `idx:${index}`;
+
+      const match = data.find(d => (nameId && d.identifier === nameId) || (idId && d.identifier === idId) || (d.identifier === idxId));
+      if (match && match.value !== null && match.value !== undefined) {
+        if (type === 'checkbox' || type === 'radio') {
+          input.checked = !!match.value;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+          flashInputOutline(input);
+          restored++;
+        } else {
+          const ok = injectInputValue(input, match.value);
+          if (ok) restored++;
+        }
+      }
+    });
+
+    return restored;
   }
 
   // ─── QA Tool: Smart Random Auto-Fill for Selected Element ───────────────────
@@ -1805,6 +2217,11 @@
       targetInput = el.querySelector('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), textarea, select');
     }
     if (!targetInput) return false;
+
+    if (targetInput.tagName.toLowerCase() === 'input' && (targetInput.type || '').toLowerCase() === 'file') {
+      const mockFile = generateMockFile('pdf');
+      return injectFileToInput(targetInput, mockFile);
+    }
 
     const val = generateSmartRandomValue(targetInput);
     return injectInputValue(targetInput, val);
@@ -1839,6 +2256,13 @@
       if (isInspectorElement(inputNode)) continue;
       if (inputNode.disabled || inputNode.readOnly) continue;
 
+      if ((inputNode.tagName || '').toLowerCase() === 'input' && (inputNode.type || '').toLowerCase() === 'file') {
+        const mockFile = generateMockFile('pdf');
+        const ok = injectFileToInput(inputNode, mockFile);
+        if (ok) filledCount++;
+        continue;
+      }
+
       const val = generateSmartRandomValue(inputNode);
       const ok = injectInputValue(inputNode, val);
       if (ok) filledCount++;
@@ -1863,7 +2287,13 @@
 
     const targetTag = targetInput.tagName.toLowerCase();
 
-    // 1. Dropdown Select handling
+    // 1. File Input handling
+    if (targetTag === 'input' && (targetInput.type || '').toLowerCase() === 'file') {
+      const mockFile = generateMockFile('pdf');
+      return injectFileToInput(targetInput, mockFile);
+    }
+
+    // 2. Dropdown Select handling
     if (targetTag === 'select') {
       const opts = Array.from(targetInput.options).filter(o => !o.disabled && o.value !== '');
       if (opts.length > 0) {
@@ -1875,7 +2305,7 @@
       return true;
     }
 
-    // 2. Checkbox & Radio handling
+    // 3. Checkbox & Radio handling
     if (targetTag === 'input' && ['checkbox', 'radio'].includes(targetInput.type)) {
       targetInput.checked = (targetInput.type === 'radio') ? true : !targetInput.checked;
       targetInput.dispatchEvent(new Event('input', { bubbles: true }));
@@ -1884,7 +2314,7 @@
       return true;
     }
 
-    // 3. Text, textarea, password, number handling (Bypass React / Vue prototype overriding)
+    // 4. Text, textarea, password, number handling (Bypass React / Vue prototype overriding)
     const nativeInputValSetter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
       'value'
@@ -2351,7 +2781,20 @@
       qaBadge.textContent = tag;
     }
 
-}
+    // 5. Update Locale button text
+    const localeBtn = inspectCard.querySelector('#mv-locale-toggle');
+    if (localeBtn) {
+      localeBtn.textContent = (currentLocale === 'LA') ? '🇱🇦 LA' : '🌐 EN';
+    }
+
+    // 6. Check file inputs and display file section
+    const isFileInput = tag === 'input' && (el.type || '').toLowerCase() === 'file';
+    const hasFileInput = isFileInput || (el.querySelector && el.querySelector('input[type="file"]')) || document.querySelector('input[type="file"]');
+    const fileSection = inspectCard.querySelector('#mv-qa-file-section');
+    if (fileSection) {
+      fileSection.style.display = hasFileInput ? 'flex' : 'none';
+    }
+  }
 
   // ─── Show / Hide Card ─────────────────────────────────────────────────────
 
