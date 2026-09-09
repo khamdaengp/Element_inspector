@@ -95,6 +95,74 @@
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* ── Side Panel Mode (Ask Gemini Style) ─────────────────── */
+.mv-inspect-card.mv-side-panel {
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  width: 380px !important;
+  max-width: 95vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  border-radius: 14px 0 0 14px !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: 1px solid #2d3148 !important;
+  box-shadow: -10px 0 36px rgba(0, 0, 0, 0.65), -2px 0 10px rgba(0, 0, 0, 0.4) !important;
+  animation: mv-sidepanel-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+.mv-inspect-card.mv-side-panel .mv-inspect-header {
+  cursor: default !important;
+}
+
+@keyframes mv-sidepanel-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Side Resize Handle on left border */
+.mv-side-resize-handle {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 6px !important;
+  cursor: ew-resize !important;
+  z-index: 25 !important;
+  display: none;
+  transition: background 0.15s ease !important;
+}
+
+.mv-inspect-card.mv-side-panel .mv-side-resize-handle {
+  display: block !important;
+}
+
+.mv-side-resize-handle:hover,
+.mv-side-resize-handle.mv-resizing {
+  background: rgba(56, 189, 248, 0.6) !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
+}
+
+/* Dock toggle button */
+.mv-btn-dock {
+  font-size: 11px !important;
+  padding: 3px 6px !important;
+}
+
+.mv-btn-dock.mv-docked {
+  color: #38bdf8 !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
 /* ── Header ────────────────────────────────────────────── */
 .mv-inspect-header {
   display: flex !important;

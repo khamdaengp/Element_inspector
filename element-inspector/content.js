@@ -116,6 +116,74 @@
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* ── Side Panel Mode (Ask Gemini Style) ─────────────────── */
+.mv-inspect-card.mv-side-panel {
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  width: 380px !important;
+  max-width: 95vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  border-radius: 14px 0 0 14px !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: 1px solid #2d3148 !important;
+  box-shadow: -10px 0 36px rgba(0, 0, 0, 0.65), -2px 0 10px rgba(0, 0, 0, 0.4) !important;
+  animation: mv-sidepanel-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+.mv-inspect-card.mv-side-panel .mv-inspect-header {
+  cursor: default !important;
+}
+
+@keyframes mv-sidepanel-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Side Resize Handle on left border */
+.mv-side-resize-handle {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 6px !important;
+  cursor: ew-resize !important;
+  z-index: 25 !important;
+  display: none;
+  transition: background 0.15s ease !important;
+}
+
+.mv-inspect-card.mv-side-panel .mv-side-resize-handle {
+  display: block !important;
+}
+
+.mv-side-resize-handle:hover,
+.mv-side-resize-handle.mv-resizing {
+  background: rgba(56, 189, 248, 0.6) !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
+}
+
+/* Dock toggle button */
+.mv-btn-dock {
+  font-size: 11px !important;
+  padding: 3px 6px !important;
+}
+
+.mv-btn-dock.mv-docked {
+  color: #38bdf8 !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
 .mv-inspect-header {
   display: flex !important;
   align-items: center !important;
@@ -1230,6 +1298,17 @@
   let isRulerMode   = false;
   let isAltKeyDown  = false;
 
+  // Side Panel state (Ask Gemini style right drawer)
+  let isSidePanelMode     = true;
+  let isResizingSidePanel = false;
+  let sidePanelWidth      = 380;
+  try {
+    const savedMode = localStorage.getItem('ei_side_panel');
+    if (savedMode === 'false') isSidePanelMode = false;
+    const savedWidth = parseInt(localStorage.getItem('ei_side_panel_width') || '380', 10);
+    if (savedWidth >= 280 && savedWidth <= 800) sidePanelWidth = savedWidth;
+  } catch (_) {}
+
   // Annotator state
   let annotatorModal    = null;
   let annotatorCanvas   = null;
@@ -1333,6 +1412,9 @@
     inspectCard.setAttribute('aria-label', 'DOM Element Inspector');
 
     inspectCard.innerHTML = `
+      <!-- Left Edge Resize Handle (Side Panel Mode) -->
+      <div class="mv-side-resize-handle" id="mv-side-resize-handle" title="Drag to resize panel"></div>
+
       <!-- Header -->
       <div class="mv-inspect-header">
         <div class="mv-inspect-tag-group">
@@ -1340,6 +1422,7 @@
           <span class="mv-inspect-dims" id="mv-inspect-dims">0 × 0 px</span>
         </div>
         <div class="mv-header-actions">
+          <button class="mv-btn-icon mv-btn-dock" id="mv-inspect-dock" title="Toggle Right Side Panel (like Ask Gemini) or Floating Window">📌 Side</button>
           <button class="mv-btn-icon mv-btn-screenshot" id="mv-inspect-screenshot" title="Capture & download element screenshot as JPG (and copy to clipboard)">📸 JPG</button>
           <button class="mv-btn-icon mv-btn-parent" id="mv-inspect-parent" title="Select parent element" style="display:none;">↑ Parent</button>
           <button class="mv-btn-icon mv-btn-close" id="mv-inspect-close" title="Close (Esc)">✕</button>
@@ -1619,12 +1702,100 @@
     inspectCard.addEventListener('mousedown', (e) => e.stopPropagation());
     inspectCard.addEventListener('click', (e) => e.stopPropagation());
 
+    // Initialize Side Panel state (Ask Gemini style)
+    if (isSidePanelMode) {
+      inspectCard.classList.add('mv-side-panel');
+      inspectCard.style.width = `${sidePanelWidth}px`;
+    }
+
     // Bind event listeners inside Card
     const closeBtn = inspectCard.querySelector('#mv-inspect-close');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       hideCard();
     });
+
+    // Dock toggle button (Side Panel <-> Floating Window)
+    const dockBtn = inspectCard.querySelector('#mv-inspect-dock');
+    if (dockBtn) {
+      const updateDockBtnUI = () => {
+        if (isSidePanelMode) {
+          dockBtn.innerHTML = '🗗 Float';
+          dockBtn.title = 'Switch to Floating Window';
+          dockBtn.classList.add('mv-docked');
+        } else {
+          dockBtn.innerHTML = '📌 Side';
+          dockBtn.title = 'Dock to Right Side (like Ask Gemini)';
+          dockBtn.classList.remove('mv-docked');
+        }
+      };
+      updateDockBtnUI();
+
+      dockBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        isSidePanelMode = !isSidePanelMode;
+        try {
+          localStorage.setItem('ei_side_panel', isSidePanelMode ? 'true' : 'false');
+        } catch (_) {}
+        updateDockBtnUI();
+
+        if (isSidePanelMode) {
+          inspectCard.classList.add('mv-side-panel');
+          inspectCard.style.left = '';
+          inspectCard.style.top = '';
+          inspectCard.style.right = '0px';
+          inspectCard.style.width = `${sidePanelWidth}px`;
+          showToast('📌 Docked to Right Side (Ask Gemini style)');
+        } else {
+          inspectCard.classList.remove('mv-side-panel');
+          inspectCard.style.right = '';
+          inspectCard.style.width = '';
+          if (selectedEl) {
+            const rect = selectedEl.getBoundingClientRect();
+            showCard(selectedEl, rect.left + rect.width / 2, rect.top + rect.height / 2);
+          } else {
+            inspectCard.style.left = `${Math.max(20, window.innerWidth - 380)}px`;
+            inspectCard.style.top = '20px';
+          }
+          showToast('🗗 Switched to Floating Window');
+        }
+      });
+    }
+
+    // Left edge resize handle for Side Panel
+    const resizeHandle = inspectCard.querySelector('#mv-side-resize-handle');
+    if (resizeHandle) {
+      resizeHandle.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        isResizingSidePanel = true;
+        resizeHandle.classList.add('mv-resizing');
+
+        const onResizeMove = (moveEvt) => {
+          if (!isResizingSidePanel) return;
+          const newW = window.innerWidth - moveEvt.clientX;
+          if (newW >= 280 && newW <= Math.min(850, window.innerWidth - 60)) {
+            sidePanelWidth = newW;
+            inspectCard.style.width = `${newW}px`;
+          }
+        };
+
+        const onResizeUp = () => {
+          if (isResizingSidePanel) {
+            isResizingSidePanel = false;
+            resizeHandle.classList.remove('mv-resizing');
+            try {
+              localStorage.setItem('ei_side_panel_width', sidePanelWidth);
+            } catch (_) {}
+            window.removeEventListener('mousemove', onResizeMove, true);
+            window.removeEventListener('mouseup', onResizeUp, true);
+          }
+        };
+
+        window.addEventListener('mousemove', onResizeMove, true);
+        window.addEventListener('mouseup', onResizeUp, true);
+      });
+    }
 
     const parentBtn = inspectCard.querySelector('#mv-inspect-parent');
     parentBtn.addEventListener('click', (e) => {
@@ -3699,7 +3870,7 @@ text-align: ${cs.textAlign};`;
   // ─── Header Drag Handling ─────────────────────────────────────────────────
 
   function onDragStart(e) {
-    if (e.target.closest('button')) return;
+    if (isSidePanelMode || e.target.closest('button')) return;
     isDragging = true;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
@@ -4102,7 +4273,20 @@ text-align: ${cs.textAlign};`;
 
     inspectCard.classList.add('mv-active');
 
-    // Intelligent positioning
+    if (isSidePanelMode) {
+      inspectCard.classList.add('mv-side-panel');
+      inspectCard.style.left = '';
+      inspectCard.style.top = '';
+      inspectCard.style.right = '0px';
+      inspectCard.style.width = `${sidePanelWidth}px`;
+      return;
+    }
+
+    inspectCard.classList.remove('mv-side-panel');
+    inspectCard.style.right = '';
+    inspectCard.style.width = '';
+
+    // Intelligent positioning for floating window mode
     inspectCard.style.left = '0px';
     inspectCard.style.top  = '0px';
 
