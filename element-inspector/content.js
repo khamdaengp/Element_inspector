@@ -290,6 +290,21 @@
   color: #7dd3fc !important;
 }
 
+.mv-btn-minimize {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  padding: 1px 7px !important;
+  line-height: 1 !important;
+  color: #94a3b8 !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+.mv-btn-minimize:hover {
+  background: rgba(148, 163, 184, 0.22) !important;
+  color: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.5) !important;
+}
+
 .mv-btn-close {
   font-size: 13px !important;
   padding: 3px 6px !important;
@@ -299,6 +314,40 @@
   background: rgba(239, 68, 68, 0.2) !important;
   color: #f87171 !important;
   border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* ── Minimized Card State ───────────────────────────────── */
+.mv-inspect-card.mv-minimized {
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.mv-inspect-card.mv-side-panel.mv-minimized {
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  top: 10px !important;
+  right: 10px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(99, 102, 241, 0.4) !important;
+  box-shadow: -4px 4px 24px rgba(0, 0, 0, 0.7) !important;
+}
+
+.mv-inspect-card.mv-minimized > *:not(.mv-inspect-header) {
+  display: none !important;
+}
+
+.mv-inspect-card.mv-minimized .mv-inspect-header {
+  border-bottom: none !important;
+  cursor: pointer !important;
+}
+
+.mv-inspect-card.mv-minimized .mv-side-resize-handle {
+  display: none !important;
 }
 
 .mv-inspect-metrics {
@@ -1410,6 +1459,7 @@
   let inspectCard   = null;
   let isRulerMode   = false;
   let isAltKeyDown  = false;
+  let isCardMinimized = false;
 
   // Side Panel state (Ask Gemini style right drawer)
   let isSidePanelMode     = true;
@@ -1543,6 +1593,7 @@
           <button class="mv-btn-icon mv-btn-dock" id="mv-inspect-dock" title="Toggle Right Side Panel (like Ask Gemini) or Floating Window">📌 Side</button>
           <button class="mv-btn-icon mv-btn-screenshot" id="mv-inspect-screenshot" title="Capture & download element screenshot as JPG (and copy to clipboard)">📸 JPG</button>
           <button class="mv-btn-icon mv-btn-parent" id="mv-inspect-parent" title="Select parent element" style="display:none;">↑ Parent</button>
+          <button class="mv-btn-icon mv-btn-minimize" id="mv-inspect-minimize" title="Minimize (−)">−</button>
           <button class="mv-btn-icon mv-btn-close" id="mv-inspect-close" title="Close (Esc)">✕</button>
         </div>
       </div>
@@ -1860,6 +1911,24 @@
       e.stopPropagation();
       hideCard();
     });
+
+    // Minimize button (−)
+    const minimizeBtn = inspectCard.querySelector('#mv-inspect-minimize');
+    if (minimizeBtn) {
+      minimizeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMinimizeCard();
+      });
+    }
+
+    // Double-click header to toggle minimize/expand
+    const inspectHeader = inspectCard.querySelector('.mv-inspect-header');
+    if (inspectHeader) {
+      inspectHeader.addEventListener('dblclick', (e) => {
+        if (e.target.closest('button')) return;
+        toggleMinimizeCard();
+      });
+    }
 
     // Dock toggle button (Side Panel <-> Floating Window)
     const dockBtn = inspectCard.querySelector('#mv-inspect-dock');
@@ -4739,6 +4808,14 @@ text-align: ${cs.textAlign};`;
         disableInspectMode();
       }
     }
+
+    if ((e.key === '-' || e.key === '_') && !['INPUT', 'TEXTAREA'].includes((e.target.tagName || ''))) {
+      if (inspectCard && inspectCard.classList.contains('mv-active')) {
+        e.preventDefault();
+        toggleMinimizeCard();
+        return;
+      }
+    }
   }
 
   function onKeyUp(e) {
@@ -4971,9 +5048,36 @@ text-align: ${cs.textAlign};`;
     inspectCard.style.top  = `${y}px`;
   }
 
+  function toggleMinimizeCard(forceState) {
+    if (!inspectCard) return;
+    if (typeof forceState === 'boolean') {
+      isCardMinimized = forceState;
+    } else {
+      isCardMinimized = !isCardMinimized;
+    }
+
+    const minimizeBtn = inspectCard.querySelector('#mv-inspect-minimize');
+
+    if (isCardMinimized) {
+      inspectCard.classList.add('mv-minimized');
+      if (minimizeBtn) {
+        minimizeBtn.innerHTML = '+';
+        minimizeBtn.title = 'Restore / Expand Card (+)';
+      }
+      showToast('Inspect Card Minimized (−)');
+    } else {
+      inspectCard.classList.remove('mv-minimized');
+      if (minimizeBtn) {
+        minimizeBtn.innerHTML = '−';
+        minimizeBtn.title = 'Minimize (−)';
+      }
+    }
+  }
+
   function hideCard() {
     if (inspectCard) {
       inspectCard.classList.remove('mv-active');
+      toggleMinimizeCard(false);
     }
     selectedEl = null;
     hideSelectedBox();

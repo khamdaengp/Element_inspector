@@ -5,6 +5,7 @@ A powerful Google Chrome Extension (Manifest V3) designed for Developers, QA Eng
 ## ✨ Features
 
 - **📱 Right Side Panel Display (Like "Ask Gemini"):** Docks seamlessly to the right side of the screen with a full-height scrollable drawer, smooth slide-in animation, left-border drag handle to resize width (280px - 850px), and a 1-click toggle (`📌 Side` / `🗗 Float`) between Side Panel and Floating Window.
+- **🗕 Minimize / Expand Button (− / +):** Instant 1-click minimize button `−` on the card header (or shortcut `-` / `_`, or double-click header) that collapses the inspector card into a compact title bar, preserving visibility of the inspected element and dimensions while clearing screen real estate. Click `+` or the header to instantly restore.
 - **🎯 Interactive DOM Inspection:** Hover and inspect any element on any webpage with isolated Shadow DOM UI (100% CSP-safe).
 - **📸 Clean JPG Element Screenshots:** One-click pixel-perfect element capture without inspector overlay interference.
 - **🎨 Developer & UI/UX Design Tools:**
