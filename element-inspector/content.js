@@ -187,17 +187,157 @@
   border-color: rgba(56, 189, 248, 0.4) !important;
 }
 
-.mv-inspect-header {
+/* ── Global Topbar (Row 1: Brand, Mode Pill, Controls) ── */
+.mv-global-topbar {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 8px 12px !important;
-  background: #0d0e17 !important;
-  border-bottom: 1px solid #25283c !important;
+  padding: 6px 10px !important;
+  background: #090a10 !important;
+  border-bottom: 1px solid #1f2233 !important;
   cursor: grab !important;
   user-select: none !important;
   position: sticky !important;
   top: 0 !important;
+  z-index: 12 !important;
+  gap: 6px !important;
+}
+
+.mv-global-topbar:active {
+  cursor: grabbing !important;
+}
+
+.mv-inspect-card.mv-side-panel .mv-global-topbar {
+  cursor: default !important;
+}
+
+.mv-global-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  color: #f1f5f9 !important;
+  letter-spacing: 0.2px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.mv-global-brand-icon {
+  color: #38bdf8 !important;
+  font-size: 13px !important;
+}
+
+/* Global Segmented Mode Pill (Inspect <-> Free Click) */
+.mv-mode-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  background: #141622 !important;
+  border: 1px solid #262a3d !important;
+  border-radius: 20px !important;
+  padding: 2px !important;
+  gap: 2px !important;
+  flex-shrink: 0 !important;
+}
+
+.mv-mode-tab {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 3px 8px !important;
+  border-radius: 14px !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  background: transparent !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+}
+
+.mv-mode-tab:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.mv-mode-tab-inspect.active {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 6px rgba(37, 99, 235, 0.5) !important;
+}
+
+.mv-mode-tab-free.active {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6) !important;
+  animation: mv-pulse-live 2s infinite ease-in-out !important;
+}
+
+.mv-mode-hotkey {
+  font-size: 9px !important;
+  padding: 1px 4px !important;
+  border-radius: 3px !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: #cbd5e1 !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+}
+
+/* Global Window Controls (Right: Dock, Minimize, Close) */
+.mv-window-controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  flex-shrink: 0 !important;
+}
+
+.mv-win-btn {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: #94a3b8 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+.mv-win-btn:hover {
+  background: #222638 !important;
+  color: #ffffff !important;
+  border-color: #333850 !important;
+}
+
+.mv-win-btn.mv-btn-close:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  color: #f87171 !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.mv-win-btn.mv-btn-dock.mv-docked {
+  color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.12) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+/* ── Element Header (Row 2: Tag, Dimensions & Actions) ── */
+.mv-inspect-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 7px 10px !important;
+  background: #0e1019 !important;
+  border-bottom: 1px solid #202436 !important;
+  cursor: grab !important;
+  user-select: none !important;
   z-index: 10 !important;
 }
 
@@ -318,18 +458,18 @@
 
 /* ── Minimized Card State ───────────────────────────────── */
 .mv-inspect-card.mv-minimized {
-  height: 42px !important;
-  min-height: 42px !important;
-  max-height: 42px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
   overflow: hidden !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .mv-inspect-card.mv-side-panel.mv-minimized {
-  height: 44px !important;
-  min-height: 44px !important;
-  max-height: 44px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
   top: 10px !important;
   right: 10px !important;
   border-radius: 8px !important;
@@ -337,11 +477,11 @@
   box-shadow: -4px 4px 24px rgba(0, 0, 0, 0.7) !important;
 }
 
-.mv-inspect-card.mv-minimized > *:not(.mv-inspect-header) {
+.mv-inspect-card.mv-minimized > *:not(.mv-global-topbar) {
   display: none !important;
 }
 
-.mv-inspect-card.mv-minimized .mv-inspect-header {
+.mv-inspect-card.mv-minimized .mv-global-topbar {
   border-bottom: none !important;
   cursor: pointer !important;
 }
@@ -1445,72 +1585,6 @@
   border-color: #818cf8;
 }
 
-/* Floating Mode Switch Bar (Top Center) */
-.ei-mode-bar {
-  position: fixed !important;
-  top: 10px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  background: rgba(15, 17, 26, 0.94) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  border-radius: 24px !important;
-  padding: 3px 5px !important;
-  gap: 4px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
-  z-index: 2147483646 !important;
-  pointer-events: auto !important;
-  user-select: none !important;
-  transition: all 0.2s ease !important;
-}
-
-.ei-mode-btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  padding: 5px 12px !important;
-  border-radius: 18px !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  border: 1px solid transparent !important;
-  background: transparent !important;
-  color: #94a3b8 !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
-  white-space: nowrap !important;
-}
-
-.ei-mode-btn:hover {
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-}
-
-.ei-mode-btn-inspect.active {
-  background: #2563eb !important;
-  color: #ffffff !important;
-  border-color: #3b82f6 !important;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.5) !important;
-}
-
-.ei-mode-btn-free.active {
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
-  color: #ffffff !important;
-  border-color: #6ee7b7 !important;
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6) !important;
-  animation: mv-pulse-live 2s infinite ease-in-out !important;
-}
-
-.ei-mode-bar-hint {
-  font-size: 9.5px !important;
-  color: #64748b !important;
-  padding: 0 6px 0 4px !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
-  font-family: inherit !important;
-}
-
 /* QA Date & Calendar Picker Controls */
 .mv-qa-date-box {
   display: flex !important;
@@ -1773,7 +1847,6 @@
 
   // Live Interact / Free Click Mode (allows clicking buttons, submits, links, calendars, years/months freely without closing extension)
   let isInteractiveMode = false;
-  let modeBar           = null;
 
   function isInsideCalendarOrPicker(el) {
     if (!el || el === document.body || el === document.documentElement) return false;
@@ -1816,31 +1889,17 @@
   function setInteractiveMode(enabled) {
     isInteractiveMode = !!enabled;
 
-    // 1. Update Card header button
-    const modeBtn = inspectCard ? inspectCard.querySelector('#mv-inspect-mode-toggle') : null;
-    if (modeBtn) {
-      if (isInteractiveMode) {
-        modeBtn.classList.add('mv-interact-active');
-        modeBtn.innerHTML = '<span>🔍 Inspect</span>';
-        modeBtn.title = 'Free Click Active: Click dates, change years/months, or submit freely! (Alt+F, Space or Ctrl+Click)';
-      } else {
-        modeBtn.classList.remove('mv-interact-active');
-        modeBtn.innerHTML = '<span>🔓 Free Click</span>';
-        modeBtn.title = 'Inspect Mode: Click to switch to Free Click (Alt+F or Space)';
-      }
-    }
-
-    // 2. Update Floating Mode Bar (Top Center)
-    if (modeBar) {
-      const btnInspect = modeBar.querySelector('#ei-btn-mode-inspect');
-      const btnFree = modeBar.querySelector('#ei-btn-mode-free');
-      if (btnInspect && btnFree) {
+    // Update Segmented Mode Pill in inspectCard
+    if (inspectCard) {
+      const tabInspect = inspectCard.querySelector('#mv-tab-inspect');
+      const tabFree = inspectCard.querySelector('#mv-tab-free');
+      if (tabInspect && tabFree) {
         if (isInteractiveMode) {
-          btnInspect.classList.remove('active');
-          btnFree.classList.add('active');
+          tabInspect.classList.remove('active');
+          tabFree.classList.add('active');
         } else {
-          btnInspect.classList.add('active');
-          btnFree.classList.remove('active');
+          tabInspect.classList.add('active');
+          tabFree.classList.remove('active');
         }
       }
     }
@@ -1858,10 +1917,10 @@
 
   function isInspectorElement(el) {
     if (!el) return false;
-    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox || el === selectedBox || el === rulerContainer || el === annotatorModal || el === modeBar) return true;
+    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox || el === selectedBox || el === rulerContainer || el === annotatorModal) return true;
     if (el.id === SHADOW_HOST_ID) return true;
     if (el.getAttribute && el.getAttribute('id') === SHADOW_HOST_ID) return true;
-    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight') || el.classList.contains('ei-selected-box') || el.classList.contains('ei-ruler-container') || el.classList.contains('ei-annotator-modal') || el.classList.contains('ei-mode-bar'))) return true;
+    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight') || el.classList.contains('ei-selected-box') || el.classList.contains('ei-ruler-container') || el.classList.contains('ei-annotator-modal'))) return true;
     if (shadowRoot && el.getRootNode && el.getRootNode() === shadowRoot) return true;
     if (el.closest && el.closest(`#${SHADOW_HOST_ID}`)) return true;
     return false;
@@ -1925,39 +1984,6 @@
     rulerContainer.className = 'ei-ruler-container';
     shadowRoot.appendChild(rulerContainer);
 
-    // Floating Mode Bar (Top Center Switcher: Inspect <-> Free Click)
-    modeBar = document.createElement('div');
-    modeBar.className = 'ei-mode-bar';
-    modeBar.id = 'ei-mode-bar';
-    modeBar.innerHTML = `
-      <button class="ei-mode-btn ei-mode-btn-inspect active" id="ei-btn-mode-inspect" title="Inspect Mode: Click any element to inspect (Alt+F or Space)">
-        <span>🔍 Inspect</span>
-      </button>
-      <button class="ei-mode-btn ei-mode-btn-free" id="ei-btn-mode-free" title="Free Click Mode: Click dates, open calendars, change year/month, submit forms freely! (Alt+F or Space)">
-        <span>🔓 Free Click</span>
-      </button>
-      <span class="ei-mode-bar-hint">Alt+F</span>
-    `;
-    shadowRoot.appendChild(modeBar);
-
-    modeBar.addEventListener('mousedown', (e) => e.stopPropagation());
-    modeBar.addEventListener('click', (e) => e.stopPropagation());
-
-    const btnInspect = modeBar.querySelector('#ei-btn-mode-inspect');
-    const btnFree = modeBar.querySelector('#ei-btn-mode-free');
-    if (btnInspect) {
-      btnInspect.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setInteractiveMode(false);
-      });
-    }
-    if (btnFree) {
-      btnFree.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setInteractiveMode(true);
-      });
-    }
-
     // Construct the inspect card
     buildCardDOM();
   }
@@ -1974,20 +2000,38 @@
       <!-- Left Edge Resize Handle (Side Panel Mode) -->
       <div class="mv-side-resize-handle" id="mv-side-resize-handle" title="Drag to resize panel"></div>
 
-      <!-- Header -->
+      <!-- Global Topbar Row 1: Brand, Mode Pill, Window Controls -->
+      <div class="mv-global-topbar">
+        <div class="mv-global-brand">
+          <span class="mv-global-brand-icon">⚡</span>
+          <span>Inspector</span>
+        </div>
+        <div class="mv-mode-pill" id="mv-mode-pill">
+          <button type="button" class="mv-mode-tab mv-mode-tab-inspect active" id="mv-tab-inspect" title="Inspect Mode: Hover & click elements to inspect (Alt+F or Space)">
+            <span>🔍 Inspect</span>
+          </button>
+          <button type="button" class="mv-mode-tab mv-mode-tab-free" id="mv-tab-free" title="Free Click Mode: Click buttons, links, calendars, years/months freely! (Alt+F or Space)">
+            <span>🔓 Free Click</span>
+            <span class="mv-mode-hotkey">Alt+F</span>
+          </button>
+        </div>
+        <div class="mv-window-controls">
+          <button type="button" class="mv-win-btn mv-btn-dock" id="mv-inspect-dock" title="Toggle Right Side Panel (like Ask Gemini) or Floating Window">📌</button>
+          <button type="button" class="mv-win-btn mv-btn-minimize" id="mv-inspect-minimize" title="Minimize (−)">−</button>
+          <button type="button" class="mv-win-btn mv-btn-close" id="mv-inspect-close" title="Close (Esc)">✕</button>
+        </div>
+      </div>
+
+      <!-- Header Row 2: Element Tag, Dimensions & Element Actions -->
       <div class="mv-inspect-header">
         <div class="mv-inspect-tag-group">
           <span class="mv-inspect-tag-badge" id="mv-inspect-tag">&lt;element&gt;</span>
           <span class="mv-inspect-dims" id="mv-inspect-dims">0 × 0 px</span>
         </div>
         <div class="mv-header-actions">
-          <button class="mv-btn-icon mv-btn-interact" id="mv-inspect-mode-toggle" title="Toggle Free Click Mode (Click dates, open calendars, change year/month freely). Shortcut: Alt+F, Space or Ctrl+Click">🔓 Free</button>
-          <button class="mv-btn-icon mv-btn-dock" id="mv-inspect-dock" title="Toggle Right Side Panel (like Ask Gemini) or Floating Window">📌 Side</button>
           <button class="mv-btn-icon mv-btn-screenshot" id="mv-inspect-screenshot" title="Capture & download element screenshot as JPG (and copy to clipboard)">📸 JPG</button>
           <button class="mv-btn-icon mv-btn-parent" id="mv-inspect-parent" title="Select parent element" style="display:none;">↑ Parent</button>
-          <button class="mv-btn-icon mv-btn-fullpage-nav" id="mv-inspect-fullpage" title="Select Full Page (Body)">🌐 Full</button>
-          <button class="mv-btn-icon mv-btn-minimize" id="mv-inspect-minimize" title="Minimize (−)">−</button>
-          <button class="mv-btn-icon mv-btn-close" id="mv-inspect-close" title="Close (Esc)">✕</button>
+          <button class="mv-btn-icon mv-btn-fullpage-nav" id="mv-inspect-fullpage" title="Select Full Page (Body)">🌐 Full Page</button>
         </div>
       </div>
 
@@ -2433,16 +2477,31 @@
       });
     }
 
-    // Live Interact Mode toggle button (👆 Live <-> 🔍 Inspect)
-    const liveToggleBtn = inspectCard.querySelector('#mv-inspect-mode-toggle');
-    if (liveToggleBtn) {
-      liveToggleBtn.addEventListener('click', (e) => {
+    // Mode Tabs inside Global Topbar (🔍 Inspect <-> 🔓 Free Click)
+    const tabInspect = inspectCard.querySelector('#mv-tab-inspect');
+    const tabFree = inspectCard.querySelector('#mv-tab-free');
+    if (tabInspect) {
+      tabInspect.addEventListener('click', (e) => {
         e.stopPropagation();
-        setInteractiveMode(!isInteractiveMode);
+        setInteractiveMode(false);
+      });
+    }
+    if (tabFree) {
+      tabFree.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setInteractiveMode(true);
       });
     }
 
-    // Double-click header to toggle minimize/expand
+    // Double-click topbar or header to toggle minimize/expand
+    const globalTopbar = inspectCard.querySelector('.mv-global-topbar');
+    if (globalTopbar) {
+      globalTopbar.addEventListener('dblclick', (e) => {
+        if (e.target.closest('button')) return;
+        toggleMinimizeCard();
+      });
+    }
+
     const inspectHeader = inspectCard.querySelector('.mv-inspect-header');
     if (inspectHeader) {
       inspectHeader.addEventListener('dblclick', (e) => {
@@ -2456,11 +2515,11 @@
     if (dockBtn) {
       const updateDockBtnUI = () => {
         if (isSidePanelMode) {
-          dockBtn.innerHTML = '🗗 Float';
+          dockBtn.innerHTML = '🗗';
           dockBtn.title = 'Switch to Floating Window';
           dockBtn.classList.add('mv-docked');
         } else {
-          dockBtn.innerHTML = '📌 Side';
+          dockBtn.innerHTML = '📌';
           dockBtn.title = 'Dock to Right Side (like Ask Gemini)';
           dockBtn.classList.remove('mv-docked');
         }
@@ -3129,9 +3188,11 @@
       disableInspectMode();
     });
 
-    // Header draggable
+    // Topbar and Header draggable
+    const topbar = inspectCard.querySelector('.mv-global-topbar');
+    if (topbar) topbar.addEventListener('mousedown', onDragStart);
     const header = inspectCard.querySelector('.mv-inspect-header');
-    header.addEventListener('mousedown', onDragStart);
+    if (header) header.addEventListener('mousedown', onDragStart);
   }
 
   // ─── Unified Element Screen/Canvas Capture Helper ─────────────────────────
@@ -6271,9 +6332,6 @@ text-align: ${cs.textAlign};`;
     inspectMode = true;
     ensureShadowDOM();
 
-    if (modeBar) {
-      modeBar.style.display = 'inline-flex';
-    }
     setInteractiveMode(false);
 
     document.addEventListener('mouseover', onMouseOver, true);
@@ -6291,10 +6349,6 @@ text-align: ${cs.textAlign};`;
   function disableInspectMode() {
     if (!inspectMode) return;
     inspectMode = false;
-
-    if (modeBar) {
-      modeBar.style.display = 'none';
-    }
 
     closeAnnotationModal();
     document.removeEventListener('mouseover', onMouseOver, true);
