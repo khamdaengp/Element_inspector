@@ -1309,6 +1309,11 @@
     if (savedWidth >= 280 && savedWidth <= 800) sidePanelWidth = savedWidth;
   } catch (_) {}
 
+  // Floating position memory (prevents card from jumping when clicking different elements)
+  let floatingPosX        = null;
+  let floatingPosY        = null;
+  let hasUserDraggedCard  = false;
+
   // Annotator state
   let annotatorModal    = null;
   let annotatorCanvas   = null;
@@ -1750,13 +1755,12 @@
           inspectCard.classList.remove('mv-side-panel');
           inspectCard.style.right = '';
           inspectCard.style.width = '';
-          if (selectedEl) {
-            const rect = selectedEl.getBoundingClientRect();
-            showCard(selectedEl, rect.left + rect.width / 2, rect.top + rect.height / 2);
-          } else {
-            inspectCard.style.left = `${Math.max(20, window.innerWidth - 380)}px`;
-            inspectCard.style.top = '20px';
-          }
+          const targetX = (floatingPosX !== null) ? floatingPosX : Math.max(20, window.innerWidth - 400);
+          const targetY = (floatingPosY !== null) ? floatingPosY : 20;
+          floatingPosX = targetX;
+          floatingPosY = targetY;
+          inspectCard.style.left = `${targetX}px`;
+          inspectCard.style.top = `${targetY}px`;
           showToast('🗗 Switched to Floating Window');
         }
       });
@@ -3900,6 +3904,10 @@ text-align: ${cs.textAlign};`;
     newX = Math.max(8, Math.min(vw - cw - 8, newX));
     newY = Math.max(8, Math.min(vh - ch - 8, newY));
 
+    floatingPosX = newX;
+    floatingPosY = newY;
+    hasUserDraggedCard = true;
+
     inspectCard.style.left = `${newX}px`;
     inspectCard.style.top  = `${newY}px`;
   }
@@ -4271,6 +4279,7 @@ text-align: ${cs.textAlign};`;
     ensureShadowDOM();
     renderCardData(el);
 
+    const wasActive = inspectCard.classList.contains('mv-active');
     inspectCard.classList.add('mv-active');
 
     if (isSidePanelMode) {
@@ -4286,23 +4295,37 @@ text-align: ${cs.textAlign};`;
     inspectCard.style.right = '';
     inspectCard.style.width = '';
 
-    // Intelligent positioning for floating window mode
-    inspectCard.style.left = '0px';
-    inspectCard.style.top  = '0px';
+    // If floating card is ALREADY open and visible on screen, KEEP ITS CURRENT POSITION!
+    // Never jump or move around the screen when clicking another element!
+    if (wasActive && floatingPosX !== null && floatingPosY !== null) {
+      return;
+    }
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const cw = inspectCard.offsetWidth  || 340;
     const ch = inspectCard.offsetHeight || 420;
 
-    let x = cx + 12;
-    let y = cy + 12;
+    let x = 0;
+    let y = 0;
 
-    if (x + cw > vw - 12) x = cx - cw - 12;
-    if (y + ch > vh - 12) y = cy - ch - 12;
-    if (x < 12) x = 12;
-    if (y < 12) y = 12;
+    if (hasUserDraggedCard && floatingPosX !== null && floatingPosY !== null) {
+      // Re-use last dragged position, clamped to current viewport
+      x = Math.max(8, Math.min(vw - cw - 8, floatingPosX));
+      y = Math.max(8, Math.min(vh - ch - 8, floatingPosY));
+    } else {
+      // Initial positioning near clicked element
+      x = cx + 12;
+      y = cy + 12;
 
+      if (x + cw > vw - 12) x = cx - cw - 12;
+      if (y + ch > vh - 12) y = cy - ch - 12;
+      if (x < 12) x = 12;
+      if (y < 12) y = 12;
+    }
+
+    floatingPosX = x;
+    floatingPosY = y;
     inspectCard.style.left = `${x}px`;
     inspectCard.style.top  = `${y}px`;
   }
