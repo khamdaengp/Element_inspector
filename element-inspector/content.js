@@ -345,6 +345,61 @@
   cursor: grabbing !important;
 }
 
+/* ── Tab Bar ─────────────────────────────────────────────── */
+.mv-tab-bar {
+  display: flex !important;
+  background: #080910 !important;
+  border-bottom: 1px solid #1a1d2e !important;
+  flex-shrink: 0 !important;
+}
+
+.mv-tab-btn {
+  flex: 1 !important;
+  padding: 8px 4px !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  color: #4b5563 !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  letter-spacing: 0.01em !important;
+  white-space: nowrap !important;
+}
+
+.mv-tab-btn:hover {
+  color: #94a3b8 !important;
+  background: rgba(255,255,255,0.03) !important;
+}
+
+.mv-tab-btn.active {
+  color: #38bdf8 !important;
+  border-bottom-color: #38bdf8 !important;
+  background: rgba(56,189,248,0.06) !important;
+}
+
+.mv-tab-btn[data-tab="design"].active {
+  color: #fb923c !important;
+  border-bottom-color: #fb923c !important;
+  background: rgba(251,146,60,0.06) !important;
+}
+
+.mv-tab-btn[data-tab="qa"].active {
+  color: #a78bfa !important;
+  border-bottom-color: #a78bfa !important;
+  background: rgba(167,139,250,0.06) !important;
+}
+
+/* ── Tab Panels ──────────────────────────────────────────── */
+.mv-tab-panel {
+  display: none !important;
+}
+
+.mv-tab-panel.active {
+  display: block !important;
+}
+
 .mv-inspect-tag-group {
   display: flex !important;
   align-items: center !important;
@@ -1968,6 +2023,16 @@
         </div>
       </div>
 
+      <!-- ── Tab Navigation Bar ──────────────────────────────── -->
+      <div class="mv-tab-bar">
+        <button class="mv-tab-btn active" data-tab="inspect" title="Inspect & Code — metrics, selectors, copy actions">🔍 Inspect</button>
+        <button class="mv-tab-btn" data-tab="design" title="Design Tools — colors, fonts, Tailwind, Figma">🎨 Design</button>
+        <button class="mv-tab-btn" data-tab="qa" title="QA & PenTest — auto-fill, triggers, security payloads">⚡ QA</button>
+      </div>
+
+      <!-- ── Tab Panel: Inspect & Code ─────────────────────── -->
+      <div class="mv-tab-panel active" id="mv-panel-inspect">
+
       <!-- Quick Computed Metrics -->
       <div class="mv-inspect-metrics">
         <div class="mv-metric-item">
@@ -2048,6 +2113,11 @@
           </button>
         </div>
       </div>
+
+      </div><!-- /mv-panel-inspect -->
+
+      <!-- ── Tab Panel: Design ──────────────────────────────── -->
+      <div class="mv-tab-panel" id="mv-panel-design">
 
       <!-- UI/UX & Design Tools Section -->
       <div class="mv-design-section" id="mv-design-section">
@@ -2137,6 +2207,11 @@
           </div>
         </div>
       </div>
+
+      </div><!-- /mv-panel-design -->
+
+      <!-- ── Tab Panel: QA & PenTest ────────────────────────── -->
+      <div class="mv-tab-panel" id="mv-panel-qa">
 
       <!-- QA & PenTest Interactive Tools Section -->
       <div class="mv-qa-section" id="mv-qa-section">
@@ -2348,6 +2423,10 @@
             <button class="mv-qa-chip mv-qa-chip-security" data-fill="cmd-semi" title="Command Injection: ; ls -la">💻 OS Semi</button>
           </div>
         </div>
+      </div><!-- /mv-qa-section -->
+
+      </div><!-- /mv-panel-qa -->
+
       <!-- Interaction Shortcut Tip -->
       <div class="mv-inspect-footer-hint" id="mv-inspect-footer-hint">
         💡 Tip: Hold <kbd>Ctrl</kbd>+Click or switch to <kbd>👆 Live</kbd> to submit forms &amp; open links without closing!
@@ -2377,6 +2456,18 @@
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       hideCard();
+    });
+
+    // ── Content Tab Switching (Inspect / Design / QA) ─────────────────
+    inspectCard.querySelectorAll('.mv-tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        inspectCard.querySelectorAll('.mv-tab-btn').forEach(b => b.classList.remove('active'));
+        inspectCard.querySelectorAll('.mv-tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const panel = inspectCard.querySelector(`#mv-panel-${btn.dataset.tab}`);
+        if (panel) panel.classList.add('active');
+      });
     });
 
     // Minimize button (−)

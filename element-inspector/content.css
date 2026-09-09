@@ -324,6 +324,61 @@
   cursor: grabbing !important;
 }
 
+/* ── Tab Bar ─────────────────────────────────────────────── */
+.mv-tab-bar {
+  display: flex !important;
+  background: #080910 !important;
+  border-bottom: 1px solid #1a1d2e !important;
+  flex-shrink: 0 !important;
+}
+
+.mv-tab-btn {
+  flex: 1 !important;
+  padding: 8px 4px !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  color: #4b5563 !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  letter-spacing: 0.01em !important;
+  white-space: nowrap !important;
+}
+
+.mv-tab-btn:hover {
+  color: #94a3b8 !important;
+  background: rgba(255,255,255,0.03) !important;
+}
+
+.mv-tab-btn.active {
+  color: #38bdf8 !important;
+  border-bottom-color: #38bdf8 !important;
+  background: rgba(56,189,248,0.06) !important;
+}
+
+.mv-tab-btn[data-tab="design"].active {
+  color: #fb923c !important;
+  border-bottom-color: #fb923c !important;
+  background: rgba(251,146,60,0.06) !important;
+}
+
+.mv-tab-btn[data-tab="qa"].active {
+  color: #a78bfa !important;
+  border-bottom-color: #a78bfa !important;
+  background: rgba(167,139,250,0.06) !important;
+}
+
+/* ── Tab Panels ──────────────────────────────────────────── */
+.mv-tab-panel {
+  display: none !important;
+}
+
+.mv-tab-panel.active {
+  display: block !important;
+}
+
 .mv-inspect-tag-group {
   display: flex !important;
   align-items: center !important;
