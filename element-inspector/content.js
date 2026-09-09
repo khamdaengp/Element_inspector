@@ -1444,6 +1444,139 @@
   background: linear-gradient(135deg, #312e81 0%, #334155 100%);
   border-color: #818cf8;
 }
+
+/* Floating Mode Switch Bar (Top Center) */
+.ei-mode-bar {
+  position: fixed !important;
+  top: 10px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  background: rgba(15, 17, 26, 0.94) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 24px !important;
+  padding: 3px 5px !important;
+  gap: 4px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+  z-index: 2147483646 !important;
+  pointer-events: auto !important;
+  user-select: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.ei-mode-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 5px 12px !important;
+  border-radius: 18px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.ei-mode-btn:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ei-mode-btn-inspect.active {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.5) !important;
+}
+
+.ei-mode-btn-free.active {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  color: #ffffff !important;
+  border-color: #6ee7b7 !important;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6) !important;
+  animation: mv-pulse-live 2s infinite ease-in-out !important;
+}
+
+.ei-mode-bar-hint {
+  font-size: 9.5px !important;
+  color: #64748b !important;
+  padding: 0 6px 0 4px !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  font-family: inherit !important;
+}
+
+/* QA Date & Calendar Picker Controls */
+.mv-qa-date-box {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  border-radius: 6px !important;
+  padding: 7px 8px !important;
+  margin-top: 2px !important;
+}
+
+.mv-qa-date-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  color: #6ee7b7 !important;
+}
+
+.mv-qa-date-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 4px !important;
+}
+
+.mv-qa-btn-calendar {
+  grid-column: span 2 !important;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid #6ee7b7 !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  padding: 6px 10px !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+}
+
+.mv-qa-btn-calendar:hover {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%) !important;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.45) !important;
+}
+
+.mv-qa-btn-date-step {
+  font-size: 10px !important;
+  padding: 4px 6px !important;
+  background: #182234 !important;
+  border: 1px solid #233858 !important;
+  color: #93c5fd !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  transition: all 0.12s ease !important;
+}
+
+.mv-qa-btn-date-step:hover {
+  background: #1e3a5f !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
 `;
 
   // ─── State ────────────────────────────────────────────────────────────────
@@ -1496,29 +1629,85 @@
   let cardStartX    = 0;
   let cardStartY    = 0;
 
-  // Live Interact Mode (allows clicking buttons, submits, links naturally without closing extension)
+  // Live Interact / Free Click Mode (allows clicking buttons, submits, links, calendars, years/months freely without closing extension)
   let isInteractiveMode = false;
+  let modeBar           = null;
+
+  function isInsideCalendarOrPicker(el) {
+    if (!el || el === document.body || el === document.documentElement) return false;
+    const calendarSelectors = [
+      '.flatpickr-calendar',
+      '.react-datepicker',
+      '.react-datepicker-popper',
+      '.ant-picker-dropdown',
+      '.ant-picker-panel',
+      '.MuiPickersPopper-root',
+      '.MuiDateCalendar-root',
+      '.datepicker',
+      '.datepicker-dropdown',
+      '.p-datepicker',
+      '.ui-datepicker',
+      '.v-date-picker',
+      '.v-picker',
+      '.bootstrap-datetimepicker-widget',
+      '.daterangepicker',
+      '.ngx-daterangepicker-action',
+      '.mat-calendar',
+      '.mat-datepicker-content',
+      '[class*="flatpickr"]',
+      '[class*="datepicker"]',
+      '[class*="calendar-popup"]',
+      '[class*="calendar-dropdown"]',
+      '[class*="picker-dropdown"]',
+      '[class*="year-panel"]',
+      '[class*="month-panel"]',
+      '[class*="year-dropdown"]',
+      '[class*="month-dropdown"]',
+      '[aria-label*="calendar" i]',
+      '[aria-label*="date" i][role="dialog"]',
+      '[role="dialog"][class*="picker"]',
+      '[role="dialog"][class*="calendar"]'
+    ];
+    return !!(el.closest && el.closest(calendarSelectors.join(',')));
+  }
 
   function setInteractiveMode(enabled) {
     isInteractiveMode = !!enabled;
+
+    // 1. Update Card header button
     const modeBtn = inspectCard ? inspectCard.querySelector('#mv-inspect-mode-toggle') : null;
     if (modeBtn) {
       if (isInteractiveMode) {
         modeBtn.classList.add('mv-interact-active');
         modeBtn.innerHTML = '<span>🔍 Inspect</span>';
-        modeBtn.title = 'Live Mode Active: You can click buttons, submit forms, or navigate! Click to resume inspecting (Shortcut: Space or Ctrl+Click)';
+        modeBtn.title = 'Free Click Active: Click dates, change years/months, or submit freely! (Alt+F, Space or Ctrl+Click)';
       } else {
         modeBtn.classList.remove('mv-interact-active');
-        modeBtn.innerHTML = '<span>👆 Live</span>';
-        modeBtn.title = 'Inspect Mode: Hover & click to inspect elements. Click to switch to Live Mode (Shortcut: Space or Ctrl+Click)';
+        modeBtn.innerHTML = '<span>🔓 Free Click</span>';
+        modeBtn.title = 'Inspect Mode: Click to switch to Free Click (Alt+F or Space)';
+      }
+    }
+
+    // 2. Update Floating Mode Bar (Top Center)
+    if (modeBar) {
+      const btnInspect = modeBar.querySelector('#ei-btn-mode-inspect');
+      const btnFree = modeBar.querySelector('#ei-btn-mode-free');
+      if (btnInspect && btnFree) {
+        if (isInteractiveMode) {
+          btnInspect.classList.remove('active');
+          btnFree.classList.add('active');
+        } else {
+          btnInspect.classList.add('active');
+          btnFree.classList.remove('active');
+        }
       }
     }
 
     if (isInteractiveMode) {
       hideHighlight();
-      showToast('👆 Live Mode Active: Clicks pass through to page! (Press Space to Inspect)');
+      showToast('🔓 Free Click ON: Click dates, change years & months freely! (Alt+F or Space to Inspect)');
     } else {
-      showToast('🔍 Inspect Mode Active: Hover & click to inspect elements');
+      showToast('🔍 Inspect Mode ON: Hover & click to inspect elements');
       if (hoveredEl) positionHighlight(hoveredEl);
     }
   }
@@ -1527,10 +1716,10 @@
 
   function isInspectorElement(el) {
     if (!el) return false;
-    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox || el === selectedBox || el === rulerContainer || el === annotatorModal) return true;
+    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox || el === selectedBox || el === rulerContainer || el === annotatorModal || el === modeBar) return true;
     if (el.id === SHADOW_HOST_ID) return true;
     if (el.getAttribute && el.getAttribute('id') === SHADOW_HOST_ID) return true;
-    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight') || el.classList.contains('ei-selected-box') || el.classList.contains('ei-ruler-container') || el.classList.contains('ei-annotator-modal'))) return true;
+    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight') || el.classList.contains('ei-selected-box') || el.classList.contains('ei-ruler-container') || el.classList.contains('ei-annotator-modal') || el.classList.contains('ei-mode-bar'))) return true;
     if (shadowRoot && el.getRootNode && el.getRootNode() === shadowRoot) return true;
     if (el.closest && el.closest(`#${SHADOW_HOST_ID}`)) return true;
     return false;
@@ -1594,6 +1783,39 @@
     rulerContainer.className = 'ei-ruler-container';
     shadowRoot.appendChild(rulerContainer);
 
+    // Floating Mode Bar (Top Center Switcher: Inspect <-> Free Click)
+    modeBar = document.createElement('div');
+    modeBar.className = 'ei-mode-bar';
+    modeBar.id = 'ei-mode-bar';
+    modeBar.innerHTML = `
+      <button class="ei-mode-btn ei-mode-btn-inspect active" id="ei-btn-mode-inspect" title="Inspect Mode: Click any element to inspect (Alt+F or Space)">
+        <span>🔍 Inspect</span>
+      </button>
+      <button class="ei-mode-btn ei-mode-btn-free" id="ei-btn-mode-free" title="Free Click Mode: Click dates, open calendars, change year/month, submit forms freely! (Alt+F or Space)">
+        <span>🔓 Free Click</span>
+      </button>
+      <span class="ei-mode-bar-hint">Alt+F</span>
+    `;
+    shadowRoot.appendChild(modeBar);
+
+    modeBar.addEventListener('mousedown', (e) => e.stopPropagation());
+    modeBar.addEventListener('click', (e) => e.stopPropagation());
+
+    const btnInspect = modeBar.querySelector('#ei-btn-mode-inspect');
+    const btnFree = modeBar.querySelector('#ei-btn-mode-free');
+    if (btnInspect) {
+      btnInspect.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setInteractiveMode(false);
+      });
+    }
+    if (btnFree) {
+      btnFree.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setInteractiveMode(true);
+      });
+    }
+
     // Construct the inspect card
     buildCardDOM();
   }
@@ -1617,7 +1839,7 @@
           <span class="mv-inspect-dims" id="mv-inspect-dims">0 × 0 px</span>
         </div>
         <div class="mv-header-actions">
-          <button class="mv-btn-icon mv-btn-interact" id="mv-inspect-mode-toggle" title="Toggle Live Interact Mode (Click buttons, submit forms, or navigate without closing inspector). Shortcut: Space or Ctrl+Click">👆 Live</button>
+          <button class="mv-btn-icon mv-btn-interact" id="mv-inspect-mode-toggle" title="Toggle Free Click Mode (Click dates, open calendars, change year/month freely). Shortcut: Alt+F, Space or Ctrl+Click">🔓 Free</button>
           <button class="mv-btn-icon mv-btn-dock" id="mv-inspect-dock" title="Toggle Right Side Panel (like Ask Gemini) or Floating Window">📌 Side</button>
           <button class="mv-btn-icon mv-btn-screenshot" id="mv-inspect-screenshot" title="Capture & download element screenshot as JPG (and copy to clipboard)">📸 JPG</button>
           <button class="mv-btn-icon mv-btn-parent" id="mv-inspect-parent" title="Select parent element" style="display:none;">↑ Parent</button>
@@ -1859,6 +2081,28 @@
           <button class="mv-qa-btn mv-qa-btn-sub" id="mv-btn-fill-form" title="Auto-fill ALL input fields inside this form or container with realistic random test data">
             <span>⚡</span> <span>Fill Entire Form</span>
           </button>
+        </div>
+
+        <!-- Direct Calendar Trigger & Year/Month Stepper -->
+        <div class="mv-qa-date-box" id="mv-qa-date-box" style="display:none;">
+          <div class="mv-qa-date-header">
+            <span>📅 Date &amp; Calendar Controls</span>
+            <button class="mv-qa-btn-calendar" id="mv-btn-open-picker" title="Open native or custom date calendar popup and enable Free Click">
+              <span>📅 Open Calendar</span>
+            </button>
+          </div>
+          <div class="mv-qa-date-row">
+            <span class="mv-qa-date-lbl">Year:</span>
+            <button class="mv-qa-btn-date-step" id="mv-btn-prev-year" title="Subtract 1 year">◀ -1 Year</button>
+            <button class="mv-qa-btn-date-step" id="mv-btn-next-year" title="Add 1 year">+1 Year ▶</button>
+          </div>
+          <div class="mv-qa-date-row">
+            <span class="mv-qa-date-lbl">Month:</span>
+            <button class="mv-qa-btn-date-step" id="mv-btn-prev-month" title="Subtract 1 month">◀ -1 Mo</button>
+            <button class="mv-qa-btn-date-step" id="mv-btn-next-month" title="Add 1 month">+1 Mo ▶</button>
+            <button class="mv-qa-btn-date-step" id="mv-btn-date-today" title="Set to Today's Date">Today</button>
+            <button class="mv-qa-btn-date-step" id="mv-btn-date-random" title="Pick Random Date">🎲</button>
+          </div>
         </div>
 
         <!-- 1-Click Fake File Attach with Size Selector -->
@@ -2272,6 +2516,89 @@
         } catch (err) {
           showToast('⚠️ Click failed: ' + (err.message || 'unknown error'));
         }
+      });
+    }
+
+    // QA Tool: Date & Calendar Controls
+    const openPickerBtn = inspectCard.querySelector('#mv-btn-open-picker');
+    if (openPickerBtn) {
+      openPickerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const input = getTargetDateInput(selectedEl);
+        if (input) {
+          try {
+            input.focus();
+            if (typeof input.showPicker === 'function') {
+              input.showPicker();
+            }
+          } catch (_) {}
+          setInteractiveMode(true);
+          flashElement(openPickerBtn, '📅 Opened & Free Click ON', 'mv-copy--success');
+          showToast('📅 Calendar opened! Free Click mode ON — click any date/month/year freely.');
+        } else {
+          flashElement(openPickerBtn, 'No Date Input', 'mv-copy--error');
+        }
+      });
+    }
+
+    const prevYearBtn = inspectCard.querySelector('#mv-btn-prev-year');
+    if (prevYearBtn) {
+      prevYearBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const ok = adjustInputDate(selectedEl, -1, 0);
+        if (ok) flashElement(prevYearBtn, '-1Y ✓', 'mv-copy--success');
+      });
+    }
+
+    const nextYearBtn = inspectCard.querySelector('#mv-btn-next-year');
+    if (nextYearBtn) {
+      nextYearBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const ok = adjustInputDate(selectedEl, 1, 0);
+        if (ok) flashElement(nextYearBtn, '+1Y ✓', 'mv-copy--success');
+      });
+    }
+
+    const prevMonthBtn = inspectCard.querySelector('#mv-btn-prev-month');
+    if (prevMonthBtn) {
+      prevMonthBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const ok = adjustInputDate(selectedEl, 0, -1);
+        if (ok) flashElement(prevMonthBtn, '-1M ✓', 'mv-copy--success');
+      });
+    }
+
+    const nextMonthBtn = inspectCard.querySelector('#mv-btn-next-month');
+    if (nextMonthBtn) {
+      nextMonthBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const ok = adjustInputDate(selectedEl, 0, 1);
+        if (ok) flashElement(nextMonthBtn, '+1M ✓', 'mv-copy--success');
+      });
+    }
+
+    const dateTodayBtn = inspectCard.querySelector('#mv-btn-date-today');
+    if (dateTodayBtn) {
+      dateTodayBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const ok = adjustInputDate(selectedEl, 0, 0, true, false);
+        if (ok) flashElement(dateTodayBtn, 'Today ✓', 'mv-copy--success');
+      });
+    }
+
+    const dateRandomBtn = inspectCard.querySelector('#mv-btn-date-random');
+    if (dateRandomBtn) {
+      dateRandomBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const ok = adjustInputDate(selectedEl, 0, 0, false, true);
+        if (ok) flashElement(dateRandomBtn, '🎲 ✓', 'mv-copy--success');
       });
     }
 
@@ -3587,6 +3914,71 @@
     });
 
     return restored;
+  }
+
+  // ─── QA Tool: Date & Calendar Helper Functions ────────────────────────────
+
+  function getTargetDateInput(el) {
+    if (!el || isInspectorElement(el)) return null;
+    const tag = (el.tagName || '').toLowerCase();
+    const type = (el.type || '').toLowerCase();
+    if (tag === 'input' && ['date', 'datetime-local', 'month', 'week', 'time', 'text'].includes(type)) {
+      return el;
+    }
+    if (el.querySelector) {
+      const found = el.querySelector('input[type="date"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="time"]');
+      if (found) return found;
+      const fallback = el.querySelector('input[name*="date" i], input[id*="date" i], input.datepicker');
+      if (fallback) return fallback;
+    }
+    return null;
+  }
+
+  function adjustInputDate(el, deltaYears = 0, deltaMonths = 0, setToday = false, setRandom = false) {
+    const input = getTargetDateInput(el);
+    if (!input) return false;
+
+    let baseDate = new Date();
+
+    if (setToday) {
+      baseDate = new Date();
+    } else if (setRandom) {
+      const randYear = Math.floor(1990 + Math.random() * 41);
+      const randMonth = Math.floor(Math.random() * 12);
+      const randDay = Math.floor(1 + Math.random() * 28);
+      baseDate = new Date(randYear, randMonth, randDay);
+    } else {
+      const curVal = (input.value || '').trim();
+      if (curVal) {
+        const parsed = new Date(curVal);
+        if (!isNaN(parsed.getTime())) {
+          baseDate = parsed;
+        }
+      }
+      if (deltaYears !== 0) {
+        baseDate.setFullYear(baseDate.getFullYear() + deltaYears);
+      }
+      if (deltaMonths !== 0) {
+        baseDate.setMonth(baseDate.getMonth() + deltaMonths);
+      }
+    }
+
+    const y = baseDate.getFullYear();
+    const m = String(baseDate.getMonth() + 1).padStart(2, '0');
+    const d = String(baseDate.getDate()).padStart(2, '0');
+    const type = (input.type || '').toLowerCase();
+
+    let formattedVal = `${y}-${m}-${d}`;
+    if (type === 'month') {
+      formattedVal = `${y}-${m}`;
+    } else if (type === 'datetime-local') {
+      const hh = String(baseDate.getHours()).padStart(2, '0');
+      const mm = String(baseDate.getMinutes()).padStart(2, '0');
+      formattedVal = `${y}-${m}-${d}T${hh}:${mm}`;
+    }
+
+    injectInputValue(input, formattedVal);
+    return true;
   }
 
   // ─── QA Tool: Smart Random Auto-Fill for Selected Element ───────────────────
@@ -5318,6 +5710,11 @@ text-align: ${cs.textAlign};`;
     inspectMode = true;
     ensureShadowDOM();
 
+    if (modeBar) {
+      modeBar.style.display = 'inline-flex';
+    }
+    setInteractiveMode(false);
+
     document.addEventListener('mouseover', onMouseOver, true);
     document.addEventListener('mousemove', onMouseMove, true);
     document.addEventListener('click',     onClick,     true);
@@ -5326,13 +5723,17 @@ text-align: ${cs.textAlign};`;
     document.addEventListener('scroll',    onScroll,    true);
     window.addEventListener('resize',      onResize,    true);
 
-    showToast('Inspect Mode Active – Hover & click an element');
+    showToast('Inspect Mode Active – Hover & click an element (Alt+F for Free Click)');
     updateBadge(true);
   }
 
   function disableInspectMode() {
     if (!inspectMode) return;
     inspectMode = false;
+
+    if (modeBar) {
+      modeBar.style.display = 'none';
+    }
 
     closeAnnotationModal();
     document.removeEventListener('mouseover', onMouseOver, true);
@@ -5432,7 +5833,7 @@ text-align: ${cs.textAlign};`;
     if (isInspectorEvent(e)) return;
     const target = e.target;
     if (isInspectorElement(target)) return;
-    if (isInteractiveMode) return;
+    if (isInteractiveMode || isInsideCalendarOrPicker(target)) return;
     hoveredEl = target;
     positionHighlight(hoveredEl);
   }
@@ -5441,7 +5842,7 @@ text-align: ${cs.textAlign};`;
     if (isInspectorEvent(e)) return;
     const target = e.target;
     if (isInspectorElement(target)) return;
-    if (isInteractiveMode) return;
+    if (isInteractiveMode || isInsideCalendarOrPicker(target)) return;
     if (target !== hoveredEl) {
       hoveredEl = target;
       positionHighlight(hoveredEl);
@@ -5452,9 +5853,14 @@ text-align: ${cs.textAlign};`;
   }
 
   function onClick(e) {
-    // If the click is on or inside our inspector card, let it handle the event naturally!
+    // If the click is on or inside our inspector card or mode bar, let it handle the event naturally!
     if (isInspectorEvent(e)) return;
     if (isInspectorElement(e.target)) return;
+
+    // Automatic Pass-Through: Clicks inside date/calendar popups or pickers always pass through cleanly
+    if (isInsideCalendarOrPicker(e.target)) {
+      return;
+    }
 
     // Instant Pass-Through: In Live Mode or holding modifier keys (Ctrl, Meta/Cmd, Shift)
     // Allows submitting forms, clicking buttons, following links naturally without closing the extension!
@@ -5473,6 +5879,16 @@ text-align: ${cs.textAlign};`;
     showCard(selectedEl, e.clientX, e.clientY);
     updateSelectedBox(selectedEl);
     clearRulerGuide();
+
+    // If selected element is a date/month/time input, trigger its picker automatically
+    const targetTag = getSafeTag(selectedEl);
+    if (targetTag === 'input' && ['date', 'datetime-local', 'month', 'week', 'time'].includes((selectedEl.type || '').toLowerCase())) {
+      try {
+        if (typeof selectedEl.showPicker === 'function') {
+          selectedEl.showPicker();
+        }
+      } catch (_) {}
+    }
   }
 
   function onKeyDown(e) {
@@ -5489,11 +5905,18 @@ text-align: ${cs.textAlign};`;
       return;
     }
 
-    // Space key: toggle Live Interact Mode (Click buttons/submit without closing)
+    // Alt+F: Toggle Free Click / Live Interact Mode
+    if (e.altKey && e.key.toLowerCase() === 'f') {
+      e.preventDefault();
+      setInteractiveMode(!isInteractiveMode);
+      return;
+    }
+
+    // Space key: toggle Live Interact / Free Click Mode (Click buttons/submit/change dates without closing)
     if (e.code === 'Space' || e.key === ' ') {
       const tag = (e.target.tagName || '').toUpperCase();
       const isInput = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable;
-      if (!isInput && inspectCard && inspectCard.classList.contains('mv-active')) {
+      if (!isInput && inspectMode) {
         e.preventDefault();
         setInteractiveMode(!isInteractiveMode);
         return;
@@ -5638,6 +6061,15 @@ text-align: ${cs.textAlign};`;
     const fileSection = inspectCard.querySelector('#mv-qa-file-section');
     if (fileSection) {
       fileSection.style.display = hasFileInput ? 'flex' : 'none';
+    }
+
+    // 6b. Check date inputs and display date controls box
+    const hasDateInput = (tag === 'input' && ['date', 'datetime-local', 'month', 'week', 'time'].includes((el.type || '').toLowerCase())) ||
+      (el.querySelector && el.querySelector('input[type="date"], input[type="datetime-local"], input[type="month"]')) ||
+      (tag === 'input' && (el.name && el.name.toLowerCase().includes('date') || el.id && el.id.toLowerCase().includes('date')));
+    const dateBox = inspectCard.querySelector('#mv-qa-date-box');
+    if (dateBox) {
+      dateBox.style.display = hasDateInput ? 'block' : 'none';
     }
 
     // 7. Update cURL Export button styling
