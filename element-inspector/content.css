@@ -590,6 +590,48 @@
   border-color: #d97706 !important;
 }
 
+.mv-qa-btn-curl {
+  background: #2e1065 !important;
+  color: #c084fc !important;
+  border-color: #7c3aed !important;
+}
+
+.mv-qa-btn-curl:hover {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  border-color: #a855f7 !important;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4) !important;
+}
+
+.mv-qa-security-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  margin-top: 2px !important;
+  padding-top: 6px !important;
+  border-top: 1px dashed #25283c !important;
+}
+
+.mv-qa-security-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 4px !important;
+}
+
+.mv-qa-chip-security {
+  font-size: 9px !important;
+  padding: 4px 2px !important;
+  background: #1c141d !important;
+  border-color: #831843 !important;
+  color: #f472b6 !important;
+}
+
+.mv-qa-chip-security:hover {
+  background: #9d174d !important;
+  color: #ffffff !important;
+  border-color: #f43f5e !important;
+}
+
 /* Success / Error Feedback States */
 .mv-copy--success {
   background: #10b981 !important;

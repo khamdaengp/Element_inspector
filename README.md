@@ -7,6 +7,12 @@ A powerful Google Chrome Extension (Manifest V3) designed for Developers, QA Eng
 - **🎯 Interactive DOM Inspection:** Hover and inspect any element on any webpage with isolated Shadow DOM UI (100% CSP-safe).
 - **📸 Clean JPG Element Screenshots:** One-click pixel-perfect element capture without inspector overlay interference.
 - **⚡ QA & PenTest Tools:**
+  - 🌐 **Form to cURL Exporter:** 1-Click to generate a complete, ready-to-run `curl` command with method (`GET`/`POST`), action URL, headers (`Referer`, `Origin`, `User-Agent`), and serialized form data (or multipart `-F` for file uploads) to execute in Terminal, Postman, or Burp Suite.
+  - 🛡️ **PenTest & Security Payload Presets:** Dedicated chips for instant security testing against input validation:
+    - **SQL Injection:** `' OR '1'='1`, `admin' --`
+    - **Cross-Site Scripting (XSS):** `<script>alert(1)</script>`, `<img src=x onerror=alert(1)>`
+    - **Server-Side Template Injection (SSTI):** `{{7*7}}`, `${7*7}`
+    - **OS Command Injection:** `| dir`, `; ls -la`
   - 📁 **1-Click Fake File Generator:** Inject realistic mock files (`📄 PDF`, `🖼️ JPG`, `📊 CSV`, `⚠️ 15MB Oversize`, `🚫 .exe script`) directly into `<input type="file">` via the native `DataTransfer` API without needing physical files on disk.
   - 🇱🇦 **Lao & Global Mock Data Presets:** One-click locale toggle (`🇱🇦 LA` / `🌐 EN`) generating localized Lao names, 020 phones, Lao provinces/districts, streets, and companies.
   - 💾 **Form State Save & Restore:** Snapshot all form field values into browser storage (`chrome.storage`) and restore them across sessions in 1 click.

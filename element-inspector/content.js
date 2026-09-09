@@ -605,6 +605,48 @@
   border-color: #d97706 !important;
 }
 
+.mv-qa-btn-curl {
+  background: #2e1065 !important;
+  color: #c084fc !important;
+  border-color: #7c3aed !important;
+}
+
+.mv-qa-btn-curl:hover {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  border-color: #a855f7 !important;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4) !important;
+}
+
+.mv-qa-security-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  margin-top: 2px !important;
+  padding-top: 6px !important;
+  border-top: 1px dashed #25283c !important;
+}
+
+.mv-qa-security-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 4px !important;
+}
+
+.mv-qa-chip-security {
+  font-size: 9px !important;
+  padding: 4px 2px !important;
+  background: #1c141d !important;
+  border-color: #831843 !important;
+  color: #f472b6 !important;
+}
+
+.mv-qa-chip-security:hover {
+  background: #9d174d !important;
+  color: #ffffff !important;
+  border-color: #f43f5e !important;
+}
+
 .mv-copy--success {
   background: #10b981 !important;
   color: #ffffff !important;
@@ -1084,6 +1126,13 @@
           </button>
         </div>
 
+        <!-- Form to cURL Exporter -->
+        <div class="mv-qa-actions-row">
+          <button class="mv-qa-btn mv-qa-btn-curl" id="mv-btn-copy-curl" style="grid-column: span 2;" title="Generate and copy complete ready-to-run cURL command for this form">
+            <span>🌐</span> <span>Copy Form as cURL</span>
+          </button>
+        </div>
+
         <!-- Form State Profile Save & Restore -->
         <div class="mv-qa-actions-row">
           <button class="mv-qa-btn mv-qa-btn-sm mv-qa-btn-profile" id="mv-btn-save-form" title="Save current form values to memory/storage">
@@ -1152,6 +1201,21 @@
           <button class="mv-qa-chip" data-fill="clear" title="Clear input value completely" style="grid-column: span 2;">
             <span>🧹 Clear Input</span>
           </button>
+        </div>
+
+        <!-- Security & PenTest Input Validation Payloads -->
+        <div class="mv-qa-security-section" id="mv-qa-security-section">
+          <div class="mv-qa-fill-label">🛡️ Security &amp; PenTest Payloads:</div>
+          <div class="mv-qa-security-grid">
+            <button class="mv-qa-chip mv-qa-chip-security" data-fill="sql-auth" title="SQL Auth Bypass: ' OR '1'='1">💉 SQL Auth</button>
+            <button class="mv-qa-chip mv-qa-chip-security" data-fill="sql-comment" title="SQL Comment: admin' --">💉 SQL Comm</button>
+            <button class="mv-qa-chip mv-qa-chip-security" data-fill="xss-script" title="XSS Tag: &lt;script&gt;alert(1)&lt;/script&gt;">🛡️ XSS Script</button>
+            <button class="mv-qa-chip mv-qa-chip-security" data-fill="xss-img" title="XSS Img: &lt;img src=x onerror=alert(1)&gt;">🛡️ XSS Img</button>
+            <button class="mv-qa-chip mv-qa-chip-security" data-fill="ssti-brace" title="Template Injection: {{7*7}}">⚡ SSTI {{7*7}}</button>
+            <button class="mv-qa-chip mv-qa-chip-security" data-fill="ssti-dollar" title="Template Injection: ${7*7}">⚡ SSTI ${7*7}</button>
+            <button class="mv-qa-chip mv-qa-chip-security" data-fill="cmd-pipe" title="Command Injection: | dir">💻 OS Pipe</button>
+            <button class="mv-qa-chip mv-qa-chip-security" data-fill="cmd-semi" title="Command Injection: ; ls -la">💻 OS Semi</button>
+          </div>
         </div>
       </div>
 
@@ -1258,6 +1322,22 @@
       const code = generateCypressCode(selectedEl);
       await copyToClipboard(code, cypressBtn, '✓ Copied Cypress!');
     });
+
+    // QA Tool: Copy Form as cURL
+    const copyCurlBtn = inspectCard.querySelector('#mv-btn-copy-curl');
+    if (copyCurlBtn) {
+      copyCurlBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const curlCmd = generateFormCurl(selectedEl);
+        if (curlCmd) {
+          await copyToClipboard(curlCmd, copyCurlBtn, '✓ Copied cURL!');
+          showToast('✓ Form cURL command copied to clipboard!');
+        } else {
+          flashElement(copyCurlBtn, 'No Form Found', 'mv-copy--error');
+        }
+      });
+    }
 
     // QA Tool: Smart Random Auto Input for selected element
     const randomInputBtn = inspectCard.querySelector('#mv-btn-random-input');
@@ -1973,6 +2053,23 @@
         return '<test\'">';
       case 'clear':
         return '';
+      // Security & PenTest Payloads
+      case 'sql-auth':
+        return "' OR '1'='1";
+      case 'sql-comment':
+        return "admin' --";
+      case 'xss-script':
+        return "<script>alert(1)</script>";
+      case 'xss-img':
+        return "<img src=x onerror=alert(1)>";
+      case 'ssti-brace':
+        return "{{7*7}}";
+      case 'ssti-dollar':
+        return "${7*7}";
+      case 'cmd-pipe':
+        return "| dir";
+      case 'cmd-semi':
+        return "; ls -la";
       default:
         return 'test';
     }
@@ -2539,10 +2636,150 @@
     return `cy.get('${sel.replace(/'/g, "\\'")}').click();`;
   }
 
+  /**
+   * Generates a ready-to-run cURL command for an inspected form, input, or container.
+   * @param {HTMLElement} el
+   * @returns {string|null}
+   */
+  function generateFormCurl(el) {
+    if (!el) return null;
+
+    // 1. Locate the form or interactive container
+    let form = null;
+    const tag = (el.tagName || '').toLowerCase();
+    if (tag === 'form') {
+      form = el;
+    } else {
+      form = el.closest('form') || el.querySelector('form');
+    }
+
+    const container = form || el;
+
+    // 2. Action URL
+    let actionUrl = window.location.href;
+    if (form && form.getAttribute('action')) {
+      try {
+        actionUrl = new URL(form.getAttribute('action'), window.location.href).href;
+      } catch (err) {
+        actionUrl = form.getAttribute('action');
+      }
+    } else if (tag === 'a' && el.href) {
+      actionUrl = el.href;
+    }
+
+    // 3. HTTP Method
+    let method = 'POST';
+    if (form && form.method) {
+      method = form.method.toUpperCase();
+    } else if (tag === 'a') {
+      method = 'GET';
+    }
+
+    // 4. Collect Form Fields
+    let formElements = [];
+    if (['input', 'textarea', 'select'].includes(tag)) {
+      formElements = [el];
+    } else {
+      formElements = Array.from(container.querySelectorAll('input, textarea, select'));
+    }
+
+    const dataPairs = [];
+    let hasFiles = false;
+    const fileFields = [];
+
+    formElements.forEach((field, index) => {
+      if (field.disabled) return;
+      const fType = (field.type || '').toLowerCase();
+      if (['submit', 'button', 'reset', 'image'].includes(fType)) return;
+
+      const name = field.name || field.id || `field_${index + 1}`;
+
+      if (fType === 'file') {
+        hasFiles = true;
+        const fileName = (field.files && field.files[0]) ? field.files[0].name : 'sample_document.pdf';
+        fileFields.push({ name, fileName });
+        return;
+      }
+
+      if (fType === 'checkbox') {
+        if (field.checked) {
+          dataPairs.push({ name, value: field.value || 'on' });
+        }
+        return;
+      }
+
+      if (fType === 'radio') {
+        if (field.checked) {
+          dataPairs.push({ name, value: field.value || '' });
+        }
+        return;
+      }
+
+      if (fType === 'select-multiple') {
+        Array.from(field.selectedOptions || []).forEach((opt) => {
+          dataPairs.push({ name, value: opt.value });
+        });
+        return;
+      }
+
+      dataPairs.push({ name, value: field.value || '' });
+    });
+
+    // 5. Construct cURL command lines
+    const parts = [];
+
+    if (method === 'GET') {
+      let finalUrl = actionUrl;
+      if (dataPairs.length > 0) {
+        try {
+          const u = new URL(actionUrl);
+          dataPairs.forEach(({ name, value }) => {
+            u.searchParams.append(name, value);
+          });
+          finalUrl = u.href;
+        } catch (e) {
+          const qs = dataPairs.map(p => `${encodeURIComponent(p.name)}=${encodeURIComponent(p.value)}`).join('&');
+          const sep = actionUrl.includes('?') ? '&' : '?';
+          finalUrl = `${actionUrl}${sep}${qs}`;
+        }
+      }
+      parts.push(`curl -X GET "${finalUrl}"`);
+      parts.push(`  -H "Accept: application/json, text/plain, */*"`);
+      parts.push(`  -H "User-Agent: ${navigator.userAgent}"`);
+      parts.push(`  -H "Referer: ${window.location.href}"`);
+    } else {
+      // POST, PUT, PATCH, etc.
+      parts.push(`curl -X ${method} "${actionUrl}"`);
+      if (hasFiles) {
+        // multipart/form-data
+        dataPairs.forEach(({ name, value }) => {
+          parts.push(`  -F "${name}=${value}"`);
+        });
+        fileFields.forEach(({ name, fileName }) => {
+          parts.push(`  -F "${name}=@${fileName}"`);
+        });
+        parts.push(`  -H "Referer: ${window.location.href}"`);
+      } else {
+        // application/x-www-form-urlencoded
+        parts.push(`  -H "Content-Type: application/x-www-form-urlencoded"`);
+        parts.push(`  -H "Origin: ${window.location.origin}"`);
+        parts.push(`  -H "Referer: ${window.location.href}"`);
+        if (dataPairs.length > 0) {
+          const payload = dataPairs.map(p => `${encodeURIComponent(p.name)}=${encodeURIComponent(p.value)}`).join('&');
+          parts.push(`  --data-raw "${payload}"`);
+        }
+      }
+    }
+
+    return parts.join(' \\\n');
+  }
+
   // ─── Get Copy Value by Type ───────────────────────────────────────────────
 
   function getCopyValue(el, type) {
     switch (type) {
+      case 'curl':
+        return generateFormCurl(el);
       case 'selector':
         return getCssSelector(el);
       case 'jspath': {
@@ -2865,6 +3102,18 @@
     const fileSection = inspectCard.querySelector('#mv-qa-file-section');
     if (fileSection) {
       fileSection.style.display = hasFileInput ? 'flex' : 'none';
+    }
+
+    // 7. Update cURL Export button styling
+    const curlBtn = inspectCard.querySelector('#mv-btn-copy-curl');
+    if (curlBtn) {
+      const isOrHasForm = tag === 'form' || el.closest('form') || (el.querySelector && el.querySelector('form, input, textarea, select')) || ['input', 'textarea', 'select'].includes(tag);
+      if (isOrHasForm) {
+        curlBtn.style.opacity = '1';
+        curlBtn.title = 'Generate and copy complete ready-to-run cURL command for this form / input';
+      } else {
+        curlBtn.style.opacity = '0.75';
+      }
     }
   }
 
