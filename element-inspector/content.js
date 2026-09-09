@@ -1861,14 +1861,38 @@
           </button>
         </div>
 
-        <!-- 1-Click Fake File Attach -->
+        <!-- 1-Click Fake File Attach with Size Selector -->
         <div class="mv-qa-file-section" id="mv-qa-file-section">
-          <div class="mv-qa-fill-label">📁 1-Click Fake File Attach:</div>
+          <div class="mv-qa-file-header-row">
+            <div class="mv-qa-fill-label">📁 1-Click Fake File Attach:</div>
+            <div class="mv-qa-file-size-wrap">
+              <label for="mv-qa-file-size" class="mv-qa-size-lbl">Size:</label>
+              <select id="mv-qa-file-size" class="mv-qa-size-select" title="Select fake file size to attach">
+                <option value="51200">50 KB</option>
+                <option value="256000">250 KB</option>
+                <option value="512000">500 KB</option>
+                <option value="1048576" selected>1 MB (Default)</option>
+                <option value="2097152">2 MB</option>
+                <option value="5242880">5 MB</option>
+                <option value="10485760">10 MB</option>
+                <option value="15728640">15 MB (Limit)</option>
+                <option value="26214400">25 MB</option>
+                <option value="custom">✏️ Custom...</option>
+              </select>
+            </div>
+          </div>
           <div class="mv-qa-file-grid">
             <button class="mv-qa-chip mv-qa-chip--file" data-file="pdf" title="Attach valid PDF (test_document.pdf)">📄 PDF</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="doc" title="Attach Word .doc document (sample_document.doc)">📝 DOC</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="docx" title="Attach Word .docx document (sample_document.docx)">📘 DOCX</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="xls" title="Attach Excel .xls spreadsheet (sample_sheet.xls)">📊 XLS</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="xlsx" title="Attach Excel .xlsx spreadsheet (sample_sheet.xlsx)">📗 XLSX</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="ppt" title="Attach PowerPoint presentation (sample_presentation.pptx)">📽️ PPT</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="png" title="Attach PNG image (sample_image.png)">🖼️ PNG</button>
             <button class="mv-qa-chip mv-qa-chip--file" data-file="jpg" title="Attach sample JPG image (sample_photo.jpg)">🖼️ JPG</button>
-            <button class="mv-qa-chip mv-qa-chip--file" data-file="csv" title="Attach spreadsheet CSV (sample_data.csv)">📊 CSV</button>
-            <button class="mv-qa-chip mv-qa-chip--file" data-file="oversize" title="Attach 15MB file to test size limit">⚠️ 15MB</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="zip" title="Attach ZIP archive (archive_files.zip)">📦 ZIP</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="rar" title="Attach RAR archive (archive_files.rar)">🗜️ RAR</button>
+            <button class="mv-qa-chip mv-qa-chip--file" data-file="csv" title="Attach spreadsheet CSV (sample_data.csv)">📈 CSV</button>
             <button class="mv-qa-chip mv-qa-chip--file" data-file="invalid" title="Attach script file to test security filter (malicious.exe)">🚫 .exe</button>
           </div>
         </div>
@@ -1884,6 +1908,9 @@
           </button>
           <button class="mv-qa-chip" data-fill="rand-phone" title="Fill random phone number (e.g. 02055667788)">
             <span>📱 Phone</span>
+          </button>
+          <button class="mv-qa-chip" data-fill="rand-date" title="Fill today or random valid date (YYYY-MM-DD)">
+            <span>📅 Date</span>
           </button>
           <button class="mv-qa-chip" data-fill="rand-pass" title="Fill strong random password (e.g. Pass@9821_Secure!)">
             <span>🔑 Password</span>
@@ -2381,6 +2408,43 @@
       });
     }
 
+    // QA Tool: File Size Selector & Custom Size Handler
+    const fileSizeSelect = inspectCard.querySelector('#mv-qa-file-size');
+    if (fileSizeSelect) {
+      fileSizeSelect.addEventListener('change', (e) => {
+        e.stopPropagation();
+        if (fileSizeSelect.value === 'custom') {
+          const userVal = prompt('Enter custom file size in KB or MB (e.g. 500KB, 2.5MB, 12MB):', '2MB');
+          if (userVal) {
+            const clean = userVal.trim().toUpperCase();
+            let bytes = 1048576;
+            if (clean.endsWith('KB')) {
+              bytes = Math.round(parseFloat(clean) * 1024);
+            } else if (clean.endsWith('MB')) {
+              bytes = Math.round(parseFloat(clean) * 1024 * 1024);
+            } else if (clean.endsWith('B')) {
+              bytes = Math.round(parseFloat(clean));
+            } else {
+              const parsed = parseFloat(clean);
+              if (!isNaN(parsed)) bytes = Math.round(parsed * 1024 * 1024);
+            }
+            if (bytes > 0) {
+              fileSizeSelect.setAttribute('data-custom-size', String(bytes));
+              const customOpt = fileSizeSelect.querySelector('option[value="custom"]');
+              if (customOpt) customOpt.textContent = `✏️ Custom (${formatBytes(bytes)})`;
+              showToast(`✓ File size set to ${formatBytes(bytes)}`);
+              return;
+            }
+          }
+          // Revert to 1MB if cancelled or invalid
+          fileSizeSelect.value = '1048576';
+        } else {
+          const bytes = parseInt(fileSizeSelect.value, 10);
+          showToast(`✓ File size set to ${formatBytes(bytes)}`);
+        }
+      });
+    }
+
     // QA Tool: 1-Click Fake File Chips
     const fileChips = inspectCard.querySelectorAll('.mv-qa-chip--file[data-file]');
     fileChips.forEach((chip) => {
@@ -2392,7 +2456,7 @@
         const ok = injectFileToInput(selectedEl, file);
         if (ok) {
           flashElement(chip, '✓ Attached!', 'mv-copy--success');
-          showToast(`✓ Attached ${file.name} to file input!`);
+          showToast(`✓ Attached ${file.name} (${formatBytes(file.size)}) to file input!`);
         } else {
           flashElement(chip, 'No File Input', 'mv-copy--error');
         }
@@ -2981,6 +3045,44 @@
     'ຂໍ້ຄວາມທົດສອບອັດຕະໂນມັດຖືກສົ່ງເພື່ອຢືນຢັນການເຮັດວຽກຂອງ Input ແລະ Validation ຂອງລະບົບ.'
   ];
 
+  function formatBytes(bytes) {
+    if (!bytes || bytes <= 0) return '0 B';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function getSelectedFileSize() {
+    const sizeSelect = inspectCard ? inspectCard.querySelector('#mv-qa-file-size') : null;
+    if (!sizeSelect) return 1024 * 1024; // Default 1 MB
+    const val = sizeSelect.value;
+    if (val === 'custom') {
+      const custom = sizeSelect.getAttribute('data-custom-size');
+      return custom ? parseInt(custom, 10) : 1024 * 1024;
+    }
+    return parseInt(val, 10) || 1024 * 1024;
+  }
+
+  function createMockFileBuffer(targetSize, headerBytes = [], textPrefix = '') {
+    const size = Math.max(headerBytes.length || 1, Math.min(targetSize, 100 * 1024 * 1024));
+    const buf = new Uint8Array(size);
+
+    if (headerBytes && headerBytes.length > 0) {
+      for (let i = 0; i < headerBytes.length && i < size; i++) {
+        buf[i] = headerBytes[i];
+      }
+    }
+
+    if (textPrefix) {
+      const offset = headerBytes ? headerBytes.length : 0;
+      for (let i = 0; i < textPrefix.length && (offset + i) < size; i++) {
+        buf[offset + i] = textPrefix.charCodeAt(i);
+      }
+    }
+
+    return buf;
+  }
+
   function getFillValue(type) {
     const isLao = (currentLocale === 'LA');
     switch (type) {
@@ -3000,7 +3102,16 @@
         return `${fn}.${randNum}@example.com`;
       }
       case 'rand-phone':
-        return `020${Math.floor(10000000 + Math.random() * 90000000)}`;
+        if (isLao) {
+          const p = ['5', '7', '9', '2'][Math.floor(Math.random() * 4)];
+          return `020${p}${Math.floor(1000000 + Math.random() * 9000000)}`;
+        }
+        return `+1-555-${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000)}`;
+      case 'rand-date': {
+        const m = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
+        const d = String(Math.floor(1 + Math.random() * 28)).padStart(2, '0');
+        return `2026-${m}-${d}`;
+      }
       case 'rand-pass':
         return `Pass@${Math.floor(1000 + Math.random() * 9000)}_Secure#`;
       case 'rand-text':
@@ -3063,9 +3174,42 @@
       return `${fn}.${num}@example.com`;
     }
 
-    // 2. Phone / Tel / Mobile
-    if (type === 'tel' || combined.includes('phone') || combined.includes('tel') || combined.includes('mobile') || combined.includes('cell')) {
-      return `020${Math.floor(10000000 + Math.random() * 90000000)}`;
+    // 2. Phone / Tel / Mobile / WhatsApp
+    const isPhone = type === 'tel' ||
+      combined.includes('phone') ||
+      combined.includes('tel') ||
+      combined.includes('mobile') ||
+      combined.includes('cell') ||
+      combined.includes('whatsapp') ||
+      combined.includes('เบอร์') ||
+      combined.includes('ໂທ') ||
+      (combined.includes('contact') && (combined.includes('no') || combined.includes('num')));
+
+    if (isPhone) {
+      if (isLao) {
+        const prefixes = ['5', '7', '9', '2'];
+        const p = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const rest = Math.floor(1000000 + Math.random() * 9000000);
+        if (placeholder.includes('+856') || combined.includes('country')) {
+          return `+85620${p}${rest}`;
+        }
+        if (placeholder.includes(' ') || placeholder.includes('-')) {
+          const s = String(rest);
+          return `020 ${p}${s.substring(0, 2)} ${s.substring(2)}`;
+        }
+        return `020${p}${rest}`;
+      } else {
+        const area = Math.floor(201 + Math.random() * 700);
+        const mid = Math.floor(100 + Math.random() * 900);
+        const last = Math.floor(1000 + Math.random() * 9000);
+        if (placeholder.includes('+')) {
+          return `+1${area}${mid}${last}`;
+        }
+        if (placeholder.includes('(') || placeholder.includes('-')) {
+          return `(${area}) ${mid}-${last}`;
+        }
+        return `+1-${area}-${mid}-${last}`;
+      }
     }
 
     // 3. Password
@@ -3083,11 +3227,63 @@
       return String(Math.floor(20 + Math.random() * 45));
     }
 
-    // 5. Date
-    if (type === 'date' || combined.includes('date') || combined.includes('birth') || combined.includes('dob')) {
+    // 5. Date / Calendar / Birthday / Schedule / Expiry / Time / Month
+    const isDate = type === 'date' ||
+      type === 'datetime-local' ||
+      type === 'month' ||
+      type === 'time' ||
+      type === 'week' ||
+      combined.includes('date') ||
+      combined.includes('birth') ||
+      combined.includes('dob') ||
+      combined.includes('bday') ||
+      combined.includes('expire') ||
+      combined.includes('expiry') ||
+      combined.includes('deadline') ||
+      combined.includes('schedule') ||
+      combined.includes('booking') ||
+      combined.includes('calendar') ||
+      combined.includes('ວັນທີ') ||
+      combined.includes('ເກີດ');
+
+    if (isDate) {
+      if (type === 'time') {
+        const hh = String(Math.floor(8 + Math.random() * 10)).padStart(2, '0');
+        const mm = ['00', '15', '30', '45'][Math.floor(Math.random() * 4)];
+        return `${hh}:${mm}`;
+      }
+      if (type === 'month') {
+        const mm = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
+        return `2026-${mm}`;
+      }
+
+      let yyyy = 2026;
+      if (combined.includes('birth') || combined.includes('dob') || combined.includes('bday') || combined.includes('ເກີດ')) {
+        yyyy = Math.floor(1985 + Math.random() * 20); // 1985 - 2004
+      } else if (combined.includes('expire') || combined.includes('expiry') || combined.includes('due') || combined.includes('deadline')) {
+        yyyy = Math.floor(2027 + Math.random() * 4); // 2027 - 2030
+      }
+
       const m = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
       const d = String(Math.floor(1 + Math.random() * 28)).padStart(2, '0');
-      return `2026-${m}-${d}`;
+
+      if (type === 'datetime-local') {
+        const hh = String(Math.floor(8 + Math.random() * 10)).padStart(2, '0');
+        return `${yyyy}-${m}-${d}T${hh}:00`;
+      }
+
+      if (type === 'date') {
+        return `${yyyy}-${m}-${d}`;
+      }
+
+      // Plain text input with date semantics
+      if (placeholder.includes('dd/mm') || placeholder.includes('dd-mm') || placeholder.includes('/')) {
+        return `${d}/${m}/${yyyy}`;
+      }
+      if (placeholder.includes('mm/dd') || placeholder.includes('mm-dd')) {
+        return `${m}/${d}/${yyyy}`;
+      }
+      return `${yyyy}-${m}-${d}`;
     }
 
     // 6. URL
@@ -3166,55 +3362,106 @@
 
   // ─── QA Tool: 1-Click Fake File Generator & Attacher ───────────────────────
 
-  function generateMockFile(type) {
-    switch (type) {
-      case 'pdf': {
-        const pdfData = `%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 300 144]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000010 00000 n \n0000000060 00000 n \n0000000118 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n198\n%%EOF`;
-        return new File([pdfData], 'test_document.pdf', { type: 'application/pdf' });
+  function generateMockFile(type, customSizeBytes) {
+    const targetSize = (typeof customSizeBytes === 'number' && customSizeBytes > 0)
+      ? customSizeBytes
+      : getSelectedFileSize();
+
+    const normalizedType = (type || 'pdf').toLowerCase().replace(/^\./, '');
+
+    switch (normalizedType) {
+      case 'doc': {
+        const magic = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]; // OLE2 doc header
+        const buf = createMockFileBuffer(targetSize, magic, 'Microsoft Word 97-2004 Document Sample Test');
+        return new File([buf], 'sample_document.doc', { type: 'application/msword' });
       }
-      case 'jpg': {
-        try {
-          const canvas = document.createElement('canvas');
-          canvas.width = 320;
-          canvas.height = 200;
-          const ctx = canvas.getContext('2d');
-          ctx.fillStyle = '#0f172a';
-          ctx.fillRect(0, 0, 320, 200);
-          ctx.fillStyle = '#2563eb';
-          ctx.fillRect(10, 10, 300, 180);
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 20px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('SAMPLE IMAGE', 160, 100);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-          const byteStr = atob(dataUrl.split(',')[1]);
-          const ab = new ArrayBuffer(byteStr.length);
-          const ia = new Uint8Array(ab);
-          for (let i = 0; i < byteStr.length; i++) {
-            ia[i] = byteStr.charCodeAt(i);
-          }
-          return new File([ia], 'sample_photo.jpg', { type: 'image/jpeg' });
-        } catch (_) {
-          return new File(['DUMMY_IMAGE_DATA'], 'sample_photo.jpg', { type: 'image/jpeg' });
-        }
+      case 'docs':
+      case 'docx': {
+        const magic = [0x50, 0x4B, 0x03, 0x04]; // PK ZIP header
+        const buf = createMockFileBuffer(targetSize, magic, '[Content_Types].xml Word Document Test');
+        return new File([buf], 'sample_document.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+      }
+      case 'xis':
+      case 'xls': {
+        const magic = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]; // OLE2 xls header
+        const buf = createMockFileBuffer(targetSize, magic, 'Microsoft Excel Spreadsheet Sample Test');
+        return new File([buf], 'sample_sheet.xls', { type: 'application/vnd.ms-excel' });
+      }
+      case 'xlsx': {
+        const magic = [0x50, 0x4B, 0x03, 0x04]; // PK ZIP header
+        const buf = createMockFileBuffer(targetSize, magic, '[Content_Types].xml Excel Spreadsheet Test');
+        return new File([buf], 'sample_sheet.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      }
+      case 'ppt':
+      case 'pptx': {
+        const magic = [0x50, 0x4B, 0x03, 0x04]; // PK ZIP header
+        const buf = createMockFileBuffer(targetSize, magic, '[Content_Types].xml PowerPoint Presentation Test');
+        return new File([buf], 'sample_presentation.pptx', { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+      }
+      case 'png': {
+        const magic = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]; // PNG signature
+        const buf = createMockFileBuffer(targetSize, magic);
+        return new File([buf], 'sample_image.png', { type: 'image/png' });
+      }
+      case 'jpg':
+      case 'jpeg': {
+        const magic = [0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46]; // JPEG SOI & JFIF header
+        const buf = createMockFileBuffer(targetSize, magic);
+        return new File([buf], 'sample_photo.jpg', { type: 'image/jpeg' });
+      }
+      case 'zip': {
+        const magic = [0x50, 0x4B, 0x03, 0x04]; // PK ZIP header
+        const buf = createMockFileBuffer(targetSize, magic, 'ZIP Archive Test Package Data');
+        return new File([buf], 'archive_files.zip', { type: 'application/zip' });
+      }
+      case 'rar': {
+        const magic = [0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]; // Rar! signature
+        const buf = createMockFileBuffer(targetSize, magic, 'RAR Archive Test Package Data');
+        return new File([buf], 'archive_files.rar', { type: 'application/x-rar-compressed' });
       }
       case 'csv': {
-        const csv = "id,name,email,role,status\n1,Alex Smith,alex@example.com,QA Tester,Active\n2,Somxai Vongsa,somxai@laotel.com,Developer,Active\n3,Jane Davis,jane@example.com,Admin,Pending\n4,Khamdaeng Xai,khamdaeng@test.la,Security,Active\n";
-        return new File([csv], 'sample_data.csv', { type: 'text/csv' });
+        const csvHeader = 'id,name,phone,email,date,status\n1,Alex Smith,02055112233,alex@example.com,2026-06-15,Active\n2,Somxai Vongsa,02077889900,somxai@test.la,2026-06-16,Active\n';
+        const buf = createMockFileBuffer(targetSize, [], csvHeader);
+        return new File([buf], 'sample_data.csv', { type: 'text/csv' });
       }
       case 'oversize': {
-        // 15 MB binary file to trigger upload file size limits
-        const size = 15 * 1024 * 1024;
-        const buf = new Uint8Array(size);
+        const size = Math.max(targetSize, 15 * 1024 * 1024);
+        const magic = [0x25, 0x50, 0x44, 0x46, 0x2D, 0x31, 0x2E, 0x34];
+        const buf = createMockFileBuffer(size, magic);
         return new File([buf], 'oversize_test_15mb.pdf', { type: 'application/pdf' });
       }
       case 'invalid': {
-        return new File(['MZ_MOCK_EXECUTABLE_BINARY_PAYLOAD'], 'malicious_test.exe', { type: 'application/x-msdownload' });
+        const magic = [0x4D, 0x5A]; // MZ executable header
+        const buf = createMockFileBuffer(targetSize, magic, 'This program cannot be run in DOS mode.');
+        return new File([buf], 'malicious_test.exe', { type: 'application/x-msdownload' });
       }
-      default:
-        return new File(['test file content'], 'test_file.txt', { type: 'text/plain' });
+      case 'pdf':
+      default: {
+        const magic = [0x25, 0x50, 0x44, 0x46, 0x2D, 0x31, 0x2E, 0x34]; // %PDF-1.4
+        const text = '%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 300 144]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000010 00000 n \n0000000060 00000 n \n0000000118 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n198\n%%EOF\n';
+        const buf = createMockFileBuffer(targetSize, magic, text);
+        return new File([buf], 'test_document.pdf', { type: 'application/pdf' });
+      }
     }
+  }
+
+  function getSelectedOrSmartMockFile(inputNode) {
+    if (!inputNode) return generateMockFile('pdf');
+    const accept = (inputNode.getAttribute('accept') || '').toLowerCase();
+
+    if (accept.includes('.docx') || accept.includes('wordprocessingml')) return generateMockFile('docx');
+    if (accept.includes('.doc') || accept.includes('msword')) return generateMockFile('doc');
+    if (accept.includes('.xlsx') || accept.includes('spreadsheetml')) return generateMockFile('xlsx');
+    if (accept.includes('.xls') || accept.includes('ms-excel')) return generateMockFile('xls');
+    if (accept.includes('.pptx') || accept.includes('.ppt') || accept.includes('presentation')) return generateMockFile('ppt');
+    if (accept.includes('png')) return generateMockFile('png');
+    if (accept.includes('jpg') || accept.includes('jpeg') || accept.includes('image/')) return generateMockFile('jpg');
+    if (accept.includes('.zip')) return generateMockFile('zip');
+    if (accept.includes('.rar')) return generateMockFile('rar');
+    if (accept.includes('.csv')) return generateMockFile('csv');
+    if (accept.includes('.pdf')) return generateMockFile('pdf');
+
+    return generateMockFile('pdf');
   }
 
   function injectFileToInput(target, file) {
@@ -3355,7 +3602,7 @@
     if (!targetInput) return false;
 
     if (targetInput.tagName.toLowerCase() === 'input' && (targetInput.type || '').toLowerCase() === 'file') {
-      const mockFile = generateMockFile('pdf');
+      const mockFile = getSelectedOrSmartMockFile(targetInput);
       return injectFileToInput(targetInput, mockFile);
     }
 
@@ -3393,7 +3640,7 @@
       if (inputNode.disabled || inputNode.readOnly) continue;
 
       if ((inputNode.tagName || '').toLowerCase() === 'input' && (inputNode.type || '').toLowerCase() === 'file') {
-        const mockFile = generateMockFile('pdf');
+        const mockFile = getSelectedOrSmartMockFile(inputNode);
         const ok = injectFileToInput(inputNode, mockFile);
         if (ok) filledCount++;
         continue;
@@ -3425,7 +3672,7 @@
 
     // 1. File Input handling
     if (targetTag === 'input' && (targetInput.type || '').toLowerCase() === 'file') {
-      const mockFile = generateMockFile('pdf');
+      const mockFile = getSelectedOrSmartMockFile(targetInput);
       return injectFileToInput(targetInput, mockFile);
     }
 
