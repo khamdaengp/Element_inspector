@@ -1538,45 +1538,83 @@
 
   async function copyAnnotatorCanvasToClipboard() {
     if (!annotatorCanvas) return false;
+    let copied = false;
     try {
       const pngBlob = await new Promise((res) => annotatorCanvas.toBlob(res, 'image/png'));
       if (pngBlob && navigator.clipboard && window.ClipboardItem) {
         await navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]);
-        return true;
+        copied = true;
       }
     } catch (err) {
-      console.warn('[Inspector] Clipboard write image error:', err);
+      console.warn('[Inspector] Clipboard write image error on Windows:', err);
     }
-    return false;
+    // If clipboard copy fails or is blocked on Windows 10, seamlessly download to PC!
+    if (!copied) {
+      return await downloadAnnotatorCanvas('png');
+    }
+    return true;
   }
 
   async function downloadAnnotatorCanvas(format = 'jpeg') {
     if (!annotatorCanvas) return false;
     const mime = format === 'png' ? 'image/png' : 'image/jpeg';
     const ext = format === 'png' ? 'png' : 'jpg';
-    const blob = await new Promise((res) => annotatorCanvas.toBlob(res, mime, 0.95));
-    if (!blob) return false;
 
     const tag = (currentCapturedEl?.tagName || 'element').toLowerCase();
     const cleanId = currentCapturedEl?.id ? `_${currentCapturedEl.id.slice(0, 15)}` : '';
     const hasBoxes = drawnRectangles.length > 0 ? '_annotated' : '';
     const fileName = `${tag}${cleanId}${hasBoxes}_${Math.round(annotatorCanvas.width)}x${Math.round(annotatorCanvas.height)}.${ext}`;
 
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      a.remove();
-      URL.revokeObjectURL(url);
-    }, 1200);
+    // 1. Get synchronous dataURL from canvas
+    const dataUrl = annotatorCanvas.toDataURL(mime, 0.95);
 
-    // Also copy to clipboard for immediate pasting into chat/tickets
-    await copyAnnotatorCanvasToClipboard();
-    return true;
+    // 2. Primary method: Trigger download via Chrome background service worker (chrome.downloads API)
+    let downloaded = false;
+    try {
+      const resp = await new Promise((resolve) => {
+        chrome.runtime.sendMessage({
+          type: 'DOWNLOAD_FILE',
+          url: dataUrl,
+          filename: fileName,
+        }, (res) => {
+          if (chrome.runtime.lastError || !res || !res.success) {
+            resolve(false);
+          } else {
+            resolve(true);
+          }
+        });
+      });
+      downloaded = !!resp;
+    } catch (_) {}
+
+    // 3. Fallback method: Direct anchor download
+    if (!downloaded) {
+      try {
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = fileName;
+        a.style.display = 'none';
+        (document.body || document.documentElement).appendChild(a);
+        a.click();
+        setTimeout(() => a.remove(), 1200);
+        downloaded = true;
+      } catch (err) {
+        console.warn('[Inspector] Direct anchor download failed:', err);
+      }
+    }
+
+    // 4. Silent optional clipboard copy in background (will never block download on Windows 10)
+    try {
+      if (navigator.clipboard && window.ClipboardItem) {
+        annotatorCanvas.toBlob((pngBlob) => {
+          if (pngBlob) {
+            navigator.clipboard.write([new ClipboardItem({ 'image/png': pngBlob })]).catch(() => {});
+          }
+        }, 'image/png');
+      }
+    } catch (_) {}
+
+    return downloaded;
   }
 
   function isAnnotatorOpen() {
@@ -1614,8 +1652,8 @@
             <button class="ei-tool-btn" id="ei-clear-btn" title="Clear all drawn boxes">🧹 Clear</button>
           </div>
           <div class="ei-annotator-actions">
-            <button class="ei-tool-btn ei-btn-copy" id="ei-annotator-copy" title="Copy annotated image to clipboard">📋 Copy</button>
-            <button class="ei-tool-btn ei-btn-save" id="ei-annotator-download" title="Save & download image as .JPG (and copy to clipboard)">💾 Save & Download</button>
+            <button class="ei-tool-btn ei-btn-copy" id="ei-annotator-copy" title="Download image as .PNG directly to your PC">🖼️ Download .PNG</button>
+            <button class="ei-tool-btn ei-btn-save" id="ei-annotator-download" title="Download image as .JPG directly to your PC">💾 Download .JPG</button>
             <button class="ei-tool-btn ei-btn-close" id="ei-annotator-close" title="Close editor (Esc)">✕</button>
           </div>
         </div>
@@ -1665,27 +1703,28 @@
       clearAllRectangles();
     });
 
-    // Copy Image button
-    const copyBtn = annotatorModal.querySelector('#ei-annotator-copy');
-    copyBtn.addEventListener('click', async (e) => {
+    // Download .PNG button (direct download to PC)
+    const pngBtn = annotatorModal.querySelector('#ei-annotator-copy');
+    pngBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const ok = await copyAnnotatorCanvasToClipboard();
+      flashElement(pngBtn, '⏳ Downloading...', 'mv-copy--success');
+      const ok = await downloadAnnotatorCanvas('png');
       if (ok) {
-        showToast('✓ Annotated image copied to clipboard!');
+        showToast('✓ Downloaded .PNG to your PC!');
         closeAnnotationModal();
       } else {
-        flashElement(copyBtn, '✕ Failed', 'mv-copy--error');
+        flashElement(pngBtn, '✕ Error', 'mv-copy--error');
       }
     });
 
-    // Save & Download button
+    // Download .JPG button (direct download to PC)
     const downloadBtn = annotatorModal.querySelector('#ei-annotator-download');
     downloadBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      flashElement(downloadBtn, '⏳ Saving...', 'mv-copy--success');
+      flashElement(downloadBtn, '⏳ Downloading...', 'mv-copy--success');
       const ok = await downloadAnnotatorCanvas('jpeg');
       if (ok) {
-        showToast('✓ Saved .JPG & copied to clipboard!');
+        showToast('✓ Downloaded .JPG to your PC!');
         closeAnnotationModal();
       } else {
         flashElement(downloadBtn, '✕ Error', 'mv-copy--error');

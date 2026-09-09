@@ -99,6 +99,30 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     });
     return true; // Keep message port open for async response
   }
+
+  // Handle direct file downloads to PC via chrome.downloads API (immune to Windows 10 CSP/clipboard issues)
+  if (msg.type === 'DOWNLOAD_FILE') {
+    const { url, filename } = msg;
+    if (chrome.downloads && chrome.downloads.download) {
+      chrome.downloads.download({
+        url: url,
+        filename: filename || 'element_screenshot.jpg',
+        conflictAction: 'uniquify',
+        saveAs: false,
+      }, (downloadId) => {
+        if (chrome.runtime.lastError) {
+          console.warn('[Inspector] chrome.downloads.download failed:', chrome.runtime.lastError.message);
+          sendResponse({ success: false, error: chrome.runtime.lastError.message });
+        } else {
+          sendResponse({ success: true, downloadId });
+        }
+      });
+      return true; // Keep message port open for async response
+    } else {
+      sendResponse({ success: false, error: 'chrome.downloads API unavailable' });
+      return false;
+    }
+  }
 });
 
 // Clean up badge when tab is updated / navigated
