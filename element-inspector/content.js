@@ -1577,6 +1577,148 @@
   color: #ffffff !important;
   border-color: #3b82f6 !important;
 }
+
+/* QA Fake File Options Row */
+.mv-qa-file-selectors-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  background: #0d121f !important;
+  border: 1px solid #1e293b !important;
+  border-radius: 6px !important;
+  padding: 4px 6px !important;
+  margin-bottom: 2px !important;
+}
+
+.mv-qa-file-opt {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.mv-qa-file-opt .mv-qa-size-select {
+  flex: 1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* QA MaxLength & Length Boundary Testing Box */
+.mv-qa-maxlen-box {
+  background: rgba(99, 102, 241, 0.07) !important;
+  border: 1px solid rgba(99, 102, 241, 0.28) !important;
+  border-radius: 6px !important;
+  padding: 6px 8px !important;
+  margin-top: 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}
+
+.mv-qa-maxlen-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.mv-qa-maxlen-title {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: #a5b4fc !important;
+}
+
+.mv-qa-cur-maxlen {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  color: #38bdf8 !important;
+  background: #181b2a !important;
+  border: 1px solid #334155 !important;
+  border-radius: 3px !important;
+  padding: 1px 5px !important;
+}
+
+.mv-qa-maxlen-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.mv-qa-maxlen-select-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  flex: 1.1 !important;
+  min-width: 0 !important;
+}
+
+.mv-qa-maxlen-select-wrap .mv-qa-size-select {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.mv-qa-btn-fill-len {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  padding: 3px 7px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.15s ease !important;
+}
+
+.mv-qa-btn-fill-len:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%) !important;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4) !important;
+}
+
+.mv-qa-btn-set-len {
+  background: #181b2a !important;
+  color: #cbd5e1 !important;
+  border: 1px solid #334155 !important;
+  border-radius: 4px !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  padding: 3px 6px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.15s ease !important;
+}
+
+.mv-qa-btn-set-len:hover {
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #64748b !important;
+}
+
+.mv-qa-maxlen-chips {
+  display: flex !important;
+  gap: 3px !important;
+  overflow-x: auto !important;
+}
+
+.mv-qa-chip-len {
+  background: #181b2a !important;
+  color: #c7d2fe !important;
+  border: 1px solid #282f45 !important;
+  border-radius: 3px !important;
+  font-size: 8.5px !important;
+  font-weight: 600 !important;
+  padding: 2px 5px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.15s ease !important;
+}
+
+.mv-qa-chip-len:hover {
+  background: #312e81 !important;
+  color: #ffffff !important;
+  border-color: #818cf8 !important;
+}
 `;
 
   // ─── State ────────────────────────────────────────────────────────────────
@@ -2105,11 +2247,13 @@
           </div>
         </div>
 
-        <!-- 1-Click Fake File Attach with Size Selector -->
+        <!-- 1-Click Fake File Attach with Size & Filename Length Selectors -->
         <div class="mv-qa-file-section" id="mv-qa-file-section">
           <div class="mv-qa-file-header-row">
             <div class="mv-qa-fill-label">📁 1-Click Fake File Attach:</div>
-            <div class="mv-qa-file-size-wrap">
+          </div>
+          <div class="mv-qa-file-selectors-row">
+            <div class="mv-qa-file-opt">
               <label for="mv-qa-file-size" class="mv-qa-size-lbl">Size:</label>
               <select id="mv-qa-file-size" class="mv-qa-size-select" title="Select fake file size to attach">
                 <option value="51200">50 KB</option>
@@ -2121,6 +2265,19 @@
                 <option value="10485760">10 MB</option>
                 <option value="15728640">15 MB (Limit)</option>
                 <option value="26214400">25 MB</option>
+                <option value="custom">✏️ Custom...</option>
+              </select>
+            </div>
+            <div class="mv-qa-file-opt">
+              <label for="mv-qa-file-namelen" class="mv-qa-size-lbl">Name:</label>
+              <select id="mv-qa-file-namelen" class="mv-qa-size-select" title="Select length of file name">
+                <option value="normal" selected>Normal (~15)</option>
+                <option value="5">Short (5 chars)</option>
+                <option value="30">Medium (30)</option>
+                <option value="50">Long (50)</option>
+                <option value="100">100 chars</option>
+                <option value="255">255 (DB Limit)</option>
+                <option value="300">300 (Overflow)</option>
                 <option value="custom">✏️ Custom...</option>
               </select>
             </div>
@@ -2138,6 +2295,46 @@
             <button class="mv-qa-chip mv-qa-chip--file" data-file="rar" title="Attach RAR archive (archive_files.rar)">🗜️ RAR</button>
             <button class="mv-qa-chip mv-qa-chip--file" data-file="csv" title="Attach spreadsheet CSV (sample_data.csv)">📈 CSV</button>
             <button class="mv-qa-chip mv-qa-chip--file" data-file="invalid" title="Attach script file to test security filter (malicious.exe)">🚫 .exe</button>
+          </div>
+        </div>
+
+        <!-- Input MaxLength & Length Boundary Testing -->
+        <div class="mv-qa-maxlen-box" id="mv-qa-maxlen-box">
+          <div class="mv-qa-maxlen-header">
+            <span class="mv-qa-maxlen-title">📏 Input MaxLength &amp; Boundary Test:</span>
+            <span class="mv-qa-cur-maxlen" id="mv-qa-cur-maxlen" title="Current DOM maxlength on selected element">Max: None</span>
+          </div>
+          <div class="mv-qa-maxlen-row">
+            <div class="mv-qa-maxlen-select-wrap">
+              <label for="mv-qa-maxlen-select" class="mv-qa-size-lbl">Len:</label>
+              <select id="mv-qa-maxlen-select" class="mv-qa-size-select" title="Select string length to fill or test">
+                <option value="detect" selected>🎯 Exact MaxLength (Auto)</option>
+                <option value="overflow">⚠️ MaxLength + 1 (Overflow)</option>
+                <option value="10">10 chars</option>
+                <option value="20">20 chars</option>
+                <option value="50">50 chars</option>
+                <option value="100">100 chars</option>
+                <option value="255">255 chars (VARCHAR)</option>
+                <option value="500">500 chars</option>
+                <option value="1000">1,000 chars</option>
+                <option value="5000">5,000 chars</option>
+                <option value="custom">✏️ Custom length...</option>
+              </select>
+            </div>
+            <button class="mv-qa-btn-fill-len" id="mv-btn-fill-maxlen" title="Fill selected input with exactly the chosen number of characters">
+              <span>⚡ Fill</span>
+            </button>
+            <button class="mv-qa-btn-set-len" id="mv-btn-set-dom-maxlen" title="Set DOM maxlength attribute on this input to the selected length">
+              <span>⚙️ Set Max</span>
+            </button>
+          </div>
+          <div class="mv-qa-maxlen-chips">
+            <button class="mv-qa-chip-len" data-len="exact" title="Fill exact maxlength (from input.maxlength or 50)">Exact Max</button>
+            <button class="mv-qa-chip-len" data-len="overflow" title="Fill maxlength + 1 to test boundary cutoff">Max + 1</button>
+            <button class="mv-qa-chip-len" data-len="50" title="Fill 50 characters">50</button>
+            <button class="mv-qa-chip-len" data-len="100" title="Fill 100 characters">100</button>
+            <button class="mv-qa-chip-len" data-len="255" title="Fill 255 characters (DB varchar limit)">255</button>
+            <button class="mv-qa-chip-len" data-len="1000" title="Fill 1,000 characters">1K</button>
           </div>
         </div>
 
@@ -2772,6 +2969,38 @@
       });
     }
 
+    // QA Tool: Filename Length Selector & Custom Length Handler
+    const fileNameLenSelect = inspectCard.querySelector('#mv-qa-file-namelen');
+    if (fileNameLenSelect) {
+      fileNameLenSelect.addEventListener('change', (e) => {
+        e.stopPropagation();
+        if (fileNameLenSelect.value === 'custom') {
+          const userVal = prompt('Enter custom filename length (e.g. 75, 200) or a custom filename:', '80');
+          if (userVal) {
+            const trimmed = userVal.trim();
+            const parsedNum = parseInt(trimmed, 10);
+            if (!isNaN(parsedNum) && parsedNum > 0) {
+              fileNameLenSelect.setAttribute('data-custom-len', String(parsedNum));
+              const customOpt = fileNameLenSelect.querySelector('option[value="custom"]');
+              if (customOpt) customOpt.textContent = `✏️ Custom (${parsedNum} chars)`;
+              showToast(`✓ Filename length set to ${parsedNum} characters`);
+              return;
+            } else if (trimmed.length > 0) {
+              fileNameLenSelect.setAttribute('data-custom-len', trimmed);
+              const customOpt = fileNameLenSelect.querySelector('option[value="custom"]');
+              if (customOpt) customOpt.textContent = `✏️ Custom (${trimmed.length} chars)`;
+              showToast(`✓ Custom filename set (${trimmed.length} chars)`);
+              return;
+            }
+          }
+          fileNameLenSelect.value = 'normal';
+        } else {
+          const optText = fileNameLenSelect.options[fileNameLenSelect.selectedIndex].text;
+          showToast(`✓ Filename length set to: ${optText}`);
+        }
+      });
+    }
+
     // QA Tool: 1-Click Fake File Chips
     const fileChips = inspectCard.querySelectorAll('.mv-qa-chip--file[data-file]');
     fileChips.forEach((chip) => {
@@ -2783,9 +3012,88 @@
         const ok = injectFileToInput(selectedEl, file);
         if (ok) {
           flashElement(chip, '✓ Attached!', 'mv-copy--success');
-          showToast(`✓ Attached ${file.name} (${formatBytes(file.size)}) to file input!`);
+          showToast(`✓ Attached ${file.name} (${file.name.length} chars, ${formatBytes(file.size)}) to file input!`);
         } else {
           flashElement(chip, 'No File Input', 'mv-copy--error');
+        }
+      });
+    });
+
+    // QA Tool: Input MaxLength & Length Boundary Testing
+    const maxLenSelect = inspectCard.querySelector('#mv-qa-maxlen-select');
+    if (maxLenSelect) {
+      maxLenSelect.addEventListener('change', (e) => {
+        e.stopPropagation();
+        if (maxLenSelect.value === 'custom') {
+          const userVal = prompt('Enter custom string length to test (e.g. 75, 255, 1000):', '255');
+          if (userVal) {
+            const parsed = parseInt(userVal.trim(), 10);
+            if (!isNaN(parsed) && parsed > 0) {
+              maxLenSelect.setAttribute('data-custom-len', String(parsed));
+              const customOpt = maxLenSelect.querySelector('option[value="custom"]');
+              if (customOpt) customOpt.textContent = `✏️ Custom (${parsed} chars)`;
+              showToast(`✓ Target length set to ${parsed} chars`);
+              return;
+            }
+          }
+          maxLenSelect.value = 'detect';
+        }
+      });
+    }
+
+    const fillMaxLenBtn = inspectCard.querySelector('#mv-btn-fill-maxlen');
+    if (fillMaxLenBtn) {
+      fillMaxLenBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        let targetLen = maxLenSelect ? maxLenSelect.value : 'detect';
+        if (targetLen === 'custom') {
+          targetLen = maxLenSelect.getAttribute('data-custom-len') || 255;
+        }
+        const filledLen = fillInputWithLength(selectedEl, targetLen);
+        if (filledLen) {
+          flashElement(fillMaxLenBtn, `✓ ${filledLen} Chars!`, 'mv-copy--success');
+          showToast(`✓ Filled ${filledLen} characters into input!`);
+        } else {
+          flashElement(fillMaxLenBtn, 'No Input Found', 'mv-copy--error');
+        }
+      });
+    }
+
+    const setDomMaxLenBtn = inspectCard.querySelector('#mv-btn-set-dom-maxlen');
+    if (setDomMaxLenBtn) {
+      setDomMaxLenBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        let targetLen = maxLenSelect ? maxLenSelect.value : '50';
+        if (targetLen === 'custom') {
+          targetLen = maxLenSelect.getAttribute('data-custom-len') || 50;
+        }
+        const setLen = setInputDomMaxLength(selectedEl, targetLen);
+        if (setLen) {
+          flashElement(setDomMaxLenBtn, `✓ Max=${setLen}!`, 'mv-copy--success');
+          const badge = inspectCard.querySelector('#mv-qa-cur-maxlen');
+          if (badge) badge.textContent = `Max: ${setLen}`;
+          showToast(`✓ Set DOM maxlength="${setLen}" on input!`);
+        } else {
+          flashElement(setDomMaxLenBtn, 'No Input Found', 'mv-copy--error');
+        }
+      });
+    }
+
+    // Quick Length Chips (Exact Max, Max+1, 50, 100, 255, 1K)
+    const lenChips = inspectCard.querySelectorAll('.mv-qa-chip-len[data-len]');
+    lenChips.forEach((chip) => {
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const lenType = chip.getAttribute('data-len');
+        const filledLen = fillInputWithLength(selectedEl, lenType);
+        if (filledLen) {
+          flashElement(chip, `✓ ${filledLen}`, 'mv-copy--success');
+          showToast(`✓ Filled ${filledLen} characters into input!`);
+        } else {
+          flashElement(chip, 'No Input', 'mv-copy--error');
         }
       });
     });
@@ -3390,6 +3698,46 @@
     return parseInt(val, 10) || 1024 * 1024;
   }
 
+  function getSelectedFileNameLength() {
+    const nameLenSelect = inspectCard ? inspectCard.querySelector('#mv-qa-file-namelen') : null;
+    if (!nameLenSelect) return 'normal';
+    const val = nameLenSelect.value;
+    if (val === 'custom') {
+      const custom = nameLenSelect.getAttribute('data-custom-len');
+      return custom || 'normal';
+    }
+    return val || 'normal';
+  }
+
+  function generateMockFileName(type, defaultName) {
+    const lenSetting = getSelectedFileNameLength();
+    if (lenSetting === 'normal') {
+      return defaultName;
+    }
+
+    const dotIdx = defaultName.lastIndexOf('.');
+    const ext = dotIdx !== -1 ? defaultName.substring(dotIdx) : '';
+    const extLen = ext.length;
+
+    // If user provided custom string (e.g. custom filename)
+    if (typeof lenSetting === 'string' && isNaN(Number(lenSetting))) {
+      return lenSetting.endsWith(ext) ? lenSetting : `${lenSetting}${ext}`;
+    }
+
+    const targetLen = parseInt(lenSetting, 10);
+    if (!targetLen || targetLen <= 0) return defaultName;
+
+    const baseLen = Math.max(1, targetLen - extLen);
+    const prefix = `test_${type}_`;
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789_';
+    let base = prefix;
+    while (base.length < baseLen) {
+      base += alphabet;
+    }
+    base = base.substring(0, baseLen);
+    return `${base}${ext}`;
+  }
+
   function createMockFileBuffer(targetSize, headerBytes = [], textPrefix = '') {
     const size = Math.max(headerBytes.length || 1, Math.min(targetSize, 100 * 1024 * 1024));
     const buf = new Uint8Array(size);
@@ -3700,74 +4048,87 @@
       case 'doc': {
         const magic = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]; // OLE2 doc header
         const buf = createMockFileBuffer(targetSize, magic, 'Microsoft Word 97-2004 Document Sample Test');
-        return new File([buf], 'sample_document.doc', { type: 'application/msword' });
+        const fname = generateMockFileName('doc', 'sample_document.doc');
+        return new File([buf], fname, { type: 'application/msword' });
       }
       case 'docs':
       case 'docx': {
         const magic = [0x50, 0x4B, 0x03, 0x04]; // PK ZIP header
         const buf = createMockFileBuffer(targetSize, magic, '[Content_Types].xml Word Document Test');
-        return new File([buf], 'sample_document.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+        const fname = generateMockFileName('docx', 'sample_document.docx');
+        return new File([buf], fname, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
       }
       case 'xis':
       case 'xls': {
         const magic = [0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]; // OLE2 xls header
         const buf = createMockFileBuffer(targetSize, magic, 'Microsoft Excel Spreadsheet Sample Test');
-        return new File([buf], 'sample_sheet.xls', { type: 'application/vnd.ms-excel' });
+        const fname = generateMockFileName('xls', 'sample_sheet.xls');
+        return new File([buf], fname, { type: 'application/vnd.ms-excel' });
       }
       case 'xlsx': {
         const magic = [0x50, 0x4B, 0x03, 0x04]; // PK ZIP header
         const buf = createMockFileBuffer(targetSize, magic, '[Content_Types].xml Excel Spreadsheet Test');
-        return new File([buf], 'sample_sheet.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const fname = generateMockFileName('xlsx', 'sample_sheet.xlsx');
+        return new File([buf], fname, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       }
       case 'ppt':
       case 'pptx': {
         const magic = [0x50, 0x4B, 0x03, 0x04]; // PK ZIP header
         const buf = createMockFileBuffer(targetSize, magic, '[Content_Types].xml PowerPoint Presentation Test');
-        return new File([buf], 'sample_presentation.pptx', { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+        const fname = generateMockFileName('pptx', 'sample_presentation.pptx');
+        return new File([buf], fname, { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
       }
       case 'png': {
         const magic = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]; // PNG signature
         const buf = createMockFileBuffer(targetSize, magic);
-        return new File([buf], 'sample_image.png', { type: 'image/png' });
+        const fname = generateMockFileName('png', 'sample_image.png');
+        return new File([buf], fname, { type: 'image/png' });
       }
       case 'jpg':
       case 'jpeg': {
         const magic = [0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46]; // JPEG SOI & JFIF header
         const buf = createMockFileBuffer(targetSize, magic);
-        return new File([buf], 'sample_photo.jpg', { type: 'image/jpeg' });
+        const fname = generateMockFileName('jpg', 'sample_photo.jpg');
+        return new File([buf], fname, { type: 'image/jpeg' });
       }
       case 'zip': {
         const magic = [0x50, 0x4B, 0x03, 0x04]; // PK ZIP header
         const buf = createMockFileBuffer(targetSize, magic, 'ZIP Archive Test Package Data');
-        return new File([buf], 'archive_files.zip', { type: 'application/zip' });
+        const fname = generateMockFileName('zip', 'archive_files.zip');
+        return new File([buf], fname, { type: 'application/zip' });
       }
       case 'rar': {
         const magic = [0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]; // Rar! signature
         const buf = createMockFileBuffer(targetSize, magic, 'RAR Archive Test Package Data');
-        return new File([buf], 'archive_files.rar', { type: 'application/x-rar-compressed' });
+        const fname = generateMockFileName('rar', 'archive_files.rar');
+        return new File([buf], fname, { type: 'application/x-rar-compressed' });
       }
       case 'csv': {
         const csvHeader = 'id,name,phone,email,date,status\n1,Alex Smith,02055112233,alex@example.com,2026-06-15,Active\n2,Somxai Vongsa,02077889900,somxai@test.la,2026-06-16,Active\n';
         const buf = createMockFileBuffer(targetSize, [], csvHeader);
-        return new File([buf], 'sample_data.csv', { type: 'text/csv' });
+        const fname = generateMockFileName('csv', 'sample_data.csv');
+        return new File([buf], fname, { type: 'text/csv' });
       }
       case 'oversize': {
         const size = Math.max(targetSize, 15 * 1024 * 1024);
         const magic = [0x25, 0x50, 0x44, 0x46, 0x2D, 0x31, 0x2E, 0x34];
         const buf = createMockFileBuffer(size, magic);
-        return new File([buf], 'oversize_test_15mb.pdf', { type: 'application/pdf' });
+        const fname = generateMockFileName('pdf', 'oversize_test_15mb.pdf');
+        return new File([buf], fname, { type: 'application/pdf' });
       }
       case 'invalid': {
         const magic = [0x4D, 0x5A]; // MZ executable header
         const buf = createMockFileBuffer(targetSize, magic, 'This program cannot be run in DOS mode.');
-        return new File([buf], 'malicious_test.exe', { type: 'application/x-msdownload' });
+        const fname = generateMockFileName('exe', 'malicious_test.exe');
+        return new File([buf], fname, { type: 'application/x-msdownload' });
       }
       case 'pdf':
       default: {
         const magic = [0x25, 0x50, 0x44, 0x46, 0x2D, 0x31, 0x2E, 0x34]; // %PDF-1.4
         const text = '%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 300 144]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000010 00000 n \n0000000060 00000 n \n0000000118 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n198\n%%EOF\n';
         const buf = createMockFileBuffer(targetSize, magic, text);
-        return new File([buf], 'test_document.pdf', { type: 'application/pdf' });
+        const fname = generateMockFileName('pdf', 'test_document.pdf');
+        return new File([buf], fname, { type: 'application/pdf' });
       }
     }
   }
@@ -3979,6 +4340,86 @@
 
     injectInputValue(input, formattedVal);
     return true;
+  }
+
+  // ─── QA Tool: MaxLength & Length Testing Helpers ──────────────────────────
+
+  function generateLengthTestString(len, isLao = false) {
+    if (len <= 0) return '';
+    if (len <= 10) {
+      return '1234567890'.substring(0, len);
+    }
+    let result = '';
+    let marker = 10;
+    const letters = isLao ? 'ກຂຄງຈສຊຍດຕຖທນບປຜຝພຟມຢຣລວຫອຮ' : 'abcdefghijklmnopqrstuvwxyz';
+    while (result.length < len) {
+      const tag = `[${marker}]`;
+      const remaining = len - result.length;
+      if (remaining <= tag.length) {
+        result += tag.substring(0, remaining);
+        break;
+      }
+      result += tag;
+      const chunkLen = Math.min(10 - tag.length, len - result.length);
+      for (let i = 0; i < chunkLen; i++) {
+        result += letters[(i + marker) % letters.length];
+      }
+      marker += 10;
+    }
+    return result.substring(0, len);
+  }
+
+  function fillInputWithLength(el, targetLen) {
+    if (!el || isInspectorElement(el)) return 0;
+    let input = el;
+    const tag = (input.tagName || '').toLowerCase();
+    if (!['input', 'textarea'].includes(tag) && el.querySelector) {
+      input = el.querySelector('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="file"]), textarea');
+    }
+    if (!input) return 0;
+
+    let len = targetLen;
+    const currentMax = (input.maxLength > 0 && input.maxLength < 524288) ? input.maxLength : null;
+
+    if (len === 'detect' || len === 'exact') {
+      len = currentMax || 50;
+    } else if (len === 'overflow') {
+      len = (currentMax || 50) + 1;
+    } else {
+      len = parseInt(len, 10) || 50;
+    }
+
+    // If filling more than input.maxLength, unlock constraint so browser doesn't truncate value assignment
+    if (currentMax && len > currentMax) {
+      input.removeAttribute('maxlength');
+      input.maxLength = Math.max(len + 100, 524288);
+    }
+
+    const testStr = generateLengthTestString(len, currentLocale === 'LA');
+    injectInputValue(input, testStr);
+    return len;
+  }
+
+  function setInputDomMaxLength(el, targetLen) {
+    if (!el || isInspectorElement(el)) return 0;
+    let input = el;
+    const tag = (input.tagName || '').toLowerCase();
+    if (!['input', 'textarea'].includes(tag) && el.querySelector) {
+      input = el.querySelector('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="file"]), textarea');
+    }
+    if (!input) return 0;
+
+    let len = targetLen;
+    if (len === 'detect' || len === 'exact' || len === 'overflow') {
+      len = 50;
+    } else {
+      len = parseInt(len, 10) || 50;
+    }
+
+    input.maxLength = len;
+    input.setAttribute('maxlength', String(len));
+    flashInputOutline(input);
+    return len;
   }
 
   // ─── QA Tool: Smart Random Auto-Fill for Selected Element ───────────────────
@@ -6070,6 +6511,27 @@ text-align: ${cs.textAlign};`;
     const dateBox = inspectCard.querySelector('#mv-qa-date-box');
     if (dateBox) {
       dateBox.style.display = hasDateInput ? 'block' : 'none';
+    }
+
+    // 6c. Check text input/textarea and display MaxLength testing box
+    let targetTextNode = el;
+    if (!['input', 'textarea'].includes(tag) && el.querySelector) {
+      targetTextNode = el.querySelector('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="file"]), textarea');
+    }
+    const isTextInput = targetTextNode && ['input', 'textarea'].includes((targetTextNode.tagName || '').toLowerCase()) && (targetTextNode.type || '').toLowerCase() !== 'file';
+    const maxLenBox = inspectCard.querySelector('#mv-qa-maxlen-box');
+    const curMaxBadge = inspectCard.querySelector('#mv-qa-cur-maxlen');
+    if (maxLenBox) {
+      maxLenBox.style.display = isTextInput ? 'flex' : 'none';
+    }
+    if (curMaxBadge) {
+      if (isTextInput) {
+        const ml = (targetTextNode.maxLength > 0 && targetTextNode.maxLength < 524288) ? targetTextNode.maxLength : (targetTextNode.getAttribute('maxlength') || null);
+        curMaxBadge.textContent = ml ? `Max: ${ml}` : 'Max: None';
+        curMaxBadge.title = ml ? `Element has DOM maxlength="${ml}"` : 'Element has no maxlength constraint';
+      } else {
+        curMaxBadge.textContent = 'Max: N/A';
+      }
     }
 
     // 7. Update cURL Export button styling
