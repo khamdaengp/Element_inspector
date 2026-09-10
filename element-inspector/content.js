@@ -1781,6 +1781,88 @@
   color: #ffffff !important;
   border-color: #818cf8 !important;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   NEW TOOLS — Inspect & Design Tab Extensions  v2.8.0
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Shared Section Header ────────────────────────────────── */
+.mv-section-header { display: flex !important; align-items: center !important; gap: 6px !important; padding: 8px 10px 5px !important; border-top: 1px solid #1a1d2e !important; }
+.mv-section-icon { font-size: 12px !important; flex-shrink: 0 !important; }
+.mv-section-title { font-size: 11px !important; font-weight: 700 !important; color: #cbd5e1 !important; flex: 1 !important; letter-spacing: 0.02em !important; }
+.mv-section-copy-btn { background: #1e2133 !important; border: 1px solid #2d3148 !important; color: #64748b !important; font-size: 9.5px !important; font-weight: 600 !important; padding: 2px 7px !important; border-radius: 4px !important; cursor: pointer !important; transition: all 0.12s !important; flex-shrink: 0 !important; }
+.mv-section-copy-btn:hover { background: #2b304c !important; color: #e2e8f0 !important; border-color: #43496d !important; }
+
+/* ── Box Model Visualizer ─────────────────────────────────── */
+.mv-boxmodel-wrap { padding: 0 10px 10px !important; }
+.mv-boxmodel-diagram { margin-top: 6px !important; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9.5px !important; }
+.mv-bm-zone { position: relative !important; display: flex !important; flex-direction: column !important; align-items: center !important; border-radius: 4px !important; padding: 4px 18px !important; min-height: 24px !important; }
+.mv-bm-margin { background: rgba(255,165,0,0.08) !important; border: 1.5px solid rgba(255,165,0,0.35) !important; }
+.mv-bm-border { background: rgba(255,200,50,0.08) !important; border: 1.5px solid rgba(255,200,50,0.35) !important; width: 100% !important; padding: 4px 14px !important; }
+.mv-bm-padding { background: rgba(52,211,153,0.08) !important; border: 1.5px solid rgba(52,211,153,0.3) !important; width: 100% !important; padding: 4px 10px !important; }
+.mv-bm-content { background: rgba(56,189,248,0.12) !important; border: 1.5px solid rgba(56,189,248,0.4) !important; border-radius: 4px !important; padding: 5px 16px !important; color: #38bdf8 !important; font-weight: 700 !important; font-size: 10.5px !important; white-space: nowrap !important; text-align: center !important; width: 100% !important; box-sizing: border-box !important; }
+.mv-bm-label { font-size: 8.5px !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: 0.06em !important; color: #64748b !important; align-self: flex-start !important; }
+.mv-bm-margin > .mv-bm-label { color: #fb923c !important; }
+.mv-bm-border > .mv-bm-label { color: #fbbf24 !important; }
+.mv-bm-padding > .mv-bm-label { color: #34d399 !important; }
+.mv-bm-val { color: #94a3b8 !important; font-size: 9.5px !important; line-height: 1 !important; min-height: 12px !important; }
+.mv-bm-top { margin-bottom: 2px !important; }
+.mv-bm-bottom { margin-top: 2px !important; }
+
+/* ── Attributes Panel ─────────────────────────────────────── */
+.mv-attrs-wrap { padding: 0 10px 10px !important; }
+.mv-attrs-table { margin-top: 6px !important; display: flex !important; flex-direction: column !important; gap: 2px !important; max-height: 160px !important; overflow-y: auto !important; scrollbar-width: thin !important; scrollbar-color: #2d3148 transparent !important; }
+.mv-attr-row { display: flex !important; align-items: center !important; gap: 6px !important; padding: 3px 6px !important; background: #0e1019 !important; border: 1px solid #1a1d2e !important; border-radius: 4px !important; cursor: pointer !important; transition: background 0.12s !important; min-width: 0 !important; }
+.mv-attr-row:hover { background: #151828 !important; border-color: #2d3148 !important; }
+.mv-attr-name { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9.5px !important; font-weight: 700 !important; color: #60a5fa !important; flex-shrink: 0 !important; }
+.mv-attr-val { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9.5px !important; color: #a3e635 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; flex: 1 !important; min-width: 0 !important; }
+.mv-attr-copy { font-size: 9px !important; color: #475569 !important; flex-shrink: 0 !important; }
+.mv-attrs-empty { font-size: 10px !important; color: #475569 !important; padding: 6px !important; font-style: italic !important; }
+
+/* ── Contrast Checker ─────────────────────────────────────── */
+.mv-contrast-wrap { padding: 0 10px 10px !important; }
+.mv-contrast-ratio-badge { font-size: 11px !important; font-weight: 800 !important; color: #38bdf8 !important; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; flex-shrink: 0 !important; }
+.mv-contrast-preview { margin-top: 6px !important; border-radius: 5px !important; padding: 8px 10px !important; border: 1px solid #1a1d2e !important; text-align: center !important; }
+.mv-contrast-sample { font-size: 13px !important; font-weight: 600 !important; }
+.mv-contrast-results { margin-top: 6px !important; display: flex !important; flex-direction: column !important; gap: 3px !important; }
+.mv-contrast-row { display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 3px 6px !important; background: #0e1019 !important; border: 1px solid #1a1d2e !important; border-radius: 4px !important; }
+.mv-contrast-lbl { font-size: 9.5px !important; color: #64748b !important; }
+.mv-contrast-grade { font-size: 10px !important; font-weight: 700 !important; color: #64748b !important; }
+.mv-contrast-grade.pass { color: #34d399 !important; }
+.mv-contrast-grade.fail { color: #f87171 !important; }
+
+/* ── Applied CSS Rules ────────────────────────────────────── */
+.mv-cssrules-wrap { padding: 0 10px 10px !important; }
+.mv-cssrules-list { margin-top: 6px !important; display: flex !important; flex-direction: column !important; gap: 4px !important; max-height: 200px !important; overflow-y: auto !important; scrollbar-width: thin !important; scrollbar-color: #2d3148 transparent !important; }
+.mv-cssrule-block { background: #0a0b12 !important; border: 1px solid #1a1d2e !important; border-radius: 5px !important; overflow: hidden !important; }
+.mv-cssrule-selector { padding: 3px 8px !important; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9.5px !important; font-weight: 700 !important; color: #c084fc !important; background: #0e0f1a !important; border-bottom: 1px solid #1a1d2e !important; word-break: break-all !important; }
+.mv-cssrule-props { padding: 4px 8px !important; display: flex !important; flex-direction: column !important; gap: 2px !important; }
+.mv-cssrule-prop { display: flex !important; gap: 4px !important; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9px !important; line-height: 1.4 !important; }
+.mv-cssrule-key { color: #60a5fa !important; flex-shrink: 0 !important; }
+.mv-cssrule-val { color: #a3e635 !important; word-break: break-all !important; }
+.mv-cssrules-empty { font-size: 10px !important; color: #475569 !important; padding: 6px !important; font-style: italic !important; }
+
+/* ── CSS Variables Panel ──────────────────────────────────── */
+.mv-cssvars-wrap { padding: 0 10px 10px !important; }
+.mv-cssvars-count { font-size: 9.5px !important; color: #64748b !important; background: #1e2133 !important; border: 1px solid #2d3148 !important; padding: 1px 6px !important; border-radius: 10px !important; flex-shrink: 0 !important; }
+.mv-cssvars-list { margin-top: 6px !important; display: flex !important; flex-direction: column !important; gap: 2px !important; max-height: 150px !important; overflow-y: auto !important; scrollbar-width: thin !important; scrollbar-color: #2d3148 transparent !important; }
+.mv-cssvar-row { display: flex !important; align-items: center !important; gap: 6px !important; padding: 3px 6px !important; background: #0e1019 !important; border: 1px solid #1a1d2e !important; border-radius: 4px !important; cursor: pointer !important; min-width: 0 !important; transition: background 0.12s !important; }
+.mv-cssvar-row:hover { background: #151828 !important; border-color: #2d3148 !important; }
+.mv-cssvar-dot { width: 10px !important; height: 10px !important; border-radius: 50% !important; flex-shrink: 0 !important; border: 1px solid rgba(255,255,255,0.15) !important; }
+.mv-cssvar-name { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9px !important; font-weight: 700 !important; color: #a78bfa !important; flex: 1 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; min-width: 0 !important; }
+.mv-cssvar-val { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9px !important; color: #94a3b8 !important; flex-shrink: 0 !important; max-width: 80px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+.mv-cssvars-empty { font-size: 10px !important; color: #475569 !important; padding: 6px !important; font-style: italic !important; }
+
+/* ── Spacing Map ──────────────────────────────────────────── */
+.mv-spacing-wrap { padding: 0 10px 10px !important; }
+.mv-spacing-diagram { margin-top: 6px !important; display: flex !important; gap: 8px !important; align-items: stretch !important; }
+.mv-sp-group { flex: 1 !important; background: #0a0b12 !important; border: 1px solid #1a1d2e !important; border-radius: 5px !important; padding: 6px 8px !important; display: flex !important; flex-direction: column !important; gap: 4px !important; }
+.mv-sp-label { font-size: 9px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.06em !important; color: #475569 !important; text-align: center !important; }
+.mv-sp-group:first-child .mv-sp-label { color: #34d399 !important; }
+.mv-sp-group:last-child .mv-sp-label { color: #fb923c !important; }
+.mv-sp-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 2px !important; }
+.mv-sp-top, .mv-sp-right, .mv-sp-bottom, .mv-sp-left { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9.5px !important; font-weight: 600 !important; color: #94a3b8 !important; background: #0e1019 !important; border: 1px solid #1a1d2e !important; border-radius: 3px !important; padding: 3px 4px !important; text-align: center !important; min-width: 0 !important; }
+.mv-sp-divider { width: 1px !important; background: #1a1d2e !important; flex-shrink: 0 !important; }
 `;
 
   // ─── State ────────────────────────────────────────────────────────────────
@@ -2114,6 +2196,73 @@
         </div>
       </div>
 
+      <!-- ── Box Model Visualizer ───────────────────────── -->
+      <div class="mv-boxmodel-wrap" id="mv-boxmodel-wrap">
+        <div class="mv-section-header">
+          <span class="mv-section-icon">📊</span>
+          <span class="mv-section-title">Box Model</span>
+          <button class="mv-section-copy-btn" id="mv-btn-copy-boxmodel" title="Copy box model values as CSS">📋 Copy</button>
+        </div>
+        <div class="mv-boxmodel-diagram" id="mv-boxmodel-diagram">
+          <div class="mv-bm-zone mv-bm-margin" id="mv-bm-margin">
+            <span class="mv-bm-label">margin</span>
+            <span class="mv-bm-val mv-bm-top" id="mv-bm-mt">-</span>
+            <div class="mv-bm-zone mv-bm-border" id="mv-bm-border">
+              <span class="mv-bm-label">border</span>
+              <span class="mv-bm-val mv-bm-top" id="mv-bm-bt">-</span>
+              <div class="mv-bm-zone mv-bm-padding" id="mv-bm-pad">
+                <span class="mv-bm-label">padding</span>
+                <span class="mv-bm-val mv-bm-top" id="mv-bm-pt">-</span>
+                <div class="mv-bm-content" id="mv-bm-content">
+                  <span id="mv-bm-w">-</span> × <span id="mv-bm-h">-</span>
+                </div>
+                <span class="mv-bm-val mv-bm-bottom" id="mv-bm-pb">-</span>
+              </div>
+              <span class="mv-bm-val mv-bm-bottom" id="mv-bm-bb">-</span>
+            </div>
+            <span class="mv-bm-val mv-bm-bottom" id="mv-bm-mb">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Attributes Panel ───────────────────────────── -->
+      <div class="mv-attrs-wrap" id="mv-attrs-wrap">
+        <div class="mv-section-header">
+          <span class="mv-section-icon">🏷️</span>
+          <span class="mv-section-title">Attributes</span>
+          <button class="mv-section-copy-btn" id="mv-btn-copy-attrs" title="Copy all attributes as JSON">📋 JSON</button>
+        </div>
+        <div class="mv-attrs-table" id="mv-attrs-table">
+          <span class="mv-attrs-empty">Select an element to see attributes</span>
+        </div>
+      </div>
+
+      <!-- ── Contrast Checker (WCAG) ────────────────────── -->
+      <div class="mv-contrast-wrap" id="mv-contrast-wrap">
+        <div class="mv-section-header">
+          <span class="mv-section-icon">🌓</span>
+          <span class="mv-section-title">Contrast Checker</span>
+          <span class="mv-contrast-ratio-badge" id="mv-contrast-badge">-</span>
+        </div>
+        <div class="mv-contrast-preview" id="mv-contrast-preview">
+          <span class="mv-contrast-sample" id="mv-contrast-sample">Sample Text Aa</span>
+        </div>
+        <div class="mv-contrast-results" id="mv-contrast-results">
+          <div class="mv-contrast-row">
+            <span class="mv-contrast-lbl">Normal Text AA</span>
+            <span class="mv-contrast-grade" id="mv-cg-aa">—</span>
+          </div>
+          <div class="mv-contrast-row">
+            <span class="mv-contrast-lbl">Normal Text AAA</span>
+            <span class="mv-contrast-grade" id="mv-cg-aaa">—</span>
+          </div>
+          <div class="mv-contrast-row">
+            <span class="mv-contrast-lbl">Large Text AA</span>
+            <span class="mv-contrast-grade" id="mv-cg-large">—</span>
+          </div>
+        </div>
+      </div>
+
       </div><!-- /mv-panel-inspect -->
 
       <!-- ── Tab Panel: Design ──────────────────────────────── -->
@@ -2204,6 +2353,60 @@
             <button class="mv-figma-btn mv-figma-btn-png" id="mv-btn-copy-figma-png" title="Copy single 1:1 pixel-perfect PNG image layer">
               <span>🖼️</span> <span>Single PNG</span>
             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Applied CSS Rules ──────────────────────────── -->
+      <div class="mv-cssrules-wrap" id="mv-cssrules-wrap">
+        <div class="mv-section-header">
+          <span class="mv-section-icon">📋</span>
+          <span class="mv-section-title">Applied CSS Rules</span>
+          <button class="mv-section-copy-btn" id="mv-btn-copy-cssrules" title="Copy matched CSS rules as text">📋 Copy</button>
+        </div>
+        <div class="mv-cssrules-list" id="mv-cssrules-list">
+          <span class="mv-cssrules-empty">Select an element to see CSS rules</span>
+        </div>
+      </div>
+
+      <!-- ── CSS Variables ──────────────────────────────── -->
+      <div class="mv-cssvars-wrap" id="mv-cssvars-wrap">
+        <div class="mv-section-header">
+          <span class="mv-section-icon">💠</span>
+          <span class="mv-section-title">CSS Variables</span>
+          <span class="mv-cssvars-count" id="mv-cssvars-count">0 vars</span>
+        </div>
+        <div class="mv-cssvars-list" id="mv-cssvars-list">
+          <span class="mv-cssvars-empty">No CSS variables found</span>
+        </div>
+      </div>
+
+      <!-- ── Spacing Map ────────────────────────────────── -->
+      <div class="mv-spacing-wrap" id="mv-spacing-wrap">
+        <div class="mv-section-header">
+          <span class="mv-section-icon">📐</span>
+          <span class="mv-section-title">Spacing Map</span>
+          <button class="mv-section-copy-btn" id="mv-btn-copy-spacing" title="Copy spacing values as CSS shorthand">📋 Copy</button>
+        </div>
+        <div class="mv-spacing-diagram">
+          <div class="mv-sp-group">
+            <span class="mv-sp-label">Padding</span>
+            <div class="mv-sp-grid">
+              <span class="mv-sp-top" id="mv-sp-pt">-</span>
+              <span class="mv-sp-right" id="mv-sp-pr">-</span>
+              <span class="mv-sp-bottom" id="mv-sp-pb">-</span>
+              <span class="mv-sp-left" id="mv-sp-pl">-</span>
+            </div>
+          </div>
+          <div class="mv-sp-divider"></div>
+          <div class="mv-sp-group">
+            <span class="mv-sp-label">Margin</span>
+            <div class="mv-sp-grid">
+              <span class="mv-sp-top" id="mv-sp-mt">-</span>
+              <span class="mv-sp-right" id="mv-sp-mr">-</span>
+              <span class="mv-sp-bottom" id="mv-sp-mb">-</span>
+              <span class="mv-sp-left" id="mv-sp-ml">-</span>
+            </div>
           </div>
         </div>
       </div>
@@ -2749,6 +2952,79 @@
         e.stopPropagation();
         if (!selectedEl) return;
         await copyPngForFigma(selectedEl, copyFigmaPngBtn);
+      });
+    }
+
+    // Inspect Tool: Copy Box Model
+    const copyBoxModelBtn = inspectCard.querySelector('#mv-btn-copy-boxmodel');
+    if (copyBoxModelBtn) {
+      copyBoxModelBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const cs = window.getComputedStyle(selectedEl);
+        const rect = selectedEl.getBoundingClientRect();
+        const snippet = [
+          `/* Box Model for <${getSafeTag(selectedEl)}> */`,
+          `width: ${Math.round(rect.width)}px;`,
+          `height: ${Math.round(rect.height)}px;`,
+          `margin: ${cs.marginTop} ${cs.marginRight} ${cs.marginBottom} ${cs.marginLeft};`,
+          `padding: ${cs.paddingTop} ${cs.paddingRight} ${cs.paddingBottom} ${cs.paddingLeft};`,
+          `border-width: ${cs.borderTopWidth} ${cs.borderRightWidth} ${cs.borderBottomWidth} ${cs.borderLeftWidth};`
+        ].join('\n');
+        await copyToClipboard(snippet, copyBoxModelBtn, '✓ Copied Box Model!');
+        showToast('✓ Box model CSS copied!');
+      });
+    }
+
+    // Inspect Tool: Copy Attributes as JSON
+    const copyAttrsBtn = inspectCard.querySelector('#mv-btn-copy-attrs');
+    if (copyAttrsBtn) {
+      copyAttrsBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const obj = {};
+        for (const attr of (selectedEl.attributes || [])) {
+          obj[attr.name] = attr.value;
+        }
+        const json = JSON.stringify(obj, null, 2);
+        await copyToClipboard(json, copyAttrsBtn, '✓ Copied JSON!');
+        showToast('✓ Attributes JSON copied!');
+      });
+    }
+
+    // Design Tool: Copy Matched CSS Rules
+    const copyCssRulesBtn = inspectCard.querySelector('#mv-btn-copy-cssrules');
+    if (copyCssRulesBtn) {
+      copyCssRulesBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const matched = extractMatchedCSSRules(selectedEl);
+        if (matched.length === 0) {
+          showToast('No matching CSS rules found to copy');
+          return;
+        }
+        const text = matched.map((r) => {
+          const props = r.props.map((p) => `  ${p.key}: ${p.val};`).join('\n');
+          return `${r.selector} {\n${props}\n}`;
+        }).join('\n\n');
+        await copyToClipboard(text, copyCssRulesBtn, '✓ Copied CSS!');
+        showToast('✓ Matched CSS rules copied!');
+      });
+    }
+
+    // Design Tool: Copy Spacing Shorthand
+    const copySpacingBtn = inspectCard.querySelector('#mv-btn-copy-spacing');
+    if (copySpacingBtn) {
+      copySpacingBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const cs = window.getComputedStyle(selectedEl);
+        const snippet = [
+          `padding: ${cs.paddingTop} ${cs.paddingRight} ${cs.paddingBottom} ${cs.paddingLeft};`,
+          `margin: ${cs.marginTop} ${cs.marginRight} ${cs.marginBottom} ${cs.marginLeft};`
+        ].join('\n');
+        await copyToClipboard(snippet, copySpacingBtn, '✓ Copied Spacing!');
+        showToast('✓ Spacing shorthand copied!');
       });
     }
 
@@ -5145,7 +5421,125 @@ text-align: ${cs.textAlign};`;
     return classes.join(' ');
   }
 
+  // ─── Inspect & Design Extensions: Helpers for BoxModel, Contrast, Rules, Vars ──
+
+  function parseRgbComponents(colorStr) {
+    if (!colorStr || colorStr === 'transparent') return null;
+    const m = colorStr.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*([\d\.]+))?\s*\)/i);
+    if (m) {
+      return {
+        r: parseInt(m[1], 10),
+        g: parseInt(m[2], 10),
+        b: parseInt(m[3], 10),
+        a: m[4] !== undefined ? parseFloat(m[4]) : 1
+      };
+    }
+    const hex = parseColorToHex(colorStr);
+    if (hex && hex.startsWith('#') && hex.length >= 7) {
+      return {
+        r: parseInt(hex.slice(1, 3), 16),
+        g: parseInt(hex.slice(3, 5), 16),
+        b: parseInt(hex.slice(5, 7), 16),
+        a: hex.length === 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 1
+      };
+    }
+    return null;
+  }
+
+  function getLuminance(r, g, b) {
+    const sRGB = [r, g, b].map((v) => {
+      const c = v / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
+  }
+
+  function calculateContrastRatio(fgColorStr, bgColorStr) {
+    const fg = parseRgbComponents(fgColorStr) || { r: 0, g: 0, b: 0, a: 1 };
+    const bg = parseRgbComponents(bgColorStr) || { r: 255, g: 255, b: 255, a: 1 };
+    const lum1 = getLuminance(fg.r, fg.g, fg.b);
+    const lum2 = getLuminance(bg.r, bg.g, bg.b);
+    const brightest = Math.max(lum1, lum2);
+    const darkest = Math.min(lum1, lum2);
+    return (brightest + 0.05) / (darkest + 0.05);
+  }
+
+  function getEffectiveBackgroundColor(el) {
+    let cur = el;
+    while (cur && cur !== document && cur.nodeType === Node.ELEMENT_NODE) {
+      const cs = window.getComputedStyle(cur);
+      const bg = cs.backgroundColor;
+      const parsed = parseRgbComponents(bg);
+      if (parsed && parsed.a > 0.05) {
+        return bg;
+      }
+      cur = cur.parentElement;
+    }
+    return 'rgb(255, 255, 255)';
+  }
+
+  function extractMatchedCSSRules(el) {
+    const matched = [];
+    if (!el || !el.matches) return matched;
+    try {
+      for (const sheet of document.styleSheets) {
+        let rules;
+        try {
+          rules = sheet.cssRules || sheet.rules;
+        } catch (_) {
+          continue;
+        }
+        if (!rules) continue;
+        for (const rule of rules) {
+          if (rule.type === 1 && rule.selectorText) {
+            try {
+              if (el.matches(rule.selectorText)) {
+                const props = [];
+                for (let i = 0; i < rule.style.length; i++) {
+                  const key = rule.style[i];
+                  const val = rule.style.getPropertyValue(key);
+                  if (val) props.push({ key, val });
+                }
+                if (props.length > 0) {
+                  matched.push({ selector: rule.selectorText, props: props.slice(0, 8) });
+                }
+              }
+            } catch (_) {}
+            if (matched.length >= 10) break;
+          }
+        }
+        if (matched.length >= 10) break;
+      }
+    } catch (_) {}
+    return matched;
+  }
+
+  function extractCSSVariables(el) {
+    const vars = [];
+    if (!el) return vars;
+    const cs = window.getComputedStyle(el);
+    const seen = new Set();
+    for (let i = 0; i < cs.length; i++) {
+      const prop = cs[i];
+      if (prop && prop.startsWith('--') && !seen.has(prop)) {
+        seen.add(prop);
+        vars.push({ name: prop, value: cs.getPropertyValue(prop).trim() });
+      }
+    }
+    if (el.style) {
+      for (let i = 0; i < el.style.length; i++) {
+        const prop = el.style[i];
+        if (prop && prop.startsWith('--') && !seen.has(prop)) {
+          seen.add(prop);
+          vars.push({ name: prop, value: cs.getPropertyValue(prop).trim() });
+        }
+      }
+    }
+    return vars;
+  }
+
   // ─── Ruler Guide & Selected Element Measurement ──────────────────────────
+
 
   function clearRulerGuide() {
     if (rulerContainer) {
@@ -6645,9 +7039,164 @@ text-align: ${cs.textAlign};`;
       tailwindCode.title = 'Click to copy Tailwind classes';
     }
 
-    // 8d. Update Selected Box outline
+    // 9. Box Model Visualizer
+    const bmClean = (val) => {
+      if (!val) return '0';
+      const clean = val.replace('px', '').trim();
+      return clean === '0' || clean === '' ? '-' : clean;
+    };
+    const bmMt = inspectCard.querySelector('#mv-bm-mt');
+    const bmBt = inspectCard.querySelector('#mv-bm-bt');
+    const bmPt = inspectCard.querySelector('#mv-bm-pt');
+    const bmW  = inspectCard.querySelector('#mv-bm-w');
+    const bmH  = inspectCard.querySelector('#mv-bm-h');
+    const bmPb = inspectCard.querySelector('#mv-bm-pb');
+    const bmBb = inspectCard.querySelector('#mv-bm-bb');
+    const bmMb = inspectCard.querySelector('#mv-bm-mb');
+    if (bmW && bmH) {
+      if (bmMt) bmMt.textContent = bmClean(cs.marginTop);
+      if (bmBt) bmBt.textContent = bmClean(cs.borderTopWidth);
+      if (bmPt) bmPt.textContent = bmClean(cs.paddingTop);
+      bmW.textContent = Math.round(rect.width);
+      bmH.textContent = Math.round(rect.height);
+      if (bmPb) bmPb.textContent = bmClean(cs.paddingBottom);
+      if (bmBb) bmBb.textContent = bmClean(cs.borderBottomWidth);
+      if (bmMb) bmMb.textContent = bmClean(cs.marginBottom);
+    }
+
+    // 10. Attributes Panel
+    const attrsTable = inspectCard.querySelector('#mv-attrs-table');
+    if (attrsTable) {
+      attrsTable.innerHTML = '';
+      const rawAttrs = Array.from(el.attributes || []);
+      if (rawAttrs.length === 0) {
+        attrsTable.innerHTML = '<span class="mv-attrs-empty">No attributes on this element</span>';
+      } else {
+        rawAttrs.forEach((attr) => {
+          const row = document.createElement('div');
+          row.className = 'mv-attr-row';
+          row.title = `Click to copy: ${attr.name}="${attr.value}"`;
+          row.innerHTML = `
+            <span class="mv-attr-name">${attr.name}</span>
+            <span class="mv-attr-val">${attr.value || '""'}</span>
+            <span class="mv-attr-copy">📋</span>
+          `;
+          row.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const copyText = `${attr.name}="${attr.value}"`;
+            await copyToClipboard(copyText, row, '✓ Copied!');
+            showToast(`✓ Copied attribute: ${attr.name}`);
+          });
+          attrsTable.appendChild(row);
+        });
+      }
+    }
+
+    // 11. Contrast Checker (WCAG)
+    const contrastBadge = inspectCard.querySelector('#mv-contrast-badge');
+    const contrastSample = inspectCard.querySelector('#mv-contrast-sample');
+    const cgAa = inspectCard.querySelector('#mv-cg-aa');
+    const cgAaa = inspectCard.querySelector('#mv-cg-aaa');
+    const cgLarge = inspectCard.querySelector('#mv-cg-large');
+    if (contrastBadge && contrastSample) {
+      const fgColor = cs.color || 'rgb(0, 0, 0)';
+      const effectiveBg = getEffectiveBackgroundColor(el);
+      const ratio = calculateContrastRatio(fgColor, effectiveBg);
+      const ratioStr = ratio.toFixed(2) + ':1';
+      contrastBadge.textContent = ratioStr;
+      contrastSample.style.color = fgColor;
+      contrastSample.style.backgroundColor = effectiveBg;
+
+      const setGrade = (elGrade, pass) => {
+        if (!elGrade) return;
+        elGrade.textContent = pass ? '✓ Pass' : '✕ Fail';
+        elGrade.className = `mv-contrast-grade ${pass ? 'pass' : 'fail'}`;
+      };
+      setGrade(cgAa, ratio >= 4.5);
+      setGrade(cgAaa, ratio >= 7.0);
+      setGrade(cgLarge, ratio >= 3.0);
+    }
+
+    // 12. Applied CSS Rules
+    const cssRulesList = inspectCard.querySelector('#mv-cssrules-list');
+    if (cssRulesList) {
+      cssRulesList.innerHTML = '';
+      const matched = extractMatchedCSSRules(el);
+      if (matched.length === 0) {
+        cssRulesList.innerHTML = '<span class="mv-cssrules-empty">No matching CSS rules found in accessible stylesheets</span>';
+      } else {
+        matched.forEach((rule) => {
+          const block = document.createElement('div');
+          block.className = 'mv-cssrule-block';
+          const propsHtml = rule.props.map((p) => `
+            <div class="mv-cssrule-prop">
+              <span class="mv-cssrule-key">${p.key}:</span>
+              <span class="mv-cssrule-val">${p.val};</span>
+            </div>
+          `).join('');
+          block.innerHTML = `
+            <div class="mv-cssrule-selector">${rule.selector}</div>
+            <div class="mv-cssrule-props">${propsHtml}</div>
+          `;
+          cssRulesList.appendChild(block);
+        });
+      }
+    }
+
+    // 13. CSS Variables Panel
+    const cssVarsList = inspectCard.querySelector('#mv-cssvars-list');
+    const cssVarsCount = inspectCard.querySelector('#mv-cssvars-count');
+    if (cssVarsList && cssVarsCount) {
+      cssVarsList.innerHTML = '';
+      const cssVars = extractCSSVariables(el);
+      cssVarsCount.textContent = `${cssVars.length} vars`;
+      if (cssVars.length === 0) {
+        cssVarsList.innerHTML = '<span class="mv-cssvars-empty">No CSS variables found on element</span>';
+      } else {
+        cssVars.forEach((v) => {
+          const row = document.createElement('div');
+          row.className = 'mv-cssvar-row';
+          row.title = `Click to copy: ${v.name}: ${v.value};`;
+          const hex = parseColorToHex(v.value);
+          const dotHtml = hex ? `<span class="mv-cssvar-dot" style="background-color: ${hex};"></span>` : '';
+          row.innerHTML = `
+            ${dotHtml}
+            <span class="mv-cssvar-name">${v.name}</span>
+            <span class="mv-cssvar-val">${v.value}</span>
+          `;
+          row.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const copyText = `${v.name}: ${v.value};`;
+            await copyToClipboard(copyText, row, '✓ Copied!');
+            showToast(`✓ Copied CSS variable: ${v.name}`);
+          });
+          cssVarsList.appendChild(row);
+        });
+      }
+    }
+
+    // 14. Spacing Map
+    const spPt = inspectCard.querySelector('#mv-sp-pt');
+    const spPr = inspectCard.querySelector('#mv-sp-pr');
+    const spPb = inspectCard.querySelector('#mv-sp-pb');
+    const spPl = inspectCard.querySelector('#mv-sp-pl');
+    const spMt = inspectCard.querySelector('#mv-sp-mt');
+    const spMr = inspectCard.querySelector('#mv-sp-mr');
+    const spMb = inspectCard.querySelector('#mv-sp-mb');
+    const spMl = inspectCard.querySelector('#mv-sp-ml');
+    if (spPt) spPt.textContent = `T: ${cs.paddingTop}`;
+    if (spPr) spPr.textContent = `R: ${cs.paddingRight}`;
+    if (spPb) spPb.textContent = `B: ${cs.paddingBottom}`;
+    if (spPl) spPl.textContent = `L: ${cs.paddingLeft}`;
+    if (spMt) spMt.textContent = `T: ${cs.marginTop}`;
+    if (spMr) spMr.textContent = `R: ${cs.marginRight}`;
+    if (spMb) spMb.textContent = `B: ${cs.marginBottom}`;
+    if (spMl) spMl.textContent = `L: ${cs.marginLeft}`;
+
+    // 15. Update Selected Box outline
     updateSelectedBox(el);
   }
+
 
   // ─── Show / Hide Card ─────────────────────────────────────────────────────
 

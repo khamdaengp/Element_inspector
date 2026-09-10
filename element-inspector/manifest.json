@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Element Inspector & Copier",
-  "version": "2.7.0",
-  "description": "Tabbed Layout (Inspect | Design | QA), Free Click Mode, MaxLength Tester, Figma Exporter, QA PenTest Tools.",
+  "version": "2.8.0",
+  "description": "Tabbed Layout (Inspect | Design | QA), Box Model Visualizer, Attributes Panel, Contrast Checker, Applied CSS Rules, CSS Variables, Spacing Map.",
   "icons": {
     "16":  "icons/icon16.png",
     "32":  "icons/icon32.png",
