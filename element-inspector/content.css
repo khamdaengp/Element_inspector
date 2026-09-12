@@ -56,14 +56,16 @@
   z-index: 2147483647 !important;
   pointer-events: auto !important;
 
-  width: 340px !important;
+  width: 380px !important;
   max-width: calc(100vw - 20px) !important;
   max-height: 92vh !important;
-  background: #14151f !important;
+  background: rgba(13, 15, 23, 0.94) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
   color: #e2e8f0 !important;
-  border: 1px solid #2d3148 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   scrollbar-width: none !important;
@@ -108,12 +110,15 @@
   max-width: 95vw !important;
   height: 100vh !important;
   max-height: 100vh !important;
-  border-radius: 14px 0 0 14px !important;
+  background: rgba(11, 13, 20, 0.96) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-radius: 16px 0 0 16px !important;
   border-right: none !important;
   border-top: none !important;
   border-bottom: none !important;
-  border-left: 1px solid #2d3148 !important;
-  box-shadow: -10px 0 36px rgba(0, 0, 0, 0.65), -2px 0 10px rgba(0, 0, 0, 0.4) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: -14px 0 40px rgba(0, 0, 0, 0.75), -2px 0 12px rgba(0, 0, 0, 0.4) !important;
   animation: mv-sidepanel-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both !important;
 }
 
@@ -171,7 +176,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 6px 10px !important;
+  padding: 6px 8px !important;
   background: #090a10 !important;
   border-bottom: 1px solid #1f2233 !important;
   cursor: grab !important;
@@ -179,7 +184,9 @@
   position: sticky !important;
   top: 0 !important;
   z-index: 12 !important;
-  gap: 6px !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
 }
 
 .mv-global-topbar:active {
@@ -193,8 +200,8 @@
 .mv-global-brand {
   display: flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  font-size: 11.5px !important;
+  gap: 4px !important;
+  font-size: 11px !important;
   font-weight: 700 !important;
   color: #f1f5f9 !important;
   letter-spacing: 0.2px !important;
@@ -204,7 +211,7 @@
 
 .mv-global-brand-icon {
   color: #38bdf8 !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
 }
 
 /* Global Segmented Mode Pill (Inspect <-> Free Click) */
@@ -222,10 +229,10 @@
 .mv-mode-tab {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 4px !important;
-  padding: 3px 8px !important;
-  border-radius: 14px !important;
-  font-size: 10.5px !important;
+  gap: 3px !important;
+  padding: 3px 6px !important;
+  border-radius: 12px !important;
+  font-size: 10px !important;
   font-weight: 600 !important;
   border: none !important;
   background: transparent !important;
@@ -252,6 +259,42 @@
   color: #ffffff !important;
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.6) !important;
   animation: mv-pulse-live 2s infinite ease-in-out !important;
+}
+
+.mv-mode-tab-move.active {
+  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.6) !important;
+}
+
+.mv-btn-move-el {
+  color: #22d3ee !important;
+  border-color: rgba(6, 182, 212, 0.3) !important;
+  background: rgba(6, 182, 212, 0.1) !important;
+}
+
+.mv-btn-move-el:hover {
+  background: rgba(6, 182, 212, 0.22) !important;
+  color: #67e8f9 !important;
+  border-color: #06b6d4 !important;
+}
+
+.mv-mode-tab-edit.active {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.6) !important;
+}
+
+.mv-btn-edit-el {
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  background: rgba(245, 158, 11, 0.1) !important;
+}
+
+.mv-btn-edit-el:hover {
+  background: rgba(245, 158, 11, 0.22) !important;
+  color: #fde68a !important;
+  border-color: #f59e0b !important;
 }
 
 .mv-mode-hotkey {
@@ -312,12 +355,16 @@
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 7px 10px !important;
+  padding: 6px 10px !important;
   background: #0e1019 !important;
   border-bottom: 1px solid #202436 !important;
   cursor: grab !important;
   user-select: none !important;
   z-index: 10 !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
 .mv-inspect-header:active {
@@ -382,35 +429,39 @@
 .mv-inspect-tag-group {
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 5px !important;
   min-width: 0 !important;
-  flex: 1 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
 }
 
 .mv-inspect-tag-badge {
   font-family: ui-monospace, "SFMono-Regular", Consolas, Menlo, monospace !important;
-  font-size: 12px !important;
+  font-size: 11.5px !important;
   font-weight: 700 !important;
   color: #60a5fa !important;
   background: rgba(37, 99, 235, 0.18) !important;
   border: 1px solid rgba(96, 165, 250, 0.3) !important;
-  padding: 2px 7px !important;
-  border-radius: 5px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  max-width: 170px !important;
+  max-width: 120px !important;
+  min-width: 0 !important;
+  flex-shrink: 1 !important;
 }
 
 .mv-inspect-dims {
   font-family: ui-monospace, "SFMono-Regular", Consolas, Menlo, monospace !important;
-  font-size: 10.5px !important;
+  font-size: 10px !important;
   color: #94a3b8 !important;
   background: #1e2133 !important;
-  padding: 2px 6px !important;
+  padding: 2px 5px !important;
   border-radius: 4px !important;
   border: 1px solid #2d3148 !important;
   white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 .mv-header-actions {
@@ -424,16 +475,17 @@
   background: #1e2133 !important;
   border: 1px solid #2d3148 !important;
   color: #94a3b8 !important;
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   font-weight: 600 !important;
-  padding: 3px 7px !important;
+  padding: 3px 6px !important;
   border-radius: 5px !important;
   cursor: pointer !important;
   transition: all 0.14s ease !important;
-  line-height: 1 !important;
+  line-height: 1.2 !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  white-space: nowrap !important;
 }
 
 .mv-btn-icon:hover {
@@ -1987,3 +2039,515 @@
 .mv-sp-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 2px !important; }
 .mv-sp-top, .mv-sp-right, .mv-sp-bottom, .mv-sp-left { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9.5px !important; font-weight: 600 !important; color: #94a3b8 !important; background: #0e1019 !important; border: 1px solid #1a1d2e !important; border-radius: 3px !important; padding: 3px 4px !important; text-align: center !important; min-width: 0 !important; }
 .mv-sp-divider { width: 1px !important; background: #1a1d2e !important; flex-shrink: 0 !important; }
+
+/* ── Move Element Mode & Controls ────────────────────────── */
+.ei-move-highlight {
+  display: none;
+  position: fixed !important;
+  pointer-events: none !important;
+  z-index: 2147483646 !important;
+  border: 2px dashed #06b6d4 !important;
+  background-color: rgba(6, 182, 212, 0.12) !important;
+  border-radius: 4px !important;
+  transition: top 0.04s ease-out, left 0.04s ease-out, width 0.04s ease-out, height 0.04s ease-out !important;
+}
+
+.ei-move-highlight::after {
+  content: attr(data-label) !important;
+  position: absolute !important;
+  top: -24px !important;
+  left: -2px !important;
+  background: #0891b2 !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, Menlo, monospace !important;
+  padding: 2px 7px !important;
+  border-radius: 4px 4px 4px 0 !important;
+  white-space: nowrap !important;
+  line-height: 18px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  pointer-events: none !important;
+}
+
+.ei-move-control-bar {
+  display: none;
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+  background: #0d0e17 !important;
+  border: 1px solid #0891b2 !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+  align-items: center !important;
+  gap: 6px !important;
+  animation: mv-card-in 0.14s ease-out both !important;
+}
+
+.ei-move-bar-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #22d3ee !important;
+  margin-right: 4px !important;
+  white-space: nowrap !important;
+}
+
+.ei-move-bar-btn {
+  background: #1e2133 !important;
+  border: 1px solid #2d3148 !important;
+  color: #cbd5e1 !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  padding: 3px 7px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  white-space: nowrap !important;
+}
+
+.ei-move-bar-btn:hover {
+  background: #2b304c !important;
+  color: #ffffff !important;
+  border-color: #06b6d4 !important;
+}
+
+.ei-move-bar-done {
+  background: #0891b2 !important;
+  border-color: #06b6d4 !important;
+  color: #ffffff !important;
+}
+
+.ei-move-bar-done:hover {
+  background: #0e7490 !important;
+}
+
+/* ── Edit Element Mode & Controls ────────────────────────── */
+.ei-edit-highlight {
+  display: none;
+  position: fixed !important;
+  pointer-events: none !important;
+  z-index: 2147483646 !important;
+  border: 2px dashed #f59e0b !important;
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-radius: 4px !important;
+  transition: top 0.04s ease-out, left 0.04s ease-out, width 0.04s ease-out, height 0.04s ease-out !important;
+}
+
+.ei-edit-highlight::after {
+  content: attr(data-label) !important;
+  position: absolute !important;
+  top: -24px !important;
+  left: -2px !important;
+  background: #d97706 !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, Menlo, monospace !important;
+  padding: 2px 7px !important;
+  border-radius: 4px 4px 4px 0 !important;
+  white-space: nowrap !important;
+  line-height: 18px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  pointer-events: none !important;
+}
+
+.ei-edit-toolbar {
+  display: none;
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+  background: #0d0e17 !important;
+  border: 1px solid #d97706 !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+  align-items: center !important;
+  gap: 5px !important;
+  animation: mv-card-in 0.14s ease-out both !important;
+}
+
+.ei-edit-bar-tag {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #fbbf24 !important;
+  margin-right: 4px !important;
+  white-space: nowrap !important;
+}
+
+.ei-edit-bar-tool {
+  background: #1e2133 !important;
+  border: 1px solid #2d3148 !important;
+  color: #cbd5e1 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+}
+
+.ei-edit-bar-tool:hover {
+  background: #2b304c !important;
+  color: #ffffff !important;
+  border-color: #f59e0b !important;
+}
+
+.ei-edit-bar-del:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  color: #f87171 !important;
+  border-color: #ef4444 !important;
+}
+
+.ei-edit-bar-done {
+  background: #d97706 !important;
+  border-color: #f59e0b !important;
+  color: #ffffff !important;
+}
+
+.ei-edit-bar-done:hover {
+  background: #b45309 !important;
+}
+
+/* ── Edit Panel (Inside Inspector Card) ──────────────────── */
+.mv-edit-panel-wrap {
+  padding: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.mv-edit-section {
+  background: #0a0b12 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.mv-edit-header-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+}
+
+.mv-edit-section-title {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #cbd5e1 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.mv-edit-mode-switch {
+  display: flex !important;
+  background: #151828 !important;
+  border: 1px solid #2d3148 !important;
+  border-radius: 5px !important;
+  padding: 1px !important;
+  gap: 1px !important;
+}
+
+.mv-edit-switch-btn {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 2px 7px !important;
+  background: transparent !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+}
+
+.mv-edit-switch-btn.active {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.mv-edit-textarea {
+  width: 100% !important;
+  background: #0d0f19 !important;
+  border: 1px solid #262a3d !important;
+  border-radius: 6px !important;
+  color: #f1f5f9 !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  padding: 8px !important;
+  resize: vertical !important;
+  min-height: 60px !important;
+  outline: none !important;
+  transition: border-color 0.15s ease !important;
+}
+
+.mv-edit-textarea:focus {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 1px #f59e0b !important;
+}
+
+.mv-edit-hint-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+}
+
+.mv-edit-hint {
+  font-size: 9.5px !important;
+  color: #64748b !important;
+  font-style: italic !important;
+}
+
+.mv-edit-inline-btn {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  color: #fbbf24 !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  white-space: nowrap !important;
+}
+
+.mv-edit-inline-btn:hover {
+  background: rgba(245, 158, 11, 0.28) !important;
+  color: #fde68a !important;
+}
+
+/* Styles grid */
+.mv-edit-styles-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+
+.mv-edit-style-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.mv-edit-lbl {
+  font-size: 9.5px !important;
+  font-weight: 600 !important;
+  color: #94a3b8 !important;
+}
+
+.mv-edit-color-field {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  background: #0e1019 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 5px !important;
+  padding: 2px 4px !important;
+}
+
+.mv-edit-color-picker {
+  width: 20px !important;
+  height: 20px !important;
+  border: none !important;
+  border-radius: 3px !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.mv-edit-hex {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 9.5px !important;
+  color: #cbd5e1 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  width: 100% !important;
+}
+
+.mv-edit-stepper {
+  display: flex !important;
+  align-items: center !important;
+  background: #0e1019 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 5px !important;
+  overflow: hidden !important;
+}
+
+.mv-edit-step-btn {
+  background: #161928 !important;
+  border: none !important;
+  color: #cbd5e1 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  width: 24px !important;
+  height: 24px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.mv-edit-step-btn:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.mv-edit-num {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: #ffffff !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+}
+
+.mv-edit-unit {
+  font-size: 9.5px !important;
+  color: #64748b !important;
+  padding-right: 4px !important;
+}
+
+.mv-edit-select {
+  background: #0e1019 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 5px !important;
+  color: #cbd5e1 !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 4px 6px !important;
+  outline: none !important;
+  cursor: pointer !important;
+}
+
+.mv-edit-slider-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.mv-edit-slider-val {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 9.5px !important;
+  color: #38bdf8 !important;
+  font-weight: 600 !important;
+}
+
+.mv-edit-slider {
+  width: 100% !important;
+  accent-color: #38bdf8 !important;
+  cursor: pointer !important;
+}
+
+/* Operations buttons */
+.mv-edit-ops-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+}
+
+.mv-edit-op-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  padding: 6px 8px !important;
+  background: #141724 !important;
+  border: 1px solid #262a3d !important;
+  border-radius: 6px !important;
+  color: #cbd5e1 !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+}
+
+.mv-edit-op-btn:hover {
+  background: #1e2338 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+.mv-edit-op-danger:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+  border-color: #ef4444 !important;
+}
+
+.mv-edit-op-restore:hover {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+  border-color: #10b981 !important;
+}
+
+/* Attributes list */
+.mv-edit-attrs-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  max-height: 160px !important;
+  overflow-y: auto !important;
+}
+
+.mv-edit-attr-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  background: #0e1019 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 4px !important;
+  padding: 2px 4px !important;
+}
+
+.mv-edit-attr-key {
+  width: 35% !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  color: #a78bfa !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.mv-edit-attr-eq {
+  color: #475569 !important;
+  font-size: 10px !important;
+}
+
+.mv-edit-attr-val {
+  flex: 1 !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 9.5px !important;
+  color: #cbd5e1 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  min-width: 0 !important;
+}
+
+.mv-edit-attr-del {
+  background: transparent !important;
+  border: none !important;
+  color: #64748b !important;
+  font-size: 10px !important;
+  cursor: pointer !important;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+}
+
+.mv-edit-attr-del:hover {
+  color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+}
+
+

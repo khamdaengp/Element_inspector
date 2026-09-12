@@ -77,14 +77,16 @@
   position: fixed !important;
   z-index: 2147483647 !important;
   pointer-events: auto !important;
-  width: 340px !important;
+  width: 380px !important;
   max-width: calc(100vw - 20px) !important;
   max-height: 92vh !important;
-  background: #14151f !important;
+  background: rgba(13, 15, 23, 0.94) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
   color: #e2e8f0 !important;
-  border: 1px solid #2d3148 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   scrollbar-width: none !important;
@@ -129,12 +131,15 @@
   max-width: 95vw !important;
   height: 100vh !important;
   max-height: 100vh !important;
-  border-radius: 14px 0 0 14px !important;
+  background: rgba(11, 13, 20, 0.96) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-radius: 16px 0 0 16px !important;
   border-right: none !important;
   border-top: none !important;
   border-bottom: none !important;
-  border-left: 1px solid #2d3148 !important;
-  box-shadow: -10px 0 36px rgba(0, 0, 0, 0.65), -2px 0 10px rgba(0, 0, 0, 0.4) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: -14px 0 40px rgba(0, 0, 0, 0.75), -2px 0 12px rgba(0, 0, 0, 0.4) !important;
   animation: mv-sidepanel-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both !important;
 }
 
@@ -192,7 +197,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 6px 10px !important;
+  padding: 6px 8px !important;
   background: #090a10 !important;
   border-bottom: 1px solid #1f2233 !important;
   cursor: grab !important;
@@ -200,7 +205,9 @@
   position: sticky !important;
   top: 0 !important;
   z-index: 12 !important;
-  gap: 6px !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
 }
 
 .mv-global-topbar:active {
@@ -214,8 +221,8 @@
 .mv-global-brand {
   display: flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  font-size: 11.5px !important;
+  gap: 4px !important;
+  font-size: 11px !important;
   font-weight: 700 !important;
   color: #f1f5f9 !important;
   letter-spacing: 0.2px !important;
@@ -225,7 +232,7 @@
 
 .mv-global-brand-icon {
   color: #38bdf8 !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
 }
 
 /* Global Segmented Mode Pill (Inspect <-> Free Click) */
@@ -243,10 +250,10 @@
 .mv-mode-tab {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 4px !important;
-  padding: 3px 8px !important;
-  border-radius: 14px !important;
-  font-size: 10.5px !important;
+  gap: 3px !important;
+  padding: 3px 6px !important;
+  border-radius: 12px !important;
+  font-size: 10px !important;
   font-weight: 600 !important;
   border: none !important;
   background: transparent !important;
@@ -273,6 +280,42 @@
   color: #ffffff !important;
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.6) !important;
   animation: mv-pulse-live 2s infinite ease-in-out !important;
+}
+
+.mv-mode-tab-move.active {
+  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.6) !important;
+}
+
+.mv-btn-move-el {
+  color: #22d3ee !important;
+  border-color: rgba(6, 182, 212, 0.3) !important;
+  background: rgba(6, 182, 212, 0.1) !important;
+}
+
+.mv-btn-move-el:hover {
+  background: rgba(6, 182, 212, 0.22) !important;
+  color: #67e8f9 !important;
+  border-color: #06b6d4 !important;
+}
+
+.mv-mode-tab-edit.active {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.6) !important;
+}
+
+.mv-btn-edit-el {
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  background: rgba(245, 158, 11, 0.1) !important;
+}
+
+.mv-btn-edit-el:hover {
+  background: rgba(245, 158, 11, 0.22) !important;
+  color: #fde68a !important;
+  border-color: #f59e0b !important;
 }
 
 .mv-mode-hotkey {
@@ -333,12 +376,16 @@
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 7px 10px !important;
+  padding: 6px 10px !important;
   background: #0e1019 !important;
   border-bottom: 1px solid #202436 !important;
   cursor: grab !important;
   user-select: none !important;
   z-index: 10 !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
 .mv-inspect-header:active {
@@ -403,35 +450,39 @@
 .mv-inspect-tag-group {
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 5px !important;
   min-width: 0 !important;
-  flex: 1 !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
 }
 
 .mv-inspect-tag-badge {
   font-family: ui-monospace, "SFMono-Regular", Consolas, Menlo, monospace !important;
-  font-size: 12px !important;
+  font-size: 11.5px !important;
   font-weight: 700 !important;
   color: #60a5fa !important;
   background: rgba(37, 99, 235, 0.18) !important;
   border: 1px solid rgba(96, 165, 250, 0.3) !important;
-  padding: 2px 7px !important;
-  border-radius: 5px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  max-width: 170px !important;
+  max-width: 120px !important;
+  min-width: 0 !important;
+  flex-shrink: 1 !important;
 }
 
 .mv-inspect-dims {
   font-family: ui-monospace, "SFMono-Regular", Consolas, Menlo, monospace !important;
-  font-size: 10.5px !important;
+  font-size: 10px !important;
   color: #94a3b8 !important;
   background: #1e2133 !important;
-  padding: 2px 6px !important;
+  padding: 2px 5px !important;
   border-radius: 4px !important;
   border: 1px solid #2d3148 !important;
   white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 .mv-header-actions {
@@ -445,16 +496,17 @@
   background: #1e2133 !important;
   border: 1px solid #2d3148 !important;
   color: #94a3b8 !important;
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   font-weight: 600 !important;
-  padding: 3px 7px !important;
+  padding: 3px 6px !important;
   border-radius: 5px !important;
   cursor: pointer !important;
   transition: all 0.14s ease !important;
-  line-height: 1 !important;
+  line-height: 1.2 !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  white-space: nowrap !important;
 }
 
 .mv-btn-icon:hover {
@@ -1863,6 +1915,517 @@
 .mv-sp-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 2px !important; }
 .mv-sp-top, .mv-sp-right, .mv-sp-bottom, .mv-sp-left { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important; font-size: 9.5px !important; font-weight: 600 !important; color: #94a3b8 !important; background: #0e1019 !important; border: 1px solid #1a1d2e !important; border-radius: 3px !important; padding: 3px 4px !important; text-align: center !important; min-width: 0 !important; }
 .mv-sp-divider { width: 1px !important; background: #1a1d2e !important; flex-shrink: 0 !important; }
+
+/* ── Move Element Mode & Controls ────────────────────────── */
+.ei-move-highlight {
+  display: none;
+  position: fixed !important;
+  pointer-events: none !important;
+  z-index: 2147483646 !important;
+  border: 2px dashed #06b6d4 !important;
+  background-color: rgba(6, 182, 212, 0.12) !important;
+  border-radius: 4px !important;
+  transition: top 0.04s ease-out, left 0.04s ease-out, width 0.04s ease-out, height 0.04s ease-out !important;
+}
+
+.ei-move-highlight::after {
+  content: attr(data-label) !important;
+  position: absolute !important;
+  top: -24px !important;
+  left: -2px !important;
+  background: #0891b2 !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, Menlo, monospace !important;
+  padding: 2px 7px !important;
+  border-radius: 4px 4px 4px 0 !important;
+  white-space: nowrap !important;
+  line-height: 18px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  pointer-events: none !important;
+}
+
+.ei-move-control-bar {
+  display: none;
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+  background: #0d0e17 !important;
+  border: 1px solid #0891b2 !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+  align-items: center !important;
+  gap: 6px !important;
+  animation: mv-card-in 0.14s ease-out both !important;
+}
+
+.ei-move-bar-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #22d3ee !important;
+  margin-right: 4px !important;
+  white-space: nowrap !important;
+}
+
+.ei-move-bar-btn {
+  background: #1e2133 !important;
+  border: 1px solid #2d3148 !important;
+  color: #cbd5e1 !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  padding: 3px 7px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  white-space: nowrap !important;
+}
+
+.ei-move-bar-btn:hover {
+  background: #2b304c !important;
+  color: #ffffff !important;
+  border-color: #06b6d4 !important;
+}
+
+.ei-move-bar-done {
+  background: #0891b2 !important;
+  border-color: #06b6d4 !important;
+  color: #ffffff !important;
+}
+
+.ei-move-bar-done:hover {
+  background: #0e7490 !important;
+}
+
+/* ── Edit Element Mode & Controls ────────────────────────── */
+.ei-edit-highlight {
+  display: none;
+  position: fixed !important;
+  pointer-events: none !important;
+  z-index: 2147483646 !important;
+  border: 2px dashed #f59e0b !important;
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-radius: 4px !important;
+  transition: top 0.04s ease-out, left 0.04s ease-out, width 0.04s ease-out, height 0.04s ease-out !important;
+}
+
+.ei-edit-highlight::after {
+  content: attr(data-label) !important;
+  position: absolute !important;
+  top: -24px !important;
+  left: -2px !important;
+  background: #d97706 !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, Menlo, monospace !important;
+  padding: 2px 7px !important;
+  border-radius: 4px 4px 4px 0 !important;
+  white-space: nowrap !important;
+  line-height: 18px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  pointer-events: none !important;
+}
+
+.ei-edit-toolbar {
+  display: none;
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+  background: #0d0e17 !important;
+  border: 1px solid #d97706 !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+  align-items: center !important;
+  gap: 5px !important;
+  animation: mv-card-in 0.14s ease-out both !important;
+}
+
+.ei-edit-bar-tag {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #fbbf24 !important;
+  margin-right: 4px !important;
+  white-space: nowrap !important;
+}
+
+.ei-edit-bar-tool {
+  background: #1e2133 !important;
+  border: 1px solid #2d3148 !important;
+  color: #cbd5e1 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+}
+
+.ei-edit-bar-tool:hover {
+  background: #2b304c !important;
+  color: #ffffff !important;
+  border-color: #f59e0b !important;
+}
+
+.ei-edit-bar-del:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  color: #f87171 !important;
+  border-color: #ef4444 !important;
+}
+
+.ei-edit-bar-done {
+  background: #d97706 !important;
+  border-color: #f59e0b !important;
+  color: #ffffff !important;
+}
+
+.ei-edit-bar-done:hover {
+  background: #b45309 !important;
+}
+
+/* ── Edit Panel (Inside Inspector Card) ──────────────────── */
+.mv-edit-panel-wrap {
+  padding: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.mv-edit-section {
+  background: #0a0b12 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.mv-edit-header-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+}
+
+.mv-edit-section-title {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #cbd5e1 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.mv-edit-mode-switch {
+  display: flex !important;
+  background: #151828 !important;
+  border: 1px solid #2d3148 !important;
+  border-radius: 5px !important;
+  padding: 1px !important;
+  gap: 1px !important;
+}
+
+.mv-edit-switch-btn {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 2px 7px !important;
+  background: transparent !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+}
+
+.mv-edit-switch-btn.active {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.mv-edit-textarea {
+  width: 100% !important;
+  background: #0d0f19 !important;
+  border: 1px solid #262a3d !important;
+  border-radius: 6px !important;
+  color: #f1f5f9 !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  padding: 8px !important;
+  resize: vertical !important;
+  min-height: 60px !important;
+  outline: none !important;
+  transition: border-color 0.15s ease !important;
+}
+
+.mv-edit-textarea:focus {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 1px #f59e0b !important;
+}
+
+.mv-edit-hint-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+}
+
+.mv-edit-hint {
+  font-size: 9.5px !important;
+  color: #64748b !important;
+  font-style: italic !important;
+}
+
+.mv-edit-inline-btn {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  color: #fbbf24 !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  white-space: nowrap !important;
+}
+
+.mv-edit-inline-btn:hover {
+  background: rgba(245, 158, 11, 0.28) !important;
+  color: #fde68a !important;
+}
+
+/* Styles grid */
+.mv-edit-styles-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+
+.mv-edit-style-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.mv-edit-lbl {
+  font-size: 9.5px !important;
+  font-weight: 600 !important;
+  color: #94a3b8 !important;
+}
+
+.mv-edit-color-field {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  background: #0e1019 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 5px !important;
+  padding: 2px 4px !important;
+}
+
+.mv-edit-color-picker {
+  width: 20px !important;
+  height: 20px !important;
+  border: none !important;
+  border-radius: 3px !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.mv-edit-hex {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 9.5px !important;
+  color: #cbd5e1 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  width: 100% !important;
+}
+
+.mv-edit-stepper {
+  display: flex !important;
+  align-items: center !important;
+  background: #0e1019 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 5px !important;
+  overflow: hidden !important;
+}
+
+.mv-edit-step-btn {
+  background: #161928 !important;
+  border: none !important;
+  color: #cbd5e1 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  width: 24px !important;
+  height: 24px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.mv-edit-step-btn:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.mv-edit-num {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: #ffffff !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+}
+
+.mv-edit-unit {
+  font-size: 9.5px !important;
+  color: #64748b !important;
+  padding-right: 4px !important;
+}
+
+.mv-edit-select {
+  background: #0e1019 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 5px !important;
+  color: #cbd5e1 !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  padding: 4px 6px !important;
+  outline: none !important;
+  cursor: pointer !important;
+}
+
+.mv-edit-slider-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.mv-edit-slider-val {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 9.5px !important;
+  color: #38bdf8 !important;
+  font-weight: 600 !important;
+}
+
+.mv-edit-slider {
+  width: 100% !important;
+  accent-color: #38bdf8 !important;
+  cursor: pointer !important;
+}
+
+/* Operations buttons */
+.mv-edit-ops-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+}
+
+.mv-edit-op-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  padding: 6px 8px !important;
+  background: #141724 !important;
+  border: 1px solid #262a3d !important;
+  border-radius: 6px !important;
+  color: #cbd5e1 !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+}
+
+.mv-edit-op-btn:hover {
+  background: #1e2338 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+.mv-edit-op-danger:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+  border-color: #ef4444 !important;
+}
+
+.mv-edit-op-restore:hover {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+  border-color: #10b981 !important;
+}
+
+/* Attributes list */
+.mv-edit-attrs-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  max-height: 160px !important;
+  overflow-y: auto !important;
+}
+
+.mv-edit-attr-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  background: #0e1019 !important;
+  border: 1px solid #1a1d2e !important;
+  border-radius: 4px !important;
+  padding: 2px 4px !important;
+}
+
+.mv-edit-attr-key {
+  width: 35% !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  color: #a78bfa !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.mv-edit-attr-eq {
+  color: #475569 !important;
+  font-size: 10px !important;
+}
+
+.mv-edit-attr-val {
+  flex: 1 !important;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace !important;
+  font-size: 9.5px !important;
+  color: #cbd5e1 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  min-width: 0 !important;
+}
+
+.mv-edit-attr-del {
+  background: transparent !important;
+  border: none !important;
+  color: #64748b !important;
+  font-size: 10px !important;
+  cursor: pointer !important;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+}
+
+.mv-edit-attr-del:hover {
+  color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+}
+
 `;
 
   // ─── State ────────────────────────────────────────────────────────────────
@@ -1915,8 +2478,26 @@
   let cardStartX    = 0;
   let cardStartY    = 0;
 
-  // Live Interact / Free Click Mode (allows clicking buttons, submits, links, calendars, years/months freely without closing extension)
+  // Live Interact / Free Click Mode
   let isInteractiveMode = false;
+
+  // Move Element Mode state
+  let isMoveMode        = false;
+  let moveHighlightBox  = null;
+  let moveControlBar    = null;
+  let draggedEl         = null;
+  let isDraggingElem    = false;
+  let dragOffsetX       = 0;
+  let dragOffsetY       = 0;
+  const movedElements   = new Map(); // el => { origPosition, origLeft, origTop, origWidth, origHeight, origMargin, origZIndex, origOutline, origBoxShadow, origCursor, origTransition, placeholder }
+
+  // Edit Element Mode state
+  let isEditMode        = false;
+  let editingEl         = null;
+  let editHighlightBox  = null;
+  let editToolbar       = null;
+  let editPanelMode     = 'text'; // 'text' | 'html'
+  const originalElMap   = new Map(); // el => { innerHTML, textContent, styleCssText, attributes }
 
   function isInsideCalendarOrPicker(el) {
     if (!el || el === document.body || el === document.documentElement) return false;
@@ -1956,26 +2537,47 @@
     return !!(el.closest && el.closest(calendarSelectors.join(',')));
   }
 
-  function setInteractiveMode(enabled) {
-    isInteractiveMode = !!enabled;
-
-    // Update Segmented Mode Pill in inspectCard
-    if (inspectCard) {
-      const tabInspect = inspectCard.querySelector('#mv-tab-inspect');
-      const tabFree = inspectCard.querySelector('#mv-tab-free');
-      if (tabInspect && tabFree) {
-        if (isInteractiveMode) {
-          tabInspect.classList.remove('active');
-          tabFree.classList.add('active');
-        } else {
-          tabInspect.classList.add('active');
-          tabFree.classList.remove('active');
-        }
-      }
+  function setMode(mode) {
+    if (mode === 'move') {
+      isMoveMode = true;
+      isEditMode = false;
+      isInteractiveMode = false;
+    } else if (mode === 'edit') {
+      isMoveMode = false;
+      isEditMode = true;
+      isInteractiveMode = false;
+    } else if (mode === 'free') {
+      isMoveMode = false;
+      isEditMode = false;
+      isInteractiveMode = true;
+    } else {
+      isMoveMode = false;
+      isEditMode = false;
+      isInteractiveMode = false;
     }
 
-    if (isInteractiveMode) {
-      hideHighlight();
+    if (inspectCard) {
+      const tabInspect = inspectCard.querySelector('#mv-tab-inspect');
+      const tabMove = inspectCard.querySelector('#mv-tab-move');
+      const tabEdit = inspectCard.querySelector('#mv-tab-edit');
+      const tabFree = inspectCard.querySelector('#mv-tab-free');
+
+      if (tabInspect) tabInspect.classList.toggle('active', mode === 'inspect');
+      if (tabMove) tabMove.classList.toggle('active', mode === 'move');
+      if (tabEdit) tabEdit.classList.toggle('active', mode === 'edit');
+      if (tabFree) tabFree.classList.toggle('active', mode === 'free');
+    }
+
+    hideHighlight();
+    hideMoveHighlight();
+    hideEditHighlight();
+
+    if (isMoveMode) {
+      showToast('✋ Move Mode ON: Click & drag any element to move it anywhere on the page! (Alt+M)');
+    } else if (isEditMode) {
+      showToast('✏️ Edit Mode ON: Click any element to edit text & content live! (Alt+E)');
+      if (hoveredEl) positionEditHighlight(hoveredEl);
+    } else if (isInteractiveMode) {
       showToast('🔓 Free Click ON: Click dates, change years & months freely! (Alt+F or Space to Inspect)');
     } else {
       showToast('🔍 Inspect Mode ON: Hover & click to inspect elements');
@@ -1983,17 +2585,20 @@
     }
   }
 
+  function setInteractiveMode(enabled) {
+    setMode(enabled ? 'free' : 'inspect');
+  }
+
   // ─── Inspector Element and Event Detection ────────────────────────────────
 
   function isInspectorElement(el) {
     if (!el) return false;
-    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox || el === selectedBox || el === rulerContainer || el === annotatorModal) return true;
-    if (el.id === SHADOW_HOST_ID) return true;
+    if (el === shadowHost || el === shadowRoot || el === inspectCard || el === highlightBox || el === selectedBox || el === rulerContainer || el === annotatorModal || el === moveHighlightBox || el === moveControlBar || el === editHighlightBox || el === editToolbar) return true;
+    if (el.id === SHADOW_HOST_ID || el.id === '__ei-move-placeholder') return true;
     if (el.getAttribute && el.getAttribute('id') === SHADOW_HOST_ID) return true;
-    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight') || el.classList.contains('ei-selected-box') || el.classList.contains('ei-ruler-container') || el.classList.contains('ei-annotator-modal'))) return true;
+    if (el.classList && (el.classList.contains('mv-inspect-card') || el.classList.contains('ei-highlight') || el.classList.contains('ei-selected-box') || el.classList.contains('ei-ruler-container') || el.classList.contains('ei-annotator-modal') || el.classList.contains('ei-move-highlight') || el.classList.contains('ei-move-control-bar') || el.classList.contains('ei-edit-highlight') || el.classList.contains('ei-edit-toolbar') || el.classList.contains('__ei-move-placeholder'))) return true;
     if (shadowRoot && el.getRootNode && el.getRootNode() === shadowRoot) return true;
     if (el.closest && el.closest(`#${SHADOW_HOST_ID}`)) return true;
-    return false;
   }
 
   function isInspectorEvent(e) {
@@ -2054,6 +2659,16 @@
     rulerContainer.className = 'ei-ruler-container';
     shadowRoot.appendChild(rulerContainer);
 
+    // Move mode highlight overlay box
+    moveHighlightBox = document.createElement('div');
+    moveHighlightBox.className = 'ei-move-highlight';
+    shadowRoot.appendChild(moveHighlightBox);
+
+    // Edit mode highlight overlay box
+    editHighlightBox = document.createElement('div');
+    editHighlightBox.className = 'ei-edit-highlight';
+    shadowRoot.appendChild(editHighlightBox);
+
     // Construct the inspect card
     buildCardDOM();
   }
@@ -2077,12 +2692,17 @@
           <span>Inspector</span>
         </div>
         <div class="mv-mode-pill" id="mv-mode-pill">
-          <button type="button" class="mv-mode-tab mv-mode-tab-inspect active" id="mv-tab-inspect" title="Inspect Mode: Hover & click elements to inspect (Alt+F or Space)">
+          <button type="button" class="mv-mode-tab mv-mode-tab-inspect active" id="mv-tab-inspect" title="Inspect Mode: Hover & click elements to inspect (Alt+I)">
             <span>🔍 Inspect</span>
           </button>
-          <button type="button" class="mv-mode-tab mv-mode-tab-free" id="mv-tab-free" title="Free Click Mode: Click buttons, links, calendars, years/months freely! (Alt+F or Space)">
-            <span>🔓 Free Click</span>
-            <span class="mv-mode-hotkey">Alt+F</span>
+          <button type="button" class="mv-mode-tab mv-mode-tab-move" id="mv-tab-move" title="Move Element Mode: Click and drag any element anywhere on the page (Alt+M)">
+            <span>✋ Move</span>
+          </button>
+          <button type="button" class="mv-mode-tab mv-mode-tab-edit" id="mv-tab-edit" title="Edit Element Mode: Click any element to edit text & content live (Alt+E)">
+            <span>✏️ Edit</span>
+          </button>
+          <button type="button" class="mv-mode-tab mv-mode-tab-free" id="mv-tab-free" title="Live / Free Click Mode: Click buttons, links & menus freely (Alt+F or Space)">
+            <span>🔓 Live</span>
           </button>
         </div>
         <div class="mv-window-controls">
@@ -2099,15 +2719,17 @@
           <span class="mv-inspect-dims" id="mv-inspect-dims">0 × 0 px</span>
         </div>
         <div class="mv-header-actions">
+          <button class="mv-btn-icon mv-btn-edit-el" id="mv-inspect-edit-btn" title="Edit text, styles, and attributes of this element">✏️ Edit</button>
           <button class="mv-btn-icon mv-btn-screenshot" id="mv-inspect-screenshot" title="Capture & download element screenshot as JPG (and copy to clipboard)">📸 JPG</button>
           <button class="mv-btn-icon mv-btn-parent" id="mv-inspect-parent" title="Select parent element" style="display:none;">↑ Parent</button>
-          <button class="mv-btn-icon mv-btn-fullpage-nav" id="mv-inspect-fullpage" title="Select Full Page (Body)">🌐 Full Page</button>
+          <button class="mv-btn-icon mv-btn-fullpage-nav" id="mv-inspect-fullpage" title="Select Full Page (Body)">🌐 Page</button>
         </div>
       </div>
 
       <!-- ── Tab Navigation Bar ──────────────────────────────── -->
       <div class="mv-tab-bar">
         <button class="mv-tab-btn active" data-tab="inspect" title="Inspect & Code — metrics, selectors, copy actions">🔍 Inspect</button>
+        <button class="mv-tab-btn" data-tab="edit" title="Live Element Editor — edit text, HTML, styles, attributes">✏️ Edit</button>
         <button class="mv-tab-btn" data-tab="design" title="Design Tools — colors, fonts, Tailwind, Figma">🎨 Design</button>
         <button class="mv-tab-btn" data-tab="qa" title="QA & PenTest — auto-fill, triggers, security payloads">⚡ QA</button>
       </div>
@@ -2264,6 +2886,130 @@
       </div>
 
       </div><!-- /mv-panel-inspect -->
+
+      <!-- ── Tab Panel: Live Element Editor ─────────────────────── -->
+      <div class="mv-tab-panel" id="mv-panel-edit">
+        <div class="mv-edit-panel-wrap">
+
+          <!-- 1. Live Content / Text / HTML Editor -->
+          <div class="mv-edit-section">
+            <div class="mv-edit-header-row">
+              <span class="mv-edit-section-title">✏️ Content &amp; Text</span>
+              <div class="mv-edit-mode-switch">
+                <button type="button" class="mv-edit-switch-btn active" id="mv-btn-switch-text">Text</button>
+                <button type="button" class="mv-edit-switch-btn" id="mv-btn-switch-html">HTML</button>
+              </div>
+            </div>
+            <textarea class="mv-edit-textarea" id="mv-edit-textarea" rows="3" placeholder="Click or select an element to edit content..."></textarea>
+            <div class="mv-edit-hint-row">
+              <span class="mv-edit-hint">Changes apply live on page as you type</span>
+              <button type="button" class="mv-edit-inline-btn" id="mv-btn-inline-edit" title="Start typing directly on webpage">✏️ Edit on Page</button>
+            </div>
+          </div>
+
+          <!-- 2. Visual Style Tweaker -->
+          <div class="mv-edit-section">
+            <div class="mv-edit-header-row">
+              <span class="mv-edit-section-title">🎨 Quick Styles</span>
+            </div>
+            <div class="mv-edit-styles-grid">
+              <!-- Text Color -->
+              <div class="mv-edit-style-item">
+                <label class="mv-edit-lbl">Text Color</label>
+                <div class="mv-edit-color-field">
+                  <input type="color" class="mv-edit-color-picker" id="mv-edit-color-picker" value="#ffffff">
+                  <input type="text" class="mv-edit-hex" id="mv-edit-color-input" placeholder="#ffffff">
+                </div>
+              </div>
+
+              <!-- Background Color -->
+              <div class="mv-edit-style-item">
+                <label class="mv-edit-lbl">Background</label>
+                <div class="mv-edit-color-field">
+                  <input type="color" class="mv-edit-color-picker" id="mv-edit-bg-picker" value="#000000">
+                  <input type="text" class="mv-edit-hex" id="mv-edit-bg-input" placeholder="transparent">
+                </div>
+              </div>
+
+              <!-- Font Size -->
+              <div class="mv-edit-style-item">
+                <label class="mv-edit-lbl">Font Size</label>
+                <div class="mv-edit-stepper">
+                  <button type="button" class="mv-edit-step-btn" id="mv-edit-fs-dec">−</button>
+                  <input type="number" class="mv-edit-num" id="mv-edit-fs-val" min="8" max="140" placeholder="16">
+                  <span class="mv-edit-unit">px</span>
+                  <button type="button" class="mv-edit-step-btn" id="mv-edit-fs-inc">+</button>
+                </div>
+              </div>
+
+              <!-- Font Weight -->
+              <div class="mv-edit-style-item">
+                <label class="mv-edit-lbl">Font Weight</label>
+                <select class="mv-edit-select" id="mv-edit-fw-select">
+                  <option value="300">Light (300)</option>
+                  <option value="400" selected>Regular (400)</option>
+                  <option value="500">Medium (500)</option>
+                  <option value="600">Semi-Bold (600)</option>
+                  <option value="700">Bold (700)</option>
+                  <option value="800">Extra Bold (800)</option>
+                  <option value="900">Black (900)</option>
+                </select>
+              </div>
+
+              <!-- Border Radius -->
+              <div class="mv-edit-style-item" style="grid-column: span 2;">
+                <div class="mv-edit-slider-header">
+                  <label class="mv-edit-lbl">Border Radius</label>
+                  <span class="mv-edit-slider-val" id="mv-edit-radius-badge">0px</span>
+                </div>
+                <input type="range" class="mv-edit-slider" id="mv-edit-radius-slider" min="0" max="60" value="0">
+              </div>
+
+              <!-- Opacity -->
+              <div class="mv-edit-style-item" style="grid-column: span 2;">
+                <div class="mv-edit-slider-header">
+                  <label class="mv-edit-lbl">Opacity</label>
+                  <span class="mv-edit-slider-val" id="mv-edit-opacity-badge">100%</span>
+                </div>
+                <input type="range" class="mv-edit-slider" id="mv-edit-opacity-slider" min="0" max="100" value="100">
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Element Operations -->
+          <div class="mv-edit-section">
+            <div class="mv-edit-header-row">
+              <span class="mv-edit-section-title">⚡ Element Actions</span>
+            </div>
+            <div class="mv-edit-ops-grid">
+              <button type="button" class="mv-edit-op-btn" id="mv-btn-edit-hide" title="Hide or Unhide element">
+                <span>👁️</span> <span id="mv-edit-hide-txt">Hide Element</span>
+              </button>
+              <button type="button" class="mv-edit-op-btn" id="mv-btn-edit-duplicate" title="Clone element right after itself">
+                <span>📋</span> <span>Duplicate</span>
+              </button>
+              <button type="button" class="mv-edit-op-btn mv-edit-op-danger" id="mv-btn-edit-delete" title="Remove element from page">
+                <span>🗑️</span> <span>Delete Element</span>
+              </button>
+              <button type="button" class="mv-edit-op-btn mv-edit-op-restore" id="mv-btn-edit-revert" title="Restore element to original state">
+                <span>↩️</span> <span>Revert All</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Attributes Editor -->
+          <div class="mv-edit-section">
+            <div class="mv-edit-header-row">
+              <span class="mv-edit-section-title">🏷️ Edit Attributes</span>
+              <button type="button" class="mv-section-copy-btn" id="mv-btn-add-attr">+ Add</button>
+            </div>
+            <div class="mv-edit-attrs-container" id="mv-edit-attrs-container">
+              <span class="mv-attrs-empty">No element selected</span>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /mv-panel-edit -->
 
       <!-- ── Tab Panel: Design ──────────────────────────────── -->
       <div class="mv-tab-panel" id="mv-panel-design">
@@ -2682,19 +3428,33 @@
       });
     }
 
-    // Mode Tabs inside Global Topbar (🔍 Inspect <-> 🔓 Free Click)
+    // Mode Tabs inside Global Topbar (🔍 Inspect <-> ✋ Move <-> 🔓 Free Click)
     const tabInspect = inspectCard.querySelector('#mv-tab-inspect');
+    const tabMove = inspectCard.querySelector('#mv-tab-move');
     const tabFree = inspectCard.querySelector('#mv-tab-free');
     if (tabInspect) {
       tabInspect.addEventListener('click', (e) => {
         e.stopPropagation();
-        setInteractiveMode(false);
+        setMode('inspect');
+      });
+    }
+    if (tabMove) {
+      tabMove.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setMode('move');
+      });
+    }
+    const tabEdit = inspectCard.querySelector('#mv-tab-edit');
+    if (tabEdit) {
+      tabEdit.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setMode('edit');
       });
     }
     if (tabFree) {
       tabFree.addEventListener('click', (e) => {
         e.stopPropagation();
-        setInteractiveMode(true);
+        setMode('free');
       });
     }
 
@@ -3376,6 +4136,223 @@
       if (!selectedEl) return;
       await captureElementScreenshotJpg(selectedEl, screenshotBtn);
     });
+
+    // Move element button
+    const moveBtn = inspectCard.querySelector('#mv-inspect-move');
+    if (moveBtn) {
+      moveBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        setMode('move');
+        selectedEl.style.outline = '2px dashed #06b6d4';
+        selectedEl.style.cursor = 'grab';
+        showToast(`✋ Move Mode Active: Click and drag <${getSafeTag(selectedEl)}> anywhere on screen!`);
+      });
+    }
+
+    // Edit element button in header
+    const inspectEditBtn = inspectCard.querySelector('#mv-inspect-edit-btn');
+    if (inspectEditBtn) {
+      inspectEditBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        switchToEditTab();
+        startInlineEdit(selectedEl);
+      });
+    }
+
+    // ── Edit Panel Controls Wiring ────────────────────────────────
+    const btnSwitchText = inspectCard.querySelector('#mv-btn-switch-text');
+    const btnSwitchHtml = inspectCard.querySelector('#mv-btn-switch-html');
+    const editTextarea = inspectCard.querySelector('#mv-edit-textarea');
+
+    if (btnSwitchText && btnSwitchHtml && editTextarea) {
+      btnSwitchText.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editPanelMode = 'text';
+        btnSwitchText.classList.add('active');
+        btnSwitchHtml.classList.remove('active');
+        if (selectedEl) editTextarea.value = selectedEl.innerText || selectedEl.textContent || '';
+      });
+
+      btnSwitchHtml.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editPanelMode = 'html';
+        btnSwitchHtml.classList.add('active');
+        btnSwitchText.classList.remove('active');
+        if (selectedEl) editTextarea.value = selectedEl.innerHTML || '';
+      });
+
+      editTextarea.addEventListener('input', () => {
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        if (editPanelMode === 'html') {
+          selectedEl.innerHTML = editTextarea.value;
+        } else {
+          selectedEl.innerText = editTextarea.value;
+        }
+        const codeEl = inspectCard.querySelector('#mv-inspect-code');
+        if (codeEl) codeEl.textContent = selectedEl.outerHTML || '';
+      });
+    }
+
+    const btnInlineEdit = inspectCard.querySelector('#mv-btn-inline-edit');
+    if (btnInlineEdit) {
+      btnInlineEdit.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (selectedEl) startInlineEdit(selectedEl);
+      });
+    }
+
+    // Color Pickers
+    const editColorPicker = inspectCard.querySelector('#mv-edit-color-picker');
+    const editColorInput = inspectCard.querySelector('#mv-edit-color-input');
+    if (editColorPicker && editColorInput) {
+      editColorPicker.addEventListener('input', () => {
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        selectedEl.style.color = editColorPicker.value;
+        editColorInput.value = editColorPicker.value;
+      });
+      editColorInput.addEventListener('change', () => {
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        selectedEl.style.color = editColorInput.value;
+        editColorPicker.value = rgbToHex(editColorInput.value);
+      });
+    }
+
+    const editBgPicker = inspectCard.querySelector('#mv-edit-bg-picker');
+    const editBgInput = inspectCard.querySelector('#mv-edit-bg-input');
+    if (editBgPicker && editBgInput) {
+      editBgPicker.addEventListener('input', () => {
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        selectedEl.style.backgroundColor = editBgPicker.value;
+        editBgInput.value = editBgPicker.value;
+      });
+      editBgInput.addEventListener('change', () => {
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        selectedEl.style.backgroundColor = editBgInput.value;
+        editBgPicker.value = rgbToHex(editBgInput.value);
+      });
+    }
+
+    // Font size stepper
+    const editFsDec = inspectCard.querySelector('#mv-edit-fs-dec');
+    const editFsInc = inspectCard.querySelector('#mv-edit-fs-inc');
+    const editFsVal = inspectCard.querySelector('#mv-edit-fs-val');
+    if (editFsDec && editFsInc && editFsVal) {
+      editFsDec.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        let cur = parseInt(editFsVal.value, 10) || 16;
+        cur = Math.max(8, cur - 1);
+        editFsVal.value = cur;
+        selectedEl.style.fontSize = `${cur}px`;
+      });
+      editFsInc.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        let cur = parseInt(editFsVal.value, 10) || 16;
+        cur = Math.min(140, cur + 1);
+        editFsVal.value = cur;
+        selectedEl.style.fontSize = `${cur}px`;
+      });
+      editFsVal.addEventListener('input', () => {
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        const cur = parseInt(editFsVal.value, 10);
+        if (cur && cur > 0) {
+          selectedEl.style.fontSize = `${cur}px`;
+        }
+      });
+    }
+
+    // Font weight select
+    const editFwSelect = inspectCard.querySelector('#mv-edit-fw-select');
+    if (editFwSelect) {
+      editFwSelect.addEventListener('change', () => {
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        selectedEl.style.fontWeight = editFwSelect.value;
+      });
+    }
+
+    // Radius slider
+    const editRadiusSlider = inspectCard.querySelector('#mv-edit-radius-slider');
+    const editRadiusBadge = inspectCard.querySelector('#mv-edit-radius-badge');
+    if (editRadiusSlider && editRadiusBadge) {
+      editRadiusSlider.addEventListener('input', () => {
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        selectedEl.style.borderRadius = `${editRadiusSlider.value}px`;
+        editRadiusBadge.textContent = `${editRadiusSlider.value}px`;
+      });
+    }
+
+    // Opacity slider
+    const editOpacitySlider = inspectCard.querySelector('#mv-edit-opacity-slider');
+    const editOpacityBadge = inspectCard.querySelector('#mv-edit-opacity-badge');
+    if (editOpacitySlider && editOpacityBadge) {
+      editOpacitySlider.addEventListener('input', () => {
+        if (!selectedEl) return;
+        saveOriginalElData(selectedEl);
+        selectedEl.style.opacity = String(editOpacitySlider.value / 100);
+        editOpacityBadge.textContent = `${editOpacitySlider.value}%`;
+      });
+    }
+
+    // Operations: Hide, Duplicate, Delete, Revert
+    const btnEditHide = inspectCard.querySelector('#mv-btn-edit-hide');
+    if (btnEditHide) {
+      btnEditHide.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (selectedEl) toggleHideElement(selectedEl);
+      });
+    }
+
+    const btnEditDuplicate = inspectCard.querySelector('#mv-btn-edit-duplicate');
+    if (btnEditDuplicate) {
+      btnEditDuplicate.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (selectedEl) duplicateElement(selectedEl);
+      });
+    }
+
+    const btnEditDelete = inspectCard.querySelector('#mv-btn-edit-delete');
+    if (btnEditDelete) {
+      btnEditDelete.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (selectedEl) deleteElement(selectedEl);
+      });
+    }
+
+    const btnEditRevert = inspectCard.querySelector('#mv-btn-edit-revert');
+    if (btnEditRevert) {
+      btnEditRevert.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (selectedEl) revertElement(selectedEl);
+      });
+    }
+
+    // Add Attribute button
+    const btnAddAttr = inspectCard.querySelector('#mv-btn-add-attr');
+    if (btnAddAttr) {
+      btnAddAttr.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!selectedEl) return;
+        const attrName = prompt('Enter new attribute name (e.g. title, class, data-test):');
+        if (attrName && attrName.trim()) {
+          saveOriginalElData(selectedEl);
+          selectedEl.setAttribute(attrName.trim(), '');
+          renderCardData(selectedEl);
+        }
+      });
+    }
 
     const exitBtn = inspectCard.querySelector('#mv-exit-btn');
     exitBtn.addEventListener('click', (e) => {
@@ -6585,13 +7562,14 @@ text-align: ${cs.textAlign};`;
 
     document.addEventListener('mouseover', onMouseOver, true);
     document.addEventListener('mousemove', onMouseMove, true);
+    document.addEventListener('mousedown', onMouseDownPage, true);
     document.addEventListener('click',     onClick,     true);
     document.addEventListener('keydown',   onKeyDown,   true);
     document.addEventListener('keyup',     onKeyUp,     true);
     document.addEventListener('scroll',    onScroll,    true);
     window.addEventListener('resize',      onResize,    true);
 
-    showToast('Inspect Mode Active – Hover & click an element (Alt+F for Free Click)');
+    showToast('Inspect Mode Active – Hover & click an element (Alt+E to Edit, Alt+M to Move, Alt+F for Free Click)');
     updateBadge(true);
   }
 
@@ -6602,6 +7580,7 @@ text-align: ${cs.textAlign};`;
     closeAnnotationModal();
     document.removeEventListener('mouseover', onMouseOver, true);
     document.removeEventListener('mousemove', onMouseMove, true);
+    document.removeEventListener('mousedown', onMouseDownPage, true);
     document.removeEventListener('click',     onClick,     true);
     document.removeEventListener('keydown',   onKeyDown,   true);
     document.removeEventListener('keyup',     onKeyUp,     true);
@@ -6609,6 +7588,11 @@ text-align: ${cs.textAlign};`;
     window.removeEventListener('resize',      onResize,    true);
 
     hideHighlight();
+    hideMoveHighlight();
+    hideMoveControlBar();
+    hideEditHighlight();
+    hideEditToolbar();
+    if (editingEl) finishInlineEdit(editingEl);
     hideSelectedBox();
     clearRulerGuide();
     hideCard();
@@ -6616,6 +7600,8 @@ text-align: ${cs.textAlign};`;
     selectedEl = null;
     isAltKeyDown = false;
     isInteractiveMode = false;
+    isMoveMode = false;
+    isEditMode = false;
     updateBadge(false);
   }
 
@@ -6659,6 +7645,599 @@ text-align: ${cs.textAlign};`;
     if (highlightBox) highlightBox.style.display = 'none';
   }
 
+  // ─── Move Element Mode Functions ──────────────────────────────────────────
+
+  function positionMoveHighlight(el) {
+    if (!el || !moveHighlightBox || isInspectorElement(el)) return;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) {
+      moveHighlightBox.style.display = 'none';
+      return;
+    }
+
+    Object.assign(moveHighlightBox.style, {
+      display: 'block',
+      top:     Math.max(0, r.top) + 'px',
+      left:    Math.max(0, r.left) + 'px',
+      width:   r.width + 'px',
+      height:  r.height + 'px',
+    });
+
+    const label = `✋ Drag to move <${getSafeTag(el)}>`;
+    moveHighlightBox.setAttribute('data-label', label);
+  }
+
+  function hideMoveHighlight() {
+    if (moveHighlightBox) moveHighlightBox.style.display = 'none';
+  }
+
+  function startElementDrag(el, e) {
+    if (!el || isInspectorElement(el)) return;
+    if (el === document.body || el === document.documentElement) return;
+
+    hideHighlight();
+    hideMoveHighlight();
+
+    // 1. Save original styles and create placeholder if not yet saved
+    if (!movedElements.has(el)) {
+      const computed = window.getComputedStyle(el);
+      const rect = el.getBoundingClientRect();
+      const placeholder = document.createElement('div');
+      placeholder.className = '__ei-move-placeholder';
+      placeholder.style.cssText = `
+        width: ${rect.width}px !important;
+        height: ${rect.height}px !important;
+        display: ${computed.display === 'inline' ? 'inline-block' : computed.display} !important;
+        margin: ${computed.margin} !important;
+        padding: 0 !important;
+        border: 2px dashed rgba(6, 182, 212, 0.45) !important;
+        background: rgba(6, 182, 212, 0.06) !important;
+        border-radius: 4px !important;
+        box-sizing: border-box !important;
+        visibility: visible !important;
+        pointer-events: none !important;
+      `;
+      placeholder.setAttribute('data-ei-orig', el.tagName.toLowerCase());
+      if (el.parentNode) {
+        el.parentNode.insertBefore(placeholder, el);
+      }
+
+      movedElements.set(el, {
+        origPosition: el.style.position || '',
+        origLeft: el.style.left || '',
+        origTop: el.style.top || '',
+        origWidth: el.style.width || '',
+        origHeight: el.style.height || '',
+        origMargin: el.style.margin || '',
+        origZIndex: el.style.zIndex || '',
+        origBoxShadow: el.style.boxShadow || '',
+        origOutline: el.style.outline || '',
+        origCursor: el.style.cursor || '',
+        origTransition: el.style.transition || '',
+        placeholder: placeholder,
+      });
+    }
+
+    const rect = el.getBoundingClientRect();
+    dragOffsetX = e.clientX - rect.left;
+    dragOffsetY = e.clientY - rect.top;
+
+    el.style.width = rect.width + 'px';
+    el.style.height = rect.height + 'px';
+    el.style.position = 'fixed';
+    el.style.left = rect.left + 'px';
+    el.style.top = rect.top + 'px';
+    el.style.margin = '0';
+    el.style.zIndex = '2147483640';
+    el.style.outline = '2px dashed #06b6d4';
+    el.style.boxShadow = '0 14px 36px rgba(0, 0, 0, 0.5)';
+    el.style.cursor = 'grabbing';
+    el.style.transition = 'none';
+
+    draggedEl = el;
+    isDraggingElem = true;
+
+    const onDragMove = (me) => {
+      if (!isDraggingElem || !draggedEl) return;
+      me.preventDefault();
+      const newLeft = me.clientX - dragOffsetX;
+      const newTop = me.clientY - dragOffsetY;
+      draggedEl.style.left = `${newLeft}px`;
+      draggedEl.style.top = `${newTop}px`;
+      updateMoveControlBarPosition(draggedEl);
+    };
+
+    const onDragUp = (ue) => {
+      isDraggingElem = false;
+      window.removeEventListener('mousemove', onDragMove, true);
+      window.removeEventListener('mouseup', onDragUp, true);
+
+      if (draggedEl) {
+        draggedEl.style.cursor = 'grab';
+        draggedEl.style.outline = '2px solid #06b6d4';
+        showMoveControlBar(draggedEl);
+      }
+    };
+
+    window.addEventListener('mousemove', onDragMove, true);
+    window.addEventListener('mouseup', onDragUp, true);
+  }
+
+  function showMoveControlBar(el) {
+    ensureShadowDOM();
+    if (!moveControlBar) {
+      moveControlBar = document.createElement('div');
+      moveControlBar.className = 'ei-move-control-bar';
+      shadowRoot.appendChild(moveControlBar);
+    }
+
+    const tag = getSafeTag(el);
+    const count = movedElements.size;
+
+    moveControlBar.innerHTML = `
+      <span class="ei-move-bar-title">✋ Moved: &lt;${tag}&gt;</span>
+      <button type="button" class="ei-move-bar-btn" id="ei-btn-reset-this" title="Reset this element to original position">↩️ Reset</button>
+      ${count > 1 ? '<button type="button" class="ei-move-bar-btn" id="ei-btn-reset-all" title="Reset all moved elements back to original positions">🔄 Reset All (' + count + ')</button>' : ''}
+      <button type="button" class="ei-move-bar-btn ei-move-bar-done" id="ei-btn-done-move" title="Keep here">✓ Done</button>
+    `;
+
+    moveControlBar.style.display = 'flex';
+    updateMoveControlBarPosition(el);
+
+    const resetBtn = moveControlBar.querySelector('#ei-btn-reset-this');
+    if (resetBtn) {
+      resetBtn.onclick = (e) => {
+        e.stopPropagation();
+        resetElementPosition(el);
+      };
+    }
+
+    const resetAllBtn = moveControlBar.querySelector('#ei-btn-reset-all');
+    if (resetAllBtn) {
+      resetAllBtn.onclick = (e) => {
+        e.stopPropagation();
+        resetAllMovedElements();
+      };
+    }
+
+    const doneBtn = moveControlBar.querySelector('#ei-btn-done-move');
+    if (doneBtn) {
+      doneBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (el) {
+          el.style.outline = '';
+          el.style.boxShadow = '';
+          el.style.cursor = '';
+        }
+        hideMoveControlBar();
+      };
+    }
+  }
+
+  function hideMoveControlBar() {
+    if (moveControlBar) moveControlBar.style.display = 'none';
+  }
+
+  function updateMoveControlBarPosition(el) {
+    if (!moveControlBar || !el) return;
+    const r = el.getBoundingClientRect();
+    const barWidth = moveControlBar.offsetWidth || 230;
+    let left = r.left;
+    let top = r.top - 38;
+    if (top < 8) top = r.bottom + 8;
+    if (left + barWidth > window.innerWidth - 10) left = window.innerWidth - barWidth - 10;
+    if (left < 10) left = 10;
+    moveControlBar.style.left = `${left}px`;
+    moveControlBar.style.top = `${top}px`;
+  }
+
+  function resetElementPosition(el) {
+    if (!el || !movedElements.has(el)) return;
+    const data = movedElements.get(el);
+
+    el.style.position = data.origPosition;
+    el.style.left = data.origLeft;
+    el.style.top = data.origTop;
+    el.style.width = data.origWidth;
+    el.style.height = data.origHeight;
+    el.style.margin = data.origMargin;
+    el.style.zIndex = data.origZIndex;
+    el.style.outline = data.origOutline;
+    el.style.boxShadow = data.origBoxShadow;
+    el.style.cursor = data.origCursor;
+    el.style.transition = data.origTransition;
+
+    if (data.placeholder && data.placeholder.parentNode) {
+      data.placeholder.parentNode.removeChild(data.placeholder);
+    }
+    movedElements.delete(el);
+    hideMoveControlBar();
+    showToast(`↩️ Restored original position for <${getSafeTag(el)}>`);
+  }
+
+  function resetAllMovedElements() {
+    for (const [el, data] of movedElements.entries()) {
+      el.style.position = data.origPosition;
+      el.style.left = data.origLeft;
+      el.style.top = data.origTop;
+      el.style.width = data.origWidth;
+      el.style.height = data.origHeight;
+      el.style.margin = data.origMargin;
+      el.style.zIndex = data.origZIndex;
+      el.style.outline = data.origOutline;
+      el.style.boxShadow = data.origBoxShadow;
+      el.style.cursor = data.origCursor;
+      el.style.transition = data.origTransition;
+
+      if (data.placeholder && data.placeholder.parentNode) {
+        data.placeholder.parentNode.removeChild(data.placeholder);
+      }
+    }
+    movedElements.clear();
+    hideMoveControlBar();
+    showToast('🔄 Restored all elements to original positions');
+  }
+
+  // ─── Edit Element Mode Functions ──────────────────────────────────────────
+
+  function positionEditHighlight(el) {
+    if (!el || !editHighlightBox || isInspectorElement(el)) return;
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) {
+      editHighlightBox.style.display = 'none';
+      return;
+    }
+
+    Object.assign(editHighlightBox.style, {
+      display: 'block',
+      top:     Math.max(0, r.top) + 'px',
+      left:    Math.max(0, r.left) + 'px',
+      width:   r.width + 'px',
+      height:  r.height + 'px',
+    });
+
+    const label = `✏️ Click to edit <${getSafeTag(el)}>`;
+    editHighlightBox.setAttribute('data-label', label);
+  }
+
+  function hideEditHighlight() {
+    if (editHighlightBox) editHighlightBox.style.display = 'none';
+  }
+
+  function saveOriginalElData(el) {
+    if (!el || originalElMap.has(el)) return;
+    const attrs = [];
+    if (el.attributes) {
+      for (let i = 0; i < el.attributes.length; i++) {
+        attrs.push({ name: el.attributes[i].name, value: el.attributes[i].value });
+      }
+    }
+    originalElMap.set(el, {
+      innerHTML: el.innerHTML,
+      textContent: el.textContent,
+      styleCssText: el.style.cssText,
+      attributes: attrs
+    });
+  }
+
+  function startInlineEdit(el) {
+    if (!el || isInspectorElement(el)) return;
+    if (el === document.body || el === document.documentElement) return;
+
+    hideHighlight();
+    hideEditHighlight();
+    saveOriginalElData(el);
+
+    editingEl = el;
+    el.contentEditable = 'true';
+    el.style.outline = '2px dashed #f59e0b';
+    el.style.cursor = 'text';
+
+    try {
+      el.focus();
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (_) {}
+
+    showEditToolbar(el);
+
+    const onInlineInput = () => {
+      if (editingEl !== el) {
+        el.removeEventListener('input', onInlineInput);
+        return;
+      }
+      updateEditPanelData(el);
+      const codeEl = inspectCard ? inspectCard.querySelector('#mv-inspect-code') : null;
+      if (codeEl) codeEl.textContent = el.outerHTML || '';
+    };
+    el.addEventListener('input', onInlineInput);
+
+    showToast(`✏️ Editing <${getSafeTag(el)}>: Type directly on page or use toolbar!`);
+  }
+
+  function showEditToolbar(el) {
+    ensureShadowDOM();
+    if (!editToolbar) {
+      editToolbar = document.createElement('div');
+      editToolbar.className = 'ei-edit-toolbar';
+      shadowRoot.appendChild(editToolbar);
+    }
+
+    const tag = getSafeTag(el);
+    editToolbar.innerHTML = `
+      <span class="ei-edit-bar-tag">✏️ &lt;${tag}&gt;</span>
+      <button type="button" class="ei-edit-bar-tool" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+      <button type="button" class="ei-edit-bar-tool" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+      <button type="button" class="ei-edit-bar-tool" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+      <button type="button" class="ei-edit-bar-tool" id="ei-edit-bar-revert" title="Revert to original content">↩️ Revert</button>
+      <button type="button" class="ei-edit-bar-tool ei-edit-bar-del" id="ei-edit-bar-delete" title="Delete element">🗑️</button>
+      <button type="button" class="ei-edit-bar-tool ei-edit-bar-done" id="ei-edit-bar-done" title="Finish editing">✓ Done</button>
+    `;
+
+    editToolbar.style.display = 'flex';
+    updateEditToolbarPosition(el);
+
+    editToolbar.querySelectorAll('.ei-edit-bar-tool[data-cmd]').forEach(btn => {
+      btn.onmousedown = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        document.execCommand(btn.dataset.cmd, false, null);
+      };
+    });
+
+    const revertBtn = editToolbar.querySelector('#ei-edit-bar-revert');
+    if (revertBtn) {
+      revertBtn.onclick = (e) => {
+        e.stopPropagation();
+        revertElement(el);
+      };
+    }
+
+    const delBtn = editToolbar.querySelector('#ei-edit-bar-delete');
+    if (delBtn) {
+      delBtn.onclick = (e) => {
+        e.stopPropagation();
+        deleteElement(el);
+      };
+    }
+
+    const doneBtn = editToolbar.querySelector('#ei-edit-bar-done');
+    if (doneBtn) {
+      doneBtn.onclick = (e) => {
+        e.stopPropagation();
+        finishInlineEdit(el);
+      };
+    }
+  }
+
+  function hideEditToolbar() {
+    if (editToolbar) editToolbar.style.display = 'none';
+  }
+
+  function updateEditToolbarPosition(el) {
+    if (!editToolbar || !el) return;
+    const r = el.getBoundingClientRect();
+    const barWidth = editToolbar.offsetWidth || 280;
+    let left = r.left;
+    let top = r.top - 42;
+    if (top < 8) top = r.bottom + 8;
+    if (left + barWidth > window.innerWidth - 10) left = window.innerWidth - barWidth - 10;
+    if (left < 10) left = 10;
+    editToolbar.style.left = `${left}px`;
+    editToolbar.style.top = `${top}px`;
+  }
+
+  function finishInlineEdit(el) {
+    if (el) {
+      el.contentEditable = 'false';
+      el.style.outline = '';
+      el.style.cursor = '';
+    }
+    editingEl = null;
+    hideEditToolbar();
+    if (el) {
+      renderCardData(el);
+      showToast(`✓ Saved edits on <${getSafeTag(el)}>`);
+    }
+  }
+
+  function revertElement(el) {
+    if (!el || !originalElMap.has(el)) {
+      showToast('No saved original state for this element');
+      return;
+    }
+    const orig = originalElMap.get(el);
+    el.innerHTML = orig.innerHTML;
+    el.style.cssText = orig.styleCssText;
+
+    // Restore attributes
+    const currentAttrNames = Array.from(el.attributes || []).map(a => a.name);
+    currentAttrNames.forEach(attrName => el.removeAttribute(attrName));
+    orig.attributes.forEach(attr => el.setAttribute(attr.name, attr.value));
+
+    showToast(`↩️ Reverted <${getSafeTag(el)}> to original state`);
+    renderCardData(el);
+    updateEditPanelData(el);
+  }
+
+  function deleteElement(el) {
+    if (!el || el === document.body || el === document.documentElement) return;
+    saveOriginalElData(el);
+    finishInlineEdit(el);
+    const tag = getSafeTag(el);
+    el.remove();
+    hideEditToolbar();
+    hideHighlight();
+    hideCard();
+    showToast(`🗑️ Removed <${tag}> from page`);
+  }
+
+  function duplicateElement(el) {
+    if (!el || el === document.body || el === document.documentElement) return;
+    saveOriginalElData(el);
+    const clone = el.cloneNode(true);
+    if (clone.id) clone.id += '_copy';
+    if (el.parentNode) {
+      el.parentNode.insertBefore(clone, el.nextSibling);
+    }
+    showToast(`📋 Duplicated <${getSafeTag(el)}>`);
+    selectedEl = clone;
+    renderCardData(clone);
+    switchToEditTab();
+  }
+
+  function toggleHideElement(el) {
+    if (!el) return;
+    saveOriginalElData(el);
+    if (el.style.display === 'none') {
+      el.style.display = '';
+      showToast(`👁️ Unhidden <${getSafeTag(el)}>`);
+    } else {
+      el.style.display = 'none';
+      showToast(`👁️ Hidden <${getSafeTag(el)}>`);
+    }
+    renderCardData(el);
+    updateEditPanelData(el);
+  }
+
+  function switchToEditTab() {
+    if (!inspectCard) return;
+    inspectCard.querySelectorAll('.mv-tab-btn').forEach(b => b.classList.remove('active'));
+    inspectCard.querySelectorAll('.mv-tab-panel').forEach(p => p.classList.remove('active'));
+    const editTabBtn = inspectCard.querySelector('.mv-tab-btn[data-tab="edit"]');
+    const editPanel = inspectCard.querySelector('#mv-panel-edit');
+    if (editTabBtn) editTabBtn.classList.add('active');
+    if (editPanel) editPanel.classList.add('active');
+  }
+
+  function rgbToHex(rgbStr) {
+    if (!rgbStr) return '#ffffff';
+    if (rgbStr.startsWith('#')) return rgbStr;
+    const m = rgbStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (!m) return '#ffffff';
+    const r = parseInt(m[1], 10).toString(16).padStart(2, '0');
+    const g = parseInt(m[2], 10).toString(16).padStart(2, '0');
+    const b = parseInt(m[3], 10).toString(16).padStart(2, '0');
+    return `#${r}${g}${b}`;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function updateEditPanelData(el) {
+    if (!inspectCard || !el || isInspectorElement(el)) return;
+    const cs = window.getComputedStyle(el);
+
+    // 1. Textarea
+    const textarea = inspectCard.querySelector('#mv-edit-textarea');
+    if (textarea && document.activeElement !== textarea) {
+      textarea.value = (editPanelMode === 'html') ? el.innerHTML : (el.innerText || el.textContent || '');
+    }
+
+    // 2. Colors
+    const colorPicker = inspectCard.querySelector('#mv-edit-color-picker');
+    const colorInput = inspectCard.querySelector('#mv-edit-color-input');
+    const hexColor = rgbToHex(cs.color);
+    if (colorPicker && document.activeElement !== colorPicker) colorPicker.value = hexColor;
+    if (colorInput && document.activeElement !== colorInput) colorInput.value = hexColor;
+
+    const bgPicker = inspectCard.querySelector('#mv-edit-bg-picker');
+    const bgInput = inspectCard.querySelector('#mv-edit-bg-input');
+    const hexBg = rgbToHex(cs.backgroundColor);
+    if (bgPicker && document.activeElement !== bgPicker) bgPicker.value = hexBg;
+    if (bgInput && document.activeElement !== bgInput) {
+      bgInput.value = (cs.backgroundColor === 'rgba(0, 0, 0, 0)' || cs.backgroundColor === 'transparent') ? 'transparent' : hexBg;
+    }
+
+    // 3. Font Size
+    const fsVal = inspectCard.querySelector('#mv-edit-fs-val');
+    const currentFs = parseInt(cs.fontSize, 10) || 16;
+    if (fsVal && document.activeElement !== fsVal) fsVal.value = currentFs;
+
+    // 4. Font Weight
+    const fwSelect = inspectCard.querySelector('#mv-edit-fw-select');
+    if (fwSelect) {
+      let numericFw = parseInt(cs.fontWeight, 10) || 400;
+      const weights = [300, 400, 500, 600, 700, 800, 900];
+      const closest = weights.reduce((prev, curr) => Math.abs(curr - numericFw) < Math.abs(prev - numericFw) ? curr : prev);
+      fwSelect.value = String(closest);
+    }
+
+    // 5. Border Radius
+    const radiusSlider = inspectCard.querySelector('#mv-edit-radius-slider');
+    const radiusBadge = inspectCard.querySelector('#mv-edit-radius-badge');
+    const currentRadius = parseInt(cs.borderRadius, 10) || 0;
+    if (radiusSlider && document.activeElement !== radiusSlider) radiusSlider.value = Math.min(60, currentRadius);
+    if (radiusBadge) radiusBadge.textContent = `${currentRadius}px`;
+
+    // 6. Opacity
+    const opacitySlider = inspectCard.querySelector('#mv-edit-opacity-slider');
+    const opacityBadge = inspectCard.querySelector('#mv-edit-opacity-badge');
+    const currentOpacity = Math.round((parseFloat(cs.opacity) || 1) * 100);
+    if (opacitySlider && document.activeElement !== opacitySlider) opacitySlider.value = currentOpacity;
+    if (opacityBadge) opacityBadge.textContent = `${currentOpacity}%`;
+
+    // 7. Hide/Show text
+    const hideTxt = inspectCard.querySelector('#mv-edit-hide-txt');
+    if (hideTxt) {
+      hideTxt.textContent = el.style.display === 'none' ? 'Unhide Element' : 'Hide Element';
+    }
+
+    // 8. Attributes Editor List
+    const attrsContainer = inspectCard.querySelector('#mv-edit-attrs-container');
+    if (attrsContainer && document.activeElement && !attrsContainer.contains(document.activeElement)) {
+      attrsContainer.innerHTML = '';
+      const rawAttrs = Array.from(el.attributes || []);
+      if (rawAttrs.length === 0) {
+        attrsContainer.innerHTML = '<span class="mv-attrs-empty">No attributes on this element</span>';
+      } else {
+        rawAttrs.forEach(attr => {
+          const row = document.createElement('div');
+          row.className = 'mv-edit-attr-row';
+          row.innerHTML = `
+            <input type="text" class="mv-edit-attr-key" value="${attr.name}" title="Attribute Name">
+            <span class="mv-edit-attr-eq">=</span>
+            <input type="text" class="mv-edit-attr-val" value="${escapeHtml(attr.value)}" title="Attribute Value">
+            <button type="button" class="mv-edit-attr-del" title="Remove attribute">✕</button>
+          `;
+          const keyInput = row.querySelector('.mv-edit-attr-key');
+          const valInput = row.querySelector('.mv-edit-attr-val');
+          const delBtn = row.querySelector('.mv-edit-attr-del');
+
+          valInput.addEventListener('input', () => {
+            saveOriginalElData(el);
+            el.setAttribute(keyInput.value, valInput.value);
+            renderCardData(el);
+          });
+
+          keyInput.addEventListener('change', () => {
+            saveOriginalElData(el);
+            el.removeAttribute(attr.name);
+            if (keyInput.value.trim()) {
+              el.setAttribute(keyInput.value.trim(), valInput.value);
+            }
+            renderCardData(el);
+          });
+
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            saveOriginalElData(el);
+            el.removeAttribute(keyInput.value);
+            renderCardData(el);
+          });
+
+          attrsContainer.appendChild(row);
+        });
+      }
+    }
+  }
+
   function getSafeTag(el) {
     return (el.tagName || '').toLowerCase();
   }
@@ -6698,15 +8277,46 @@ text-align: ${cs.textAlign};`;
     const target = e.target;
     if (isInspectorElement(target)) return;
     if (isInteractiveMode || isInsideCalendarOrPicker(target)) return;
+
+    if (isMoveMode) {
+      hoveredEl = target;
+      positionMoveHighlight(hoveredEl);
+      return;
+    }
+
+    if (isEditMode) {
+      hoveredEl = target;
+      positionEditHighlight(hoveredEl);
+      return;
+    }
+
     hoveredEl = target;
     positionHighlight(hoveredEl);
   }
 
   function onMouseMove(e) {
+    if (isDraggingElem) return;
     if (isInspectorEvent(e)) return;
     const target = e.target;
     if (isInspectorElement(target)) return;
     if (isInteractiveMode || isInsideCalendarOrPicker(target)) return;
+
+    if (isMoveMode) {
+      if (target !== hoveredEl) {
+        hoveredEl = target;
+        positionMoveHighlight(hoveredEl);
+      }
+      return;
+    }
+
+    if (isEditMode) {
+      if (target !== hoveredEl) {
+        hoveredEl = target;
+        positionEditHighlight(hoveredEl);
+      }
+      return;
+    }
+
     if (target !== hoveredEl) {
       hoveredEl = target;
       positionHighlight(hoveredEl);
@@ -6716,10 +8326,41 @@ text-align: ${cs.textAlign};`;
     }
   }
 
+  function onMouseDownPage(e) {
+    if (isInspectorEvent(e) || isInspectorElement(e.target)) return;
+    if (!isMoveMode) return;
+    if (e.button !== 0) return;
+
+    const target = e.target;
+    if (!target || target === document.body || target === document.documentElement) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    startElementDrag(target, e);
+  }
+
   function onClick(e) {
     // If the click is on or inside our inspector card or mode bar, let it handle the event naturally!
     if (isInspectorEvent(e)) return;
     if (isInspectorElement(e.target)) return;
+
+    if (isMoveMode) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return;
+    }
+
+    if (isEditMode) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      if (!hoveredEl || isInspectorElement(hoveredEl)) return;
+      selectedEl = hoveredEl;
+      startInlineEdit(selectedEl);
+      showCard(selectedEl, e.clientX, e.clientY);
+      switchToEditTab();
+      return;
+    }
 
     // Automatic Pass-Through: Clicks inside date/calendar popups or pickers always pass through cleanly
     if (isInsideCalendarOrPicker(e.target)) {
@@ -6769,6 +8410,20 @@ text-align: ${cs.textAlign};`;
       return;
     }
 
+    // Alt+E: Toggle Edit Element Mode
+    if (e.altKey && (e.key.toLowerCase() === 'e' || e.code === 'KeyE')) {
+      e.preventDefault();
+      setMode(isEditMode ? 'inspect' : 'edit');
+      return;
+    }
+
+    // Alt+M: Toggle Move Element Mode
+    if (e.altKey && (e.key.toLowerCase() === 'm' || e.code === 'KeyM')) {
+      e.preventDefault();
+      setMode(isMoveMode ? 'inspect' : 'move');
+      return;
+    }
+
     // Alt+F: Toggle Free Click / Live Interact Mode
     if (e.altKey && e.key.toLowerCase() === 'f') {
       e.preventDefault();
@@ -6795,6 +8450,17 @@ text-align: ${cs.textAlign};`;
     }
 
     if (e.key === 'Escape') {
+      if (isMoveMode) {
+        setMode('inspect');
+        hideMoveControlBar();
+        return;
+      }
+      if (isEditMode || editingEl) {
+        if (editingEl) finishInlineEdit(editingEl);
+        setMode('inspect');
+        hideEditToolbar();
+        return;
+      }
       if (inspectCard && inspectCard.classList.contains('mv-active')) {
         hideCard();
       } else {
@@ -7195,6 +8861,9 @@ text-align: ${cs.textAlign};`;
 
     // 15. Update Selected Box outline
     updateSelectedBox(el);
+
+    // 16. Update Edit Panel Data
+    updateEditPanelData(el);
   }
 
 
